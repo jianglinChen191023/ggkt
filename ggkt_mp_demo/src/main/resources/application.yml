@@ -1,0 +1,31 @@
+server:
+  port: 1000
+
+# 生成的公钥
+public-key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMNXQuj4GCqDt+t3ex6W9u5hf50/o/JZKS6C0lKlzzUXvWHqAhJxqWoa3C2+Jp+CUtJhugMtTpeLMf5+Acokg8ECAwEAAQ==
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://175.178.174.83:3306/mybatis_plus?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&useSSL=false
+    username: root
+    # 生成的加密后的密码
+    password: lEdXTUweRH6bqzFKEy07vHkzKrziXqkHBQNwjK6FohatpabGU+2uxc73RZftE1vD3F5GDPZDhNg6vebNTNAOcA==
+    # 配置 connection-properties，启用加密，配置公钥。
+    druid:
+      connection-properties: config.decrypt=true;config.decrypt.key=${public-key}
+      # 启用ConfigFilter
+      filter:
+        config:
+          enabled: true
+
+# MyBatis 日志
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      # 1 表示已经删除, 默认为1
+      logic-delete-value: 1
+      # 0 表示没有删除, 默认为 0
+      logic-not-delete-value: 0
