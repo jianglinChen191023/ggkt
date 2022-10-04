@@ -85,6 +85,62 @@
       - [11.3.2 新建自定义异常类 `GgktException`](#1132-新建自定义异常类-ggktexception)
       - [11.3.3 测试](#1133-测试)
 
+- [四 前端基础知识](#四-前端基础知识)
+  - [1 开发工具和 `ES6`](#1-开发工具和-es6)
+    - [1.1 下载](#11-下载)
+    - [1.2 使用 `VS Code`](#12-使用-vs-code)
+      - [1.2.2 插件安装](#122-插件安装)
+      - [1.2.3 工作区](#123-工作区)
+      - [1.2.4 新建文件](#124-新建文件)
+      - [1.2.5 浏览器访问](#125-浏览器访问)
+      - [1.2.6 自动保存](#126-自动保存)
+    - [1.3 `ES6` 语法](#13-es6-语法)
+      - [1.3.1 `let` 声明变量](#131-let-声明变量)
+      - [1.3.2 `const` 声明常量（只读变量）](#132-const-声明常量只读变量)
+      - [1.3.3 03-解构赋值](#133-03-解构赋值)
+      - [1.3.4 04-模板字符串](#134-04-模板字符串)
+      - [1.3.5 05-方法简写](#135-05-方法简写)
+      - [1.3.6  06-对象拓展运算符](#136--06-对象拓展运算符)
+      - [1.3.7 07-箭头函数](#137-07-箭头函数)
+  - [2 `Vue`](#2-vue)
+    - [2.1 `Vue.js` 是什么](#21-vuejs-是什么)
+    - [2.2 初始化 `Vue.js`](#22-初始化-vuejs)
+      - [!img](#)
+    - [2.3 配置代码片段](#23-配置代码片段)
+    - [2.4 `Vue` 指令](#24-vue-指令)
+      - [2.4.1 `03-v-bind`](#241-03-v-bind)
+      - [2.4.2 `04-v-model`](#242-04-v-model)
+      - [2.4.3 `05-v-on`](#243-05-v-on)
+      - [2.4.4 `06-vue-if`](#244-06-vue-if)
+      - [2.4.5 `07-v-for`](#245-07-v-for)
+      - [2.4.6 08-生命周期](#246-08-生命周期)
+      - [2.4.7 09-组件](#247-09-组件)
+      - [2.4.8 10-路由](#248-10-路由)
+      - [2.4.9 `11-axios`](#249-11-axios)
+    - [2.5 `element-ui`](#25-element-ui)
+  - [3 `Node.js`](#3-nodejs)
+    - [3.1 什么是 `Node.js`](#31-什么是-nodejs)
+    - [3.2 `Node.js` 安装](#32-nodejs-安装)
+      - [3.2.1 下载](#321-下载)
+    - [3.3 入门](#33-入门)
+  - [4 `NPM`](#4-npm)
+    - [4.1 什么是 `NPM`](#41-什么是-npm)
+    - [4.2 `NPM` 工具的安装位置](#42-npm-工具的安装位置)
+    - [4.3 使用 `NPM`](#43-使用-npm)
+    - [4.4 `NPM` 镜像](#44-npm-镜像)
+    - [4.5 使用 `npm install` 命令](#45-使用-npm-install-命令)
+    - [4.6 其他命令](#46-其他命令)
+  - [5 模块化开发](#5-模块化开发)
+    - [5.1 `ES5` 写法](#51-es5-写法)
+    - [5.2 `ES6` 写法](#52-es6-写法)
+    - [5.3 `ES6` 转 `ES5`](#53-es6-转-es5)
+      - [5.3.1 安装 `Babel`](#531-安装-babel)
+      - [5.3.2 安装 `Babel` 报错 `Error: EACCES: permission denied`](#532-安装-babel-报错-error-eacces-permission-denied)
+      - [5.3.3 配置](#533-配置)
+      - [5.3.4 安装转码器](#534-安装转码器)
+    - [5.4 `ES6` 第二种写法](#54-es6-第二种写法)
+
+
 # 一 硅谷课堂
 
 ## 项目概述
@@ -3027,4 +3083,1236 @@ try {
 ```
 
 ![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664834371379-7f16b2fd-9b13-4e7d-8a1c-d4695730d63a.png)
+
+# 四 前端基础知识
+
+```
+git checkout -b 3.0.0_base
+```
+
+## 1 开发工具和 `ES6`
+
+### 1.1 下载
+
+- 下载地址:`https://code.visualstudio.com`
+
+
+
+### 1.2 使用 `VS Code`
+
+#### 1.2.2 插件安装
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664838247965-1cda5e7c-6fd5-43c7-8823-fa8c9bb80da8.png)
+
+- `Chinese`
+- `Live Server`
+- `Vetur`
+- `vue-helper`
+
+
+
+#### 1.2.3 工作区
+
+1. 创建空文件夹
+2. 使用 `vs` 打开空文件夹
+3. 把空文件夹保存为工作区
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664838833469-bab36fcd-188b-460b-b2c4-8627fcf35315.png)
+
+
+
+#### 1.2.4 新建文件
+
+1. 新建 `test` 文件夹
+2. 新建 `01.js` 文件
+3. 新建 `001.css` 文件
+4. 新建 `hello.html` 文件
+
+- 使用 `!` 号快捷生成 `html` 代码
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664839011444-f0bd3269-b9ed-48ea-ad94-3fb06ce5d4db.png)
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>hello vscode!</h1>
+</body>
+</html>
+```
+
+
+
+#### 1.2.5 浏览器访问
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664839102924-400840ac-65bd-44cb-98ff-68988d015794.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664839121637-9d15be57-1b11-4432-bdc8-0eb98d6f3523.png)
+
+
+
+#### 1.2.6 自动保存
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664839233500-c01db87b-6766-4579-9a0f-9c10b36c9472.png)
+
+
+
+### 1.3 `ES6` 语法
+
+- `ECMAScript 6.0` 简称 `ES6` 是 `JavaScript` 语言的下一代标准, 已经在 2015 年 6 月正式发布了
+- 它的目标是使等 `JavaScript` 语言可以用来编写复杂的大型应用程序, 成为企业级开发语言
+- `es6` 浏览器兼容性差, 而 `es5` 兼容性很好, 所以在实际开发中, 编写 `es6` 需要使用 `babel` 工具将 `ES6` 转换为 `ES5`
+
+**JavaScript 三大组成部分**
+
+1. `ECMAScritp`: 语句语法规范
+2. `BOM`: 浏览器对象模型 - `location`
+3. `DOM`: 文档对象模型 - `document`
+
+
+
+#### 1.3.1 `let` 声明变量
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664840627921-5b169561-9c42-4b15-bffe-887420989708.png)
+
+**特点**
+
+1. **具有作用范围**
+2. **不能重复定义**
+
+
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // es6 定义变量 let
+        // let 定义变量具有作用范围
+        {
+            var a = 1
+            let b = 2
+        }
+
+        console.log(a);
+        // b is not defined
+        console.log(b);
+
+        // var 可以声明多次
+        // let 只能声明一次
+        var m = 1
+        var m = 2
+
+        let n = 3
+        // 报错, 不能重复定义 n
+        // let n = 4
+        onsole.log(m)  // 2
+        console.log(n)  // Identifier 'n' has already been declared
+    </script>
+</body>
+</html>
+```
+
+
+
+#### 1.3.2 `const` 声明常量（只读变量）
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664840868218-a47d57d1-f7db-4f24-a4c3-b152a317f433.png)
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 常量定义赋值, 不能改变值
+        // 错误, 常量必须初始化
+        // const p;
+        const p = "3.1415926";
+        // 错误, 不可修改
+        p = 3;
+        console.log(p);
+    </script>
+</body>
+</html>
+```
+
+
+
+#### 1.3.3 03-解构赋值
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 传统方式
+        let user = {name: 'luck', age: 20};
+        let name1 = user.name;
+        let age1 = user.age;
+        console.log(name1);
+        console.log(age1);
+
+        // es6 写法
+        let {name, age} = user;
+        console.log(name1);
+        console.log(age1);
+    </script>
+</body>
+</html>
+```
+
+
+
+#### 1.3.4 04-模板字符串
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 模板字符串 ``
+        let name = "mary"
+        let age = 20
+        // 定义方法
+        function f1() {
+            return "have fun"
+        }
+
+        let info = `name is ${name}, age is ${age + 1}, ${f1()}`
+        // name is mary, age is 21, have fun
+        console.log(info);
+    </script>
+</body>
+</html>
+ 
+```
+
+
+
+#### 1.3.5 05-方法简写
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 定义对象, 属性和方法
+        const person = {
+            // 定义属性
+            name: 'lucy',
+            // 定义方法
+            sayHi() {
+                console.log('h1')
+            }
+        }
+
+        // 获取属性值
+        let name1 = person.name
+        // lucy
+        console.log(name1) 
+        // 调用方法
+        // hi
+        person.sayHi()
+
+    </script>
+</body>
+</html>
+```
+
+
+
+#### 1.3.6  06-对象拓展运算符
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let person = {name: 'Amy', age: 15}
+        let someone = { ...person}
+        // {name: 'Amy', age: 15}
+        console.log(someone);
+    </script>
+</body>
+</html>
+```
+
+
+
+#### 1.3.7 07-箭头函数
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 定义方法
+        var f1 = function(a) {
+            return a
+        }
+
+        // 10
+        console.log(f1(10));
+
+        // 箭头函数
+        var f11 = a => a
+
+        // 20
+        console.log(f11(20));
+
+        var f2 = function(a, b) {
+            return a + b;
+        }
+
+        var f21 = (a, b) => a + b
+        // 3
+        console.log(f21(1, 2));
+    </script>
+</body>
+</html>
+```
+
+
+
+## 2 `Vue`
+
+### 2.1 `Vue.js` 是什么
+
+- `Vue` (读音 `/vju/`, 类似于 `view`) 是一套用于构建用户界面的渐进式框架
+- `Vue`的核心只关注视图层, 不仅易于上手, 还便于与第三方库或既有项目整合
+- 当与现代化工具链以及各种支持类库结合使用时, `Vue` 也完全能够为复杂的单页应用提供驱动
+
+官网: `https://cn.vuejs.org`
+
+
+
+### 2.2 初始化 `Vue.js`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664843528892-994da8b2-76fa-433e-a937-24da4e56a628.png)
+
+[📎vue.min.js](https://www.yuque.com/attachments/yuque/0/2022/js/12811585/1664843516540-3559be52-3106-4e39-88c5-7f009cfc015f.js)
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="./vue.min.js"></script>
+    <div id="app">
+        <!-- 插值表达式 -->
+        {{message}}
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                message: 'hello vue'
+            }
+        })
+    </script>
+</body>
+</html>
+```
+
+#### ![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664843573417-40a81ab0-b1cd-4237-a001-d324113fac25.png)
+
+
+
+### 2.3 配置代码片段
+
+```json
+{
+    "vue htm": {
+        "scope": "html",
+        "prefix": "vuehtml",
+        "body": [
+            "<!DOCTYPE html>",
+            "<html lang=\"en\">",
+            "",
+            "<head>",
+            "    <meta charset=\"UTF-8\">",
+            "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">",
+            "    <meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\">",
+            "    <title>Document</title>",
+            "</head>",
+            "",
+            "<body>",
+            "    <div id=\"app\">",
+            "",
+            "    </div>",
+            "    <script src=\"vue.min.js\"></script>",
+            "    <script>",
+            "        new Vue({",
+            "            el: '#app',",
+            "            data: {",
+            "                $1",
+            "            }",
+            "        })",
+            "    </script>",
+            "</body>",
+            "",
+            "</html>",
+        ],
+        "description": "my vue template in html"
+    }
+}
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664845143947-83842dfd-b5cb-41c0-bf4e-3ba752b3c452.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664845314785-7214eb6b-d283-49eb-9010-99c2cb410a8b.png)
+
+
+
+### 2.4 `Vue` 指令
+
+| **指令**  | **声明** |
+| --------- | -------- |
+| `v-bind`  | 单项绑定 |
+| `v-model` | 双向绑定 |
+| `v-on`    | 绑定事件 |
+| `v-if`    | 条件判断 |
+| `v-for`   | 循环     |
+
+#### 2.4.1 `03-v-bind`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <input type="text" v-bind:value="message" />
+        <br/>
+        <input type="text" :value="message" />
+    </div>
+    <script src="vue.min.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                message: 'hello vue'
+            }
+        })
+    </script>
+</body>
+
+</html>
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664845808242-bdeaa84f-44e9-48df-b01d-0021449609a4.png)
+
+
+
+#### 2.4.2 `04-v-model`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <input type="text" :value="message">
+        <br/>
+        {{message}}
+        <br/>
+        <input type="text" v-model="message">
+    </div>
+    <script src="vue.min.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                message: 'hello vue'
+            }
+        })
+    </script>
+</body>
+
+</html>
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664845908828-4296bc84-8c5f-4dc7-bf35-4c4fb4ad60ea.png)
+
+
+
+#### 2.4.3 `05-v-on`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+<div id="app">
+    <input type="button" value="b1" v-on:click="search()" />
+    <br/>
+    <input type="button" value="b2" @click="search()" />
+</div>
+<script src="vue.min.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            message: ''
+        },
+        methods: {
+            search() {
+                console.log('search......');
+            }
+        }
+    })
+</script>
+</body>
+
+</html>
+```
+
+
+
+#### 2.4.4 `06-vue-if`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <input type="checkbox" v-model="ok" />
+        <br/>
+        <h1 v-if="ok">选中了</h1>
+        <h1 v-else="ok">没有选中</h1>
+    </div>
+    <script src="vue.min.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                ok: false
+            }
+        })
+    </script>
+</body>
+
+</html>
+```
+
+
+
+#### 2.4.5 `07-v-for`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+<div id="app">
+    <table>
+        <tr v-for="(user, index) in userList">
+            <td>{{index}}</td>
+            <td>{{user.id}}</td>
+            <td>{{user.username}}</td>
+        </tr>
+    </table>
+</div>
+<script src="vue.min.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            userList: [
+                {id: 1, username: 'helen'},
+                {id: 2, username: 'peter'},
+                {id: 3, username: 'andy'}
+            ]
+        }
+    })
+</script>
+</body>
+
+</html>
+```
+
+
+
+#### 2.4.6 08-生命周期
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+<div id="app">
+
+</div>
+<script src="vue.min.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {},
+        // 在渲染之前执行
+        created() {
+            console.log("created....")
+        },
+        // 在渲染之后执行
+        mounted() {
+            console.log("mounted....")
+        },
+    })
+</script>
+</body>
+
+</html>
+```
+
+
+
+#### 2.4.7 09-组件
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+<div id="app">
+    <atguigu></atguigu>
+</div>
+<script src="vue.min.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {},
+        // 定义组件
+        components: {
+            // 组件名称
+            atguigu: {
+                // 组件内容
+                template: '<ul><li>首页</li><li>学员管理</li></ul>'
+            }
+        }
+    })
+</script>
+</body>
+
+</html>
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664847877452-1977e240-951b-4319-9ed4-be9f747eb541.png)
+
+
+
+#### 2.4.8 10-路由
+
+[📎vue-router.min.js](https://www.yuque.com/attachments/yuque/0/2022/js/12811585/1664848062166-6b8ce6a3-c815-45aa-a87e-342668611f08.js)
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+<div id="app">
+    <h1>Hello App!</h1>
+    <p>
+        <!-- 使用 router-link 组件来导航. -->
+        <!-- 通过传入 `to` 属性指定链接. -->
+        <!-- <router-link> 默认会被渲染成一个 `<a>` 标签 -->
+        <router-link to="/">首页</router-link>
+        <router-link to="/student">会员管理</router-link>
+        <router-link to="/teacher">讲师管理</router-link>
+    </p>
+    <!-- 路由出口 -->
+    <!-- 路由匹配到的组件将渲染在这里 -->
+    <router-view></router-view>
+</div>
+<script src="vue.min.js"></script>
+<script src="vue-router.min.js"></script>
+<script>
+    // 1. 定义（路由）组件。
+    // 可以从其他文件 import 进来
+    const Welcome = {template: '<div>欢迎</div>'}
+    const Student = {template: '<div>student list</div>'}
+    const Teacher = {template: '<div>teacher list</div>'}
+    // 2. 定义路由
+    // 每个路由应该映射一个组件。
+    const routes = [
+        {path: '/', redirect: '/welcome'}, //设置默认指向的路径
+        {path: '/welcome', component: Welcome},
+        {path: '/student', component: Student},
+        {path: '/teacher', component: Teacher}
+    ]
+    // 3. 创建 router 实例，然后传 `routes` 配置
+    const router = new VueRouter({
+        routes // （缩写）相当于 routes: routes
+    })
+    // 4. 创建和挂载根实例。
+    // 从而让整个应用都有路由功能
+    const app = new Vue({
+        el: '#app',
+        router
+    })
+    // 现在，应用已经启动了！
+</script>
+</body>
+
+</html>
+```
+
+
+
+#### 2.4.9 `11-axios`
+
+[📎axios.min.js](https://www.yuque.com/attachments/yuque/0/2022/js/12811585/1664848359804-8a6d98a8-8334-4ecc-bdba-1e0fee98d8e5.js)
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+<div id="app">
+    <table>
+        <tr v-for="user in userList">
+            <td>{{user.name}}</td>
+            <td>{{user.age}}</td>
+        </tr>
+    </table>
+</div>
+<script src="vue.min.js"></script>
+<script src="axios.min.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            userList: {}
+        },
+        created() {
+            this.getList()
+        },
+        methods: {
+            getList() {
+                axios.get('data.json')
+                    // 请求成功
+                    .then(response => {
+                        console.log(response)
+                        this.userList = response.data.data.items
+                        console.log(this.userList)
+                    })
+                    // 请求失败
+                    .catch(error => {
+                        console.log(error)
+                    })
+            }
+        }
+    })
+</script>
+</body>
+
+</html>
+```
+
+- `data.json`
+
+```json
+{
+  "success": "ok",
+  "code": 200,
+  "data": {
+    "items": [
+      {
+        "name": "luck",
+        "age": 20
+      },
+      {
+        "name": "mary",
+        "age": 30
+      },
+      {
+        "name": "jack",
+        "age": 40
+      }
+    ]
+  }
+}
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664848943394-1b37ebd9-ca83-44af-a9a3-f62f37b17915.png)
+
+
+
+### 2.5 `element-ui`
+
+- `element-ui` 是饿了么前端出品的基于 `Vue.js` 的后台组件库, 方便程序员进行页面快速布局和构建
+- 官网:
+
+  - 基于 Vue 2.x`https://element-cn.eleme.io/#/zh-CN`
+  - 基于 Vue 3.x `https://element-plus.gitee.io/zh-CN/`
+
+
+
+## 3 `Node.js`
+
+### 3.1 什么是 `Node.js`
+
+- 简单的说 `Node.js` 就是运行在服务端的 `JavaScript`
+- `Node.js` 是一个事件驱动 `I/O` 服务端 `JavaScript` 环境, 基于`Google` 的 `V8` 引擎
+
+
+
+### 3.2 `Node.js` 安装
+
+#### 3.2.1 下载
+
+官网: `https://nodejs.org/en/`
+
+
+
+### 3.3 入门
+
+- 新建 `app.js`
+
+```javascript
+console.log('hello node.js')
+```
+
+- 进入窗口输入
+
+```shell
+node app.js
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664849810083-da9761f1-ae34-4423-a3b8-66004c69b635.png)
+
+
+
+## 4 `NPM`
+
+### 4.1 什么是 `NPM`
+
+- `NPM` 全称 `Node Package Manager`, 是 `Node.js` 包管理工具, 是全球最大的模块生态系统, 里面所有的模块都是开源免费的; 也是 `Node.js` 的包管理工具, 相当于后端的 `Maven`
+
+
+
+### 4.2 `NPM` 工具的安装位置
+
+- `Node.js` 默认安装的 `NPM` 包和工具的位置:  `node_modules`
+- 查看 `npm` 版本: `npm -v`
+
+
+
+### 4.3 使用 `NPM`
+
+1. 建立一个空文件夹 `npmdemo`，在命令提示符进入该文件夹  执行命令初始化
+
+```shell
+npm init
+```
+
+1. 按照提示输入相关信息，如果是用默认值则直接回车即可。
+
+- `name`: 项目名称
+- `version`: 项目版本号
+- `description`: 项目描述
+- `keywords`: {`Array`}关键词，便于用户搜索到我们的项目
+- 最后会生成 `package.json` 文件，这个是包的配置文件，相当于`maven` 的 `pom.xml`
+
+  - 我们之后也可以根据需要进行修改
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664850405230-0c30f38d-3a90-4687-9599-8f9d578d581f.png)
+
+**快捷命令:** `**npm init -y**`
+
+- 都使用默认值
+
+
+
+### 4.4 `NPM` 镜像
+
+- `NPM` 官方的管理的包都是从 `http://npmjs.com` 下载的, 国内速度很满
+- 推荐使用淘宝 `NPM` 镜像 `http://npm.taobao.org/`
+
+  - 淘宝的 `NPM` 镜像是一个完整的 `npmjs.com` 镜像, 同步频率 10 分钟一次, 尽量保证与官网一致
+
+**设置镜像地址**
+
+```shell
+# 之后 npm install 都会从淘宝镜像下载
+npm config set registry https://registry.npm.taobao.org 
+# 查看 npm 配置信息
+npm config list
+```
+
+
+
+### 4.5 使用 `npm install` 命令
+
+```shell
+#使用 npm install 安装依赖包的最新版，
+#模块安装的位置：项目目录\node_modules
+#安装会自动在项目目录下添加 package-lock.json文件，这个文件帮助锁定安装包的版本
+#同时package.json 文件中，依赖包会被添加到dependencies节点下，类似maven中的 <dependencies>
+npm install jquery
+#npm管理的项目在备份和传输的时候一般不携带node_modules文件夹
+npm install #根据package.json中的配置下载依赖，初始化项目
+#如果安装时想指定特定的版本
+npm install jquery@2.1.x
+# 局部安装-开发时依赖
+#devDependencies节点：开发时的依赖包，项目打包到生产环境的时候不包含的依赖
+#使用 -D参数将依赖添加到devDependencies节点
+npm install --save-dev eslint
+#或
+npm install -D eslint
+# 运行时依赖
+npm install --save axios
+
+#全局安装
+#Node.js全局安装的npm包和工具的位置：用户目录\AppData\Roaming\npm\node_modules
+#一些命令行工具常使用全局安装的方式
+npm install -g webpack
+#或
+npm install --global webpack
+```
+
+### 4.6 其他命令
+
+```shell
+# 更新包（更新到最新版本）
+npm update 包名
+# 全局更新
+npm update -g 包名
+# 卸载包
+npm uninstall 包名
+# 全局卸载
+npm uninstall -g 包名
+```
+
+
+
+## 5 模块化开发
+
+- 后端模块化开发: 三层、类与类之间 对象之间的调用
+- 前端模块化开发: `JS` 文件之间的方法调用
+
+  - `ES6` 的模块化无法在 `Node.js` 中执行, 需要用到 `Babel` 转换成 `ES5` 后再执行
+
+### 5.1 `ES5` 写法
+
+- 新建`moduledemo`文件夹执行 `npm init -y`
+- 在 `moduledemo` 下创建 `es5` 文件夹
+- `moduledemo`
+
+  - `es5`
+
+    - `01.js`
+
+```javascript
+const sum = function(a, b) {
+  return parseInt(a) + parseInt(b);
+}
+
+const subtract = function(a, b) {
+  return parseInt(a) - parseInt(b);
+}
+
+// 导出 - 设置那些方法可以被其他 js 调用
+module.exports = {
+  sum,
+  subtract
+}
+```
+
+    - `02.js`
+
+```javascript
+// 引入 01 文件
+const m = require('./01.js')
+
+// 方法调用
+const v1 = m.sum(1, 2)
+const v2 = m.subtract(3, 1)
+
+console.log(v1)
+console.log(v2)
+```
+
+- `node 02.js`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664924596721-dcf04a6f-11cd-4c6c-a4dc-4dc12e54e1ce.png)
+
+
+
+### 5.2 `ES6` 写法
+
+- `moduledemo`
+
+  - `es6-1`
+
+    - `001.js`
+
+```javascript
+export function add() {
+  console.log('add...')
+}
+
+export function update() {
+  console.log('update...')
+}
+```
+
+    - `002.js`
+
+```javascript
+// 引入
+import {add, update} from "./001.js"
+
+// 调用
+add()
+update()
+```
+
+- `node 002.js`: 报错, 不支持 `ES6` 模块化, 需要转换成 `ES5`
+
+
+
+### 5.3 `ES6` 转 `ES5`
+
+#### 5.3.1 安装 `Babel`
+
+```shell
+npm install -g babel-cli
+# 查看是否安装成功
+babel --version
+```
+
+
+
+#### 5.3.2 安装 `Babel` 报错 `Error: EACCES: permission denied`
+
+```shell
+sudo npm install -g babel-cli 
+```
+
+
+
+#### 5.3.3 配置
+
+- `Babel` 的配置文件是 `.babelrc`, 存放在项目的根目录下
+- `presets` 字段设定转码规则
+- `moduledemo`
+
+  - `.babelrc`
+
+```json
+{
+  "presets": ["es2015"],
+  "plugins": []
+}
+```
+
+
+
+#### 5.3.4 安装转码器
+
+```shell
+npm install --save-dev babel-preset-es2015
+```
+
+- 转码
+
+```shell
+# 创建一个文件夹，转码到这个目录
+mkdir bes6-1
+# --out-dir 或 -d 参数指定输出目录
+babel es6-1 -d bes6-1
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664926787995-56fd5188-ee5b-422f-8588-083d4c8ca498.png)
+
+- `moduledemo`
+
+  - `bes6-1`
+
+    - 生成的 `001.js`
+
+```javascript
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.add = add;
+exports.update = update;
+function add() {
+  console.log('add...');
+}
+
+function update() {
+  console.log('update...');
+}
+```
+
+    - 生成的 `002.js`
+
+```javascript
+"use strict";
+
+var _ = require("./001.js");
+
+// 调用
+(0, _.add)(); // 引入
+
+(0, _.update)();
+```
+
+- `node bes6-1/002.js`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664926820334-54abc30b-ba30-4478-a258-543258707f65.png)
+
+
+
+### 5.4 `ES6` 第二种写法
+
+- `moduledemo`
+
+  - `es6-2`
+
+    - `1.js`
+
+```javascript
+export default {
+    list() {
+        console.log('list...')
+    },
+    save() {
+        console.log('save...')
+    }
+}
+```
+
+    - `2.js`
+
+```javascript
+import user from "./1.js"
+user.list()
+user.save()
+```
+
+- `mkdir bes6-2`
+- `babel es6-2 -d bes6-2`
+- `node bes6-2/2.js`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664927261729-3d70d936-e7cf-43c9-953f-d8f904b29cc5.png)
 
