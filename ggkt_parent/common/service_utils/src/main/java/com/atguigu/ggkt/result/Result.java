@@ -52,7 +52,7 @@ public class Result<T> {
      * @return {@link Result}<{@link T}>
      */
     public static <T> Result<T> ok(T data) {
-        return new Result<>(200, "成功", data);
+        return new Result<>(20000, "成功", data);
     }
 
     /**
@@ -70,7 +70,7 @@ public class Result<T> {
      * @return {@link Result}<{@link T}>
      */
     public static <T> Result<T> fail(T data) {
-        return new Result<>(201, "失败", data);
+        return new Result<>(20001, "失败", data);
     }
 
     /**
