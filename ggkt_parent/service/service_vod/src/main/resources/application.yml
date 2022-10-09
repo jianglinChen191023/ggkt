@@ -35,6 +35,6 @@ tencent:
   cos:
     file:
       region: ap-beijing
-      secretid: 你的 id
-      secretkey: 你的 key
-      bucketname: ggkt-atguigu-1301043802
+      secret-id: 你的 id
+      secret-key: 你的 key
+      bucket-name: ggkt-atguigu-1301043802
