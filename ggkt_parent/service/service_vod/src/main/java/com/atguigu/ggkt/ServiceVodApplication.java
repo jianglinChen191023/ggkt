@@ -1,4 +1,4 @@
-package com.atguigu.ggkt.vod;
+package com.atguigu.ggkt;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
  * @date 2022/10/2 06:27
  */
 @SpringBootApplication
-@ComponentScan(basePackages = "com.atguigu.ggkt")
+@ComponentScan(basePackages = "com.atguigu")
 public class ServiceVodApplication {
 
     public static void main(String[] args) {

@@ -14,7 +14,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://175.178.174.83:3306/glkt_vod?characterEncoding=utf-8&useSSL=false
     username: root
-    password: 12345678
+    password: '@root1314'
   #返回json的全局时间格式
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -30,11 +30,11 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-# COS
+# 腾讯云 COS 对象存储
 tencent:
   cos:
-    file:
-      region: ap-beijing
-      secret-id: 你的 id
-      secret-key: 你的 key
-      bucket-name: ggkt-atguigu-1301043802
+    region: 所属地域
+    secret-id: 访问标识
+    secret-key: 访问秘钥
+    bucket-name: Bucket 名称
+    bucket-domain: Bucket 域名

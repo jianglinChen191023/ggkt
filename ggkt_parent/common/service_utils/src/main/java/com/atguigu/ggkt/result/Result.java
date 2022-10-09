@@ -19,6 +19,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Result<T> {
 
+    public static final String SUCCESS = "成功";
+    public static final String FAILED = "失败";
+
     /**
      * 状态码
      */
@@ -52,7 +55,7 @@ public class Result<T> {
      * @return {@link Result}<{@link T}>
      */
     public static <T> Result<T> ok(T data) {
-        return new Result<>(20000, "成功", data);
+        return new Result<>(20000, SUCCESS, data);
     }
 
     /**
@@ -70,7 +73,7 @@ public class Result<T> {
      * @return {@link Result}<{@link T}>
      */
     public static <T> Result<T> fail(T data) {
-        return new Result<>(20001, "失败", data);
+        return new Result<>(20001, FAILED, data);
     }
 
     /**

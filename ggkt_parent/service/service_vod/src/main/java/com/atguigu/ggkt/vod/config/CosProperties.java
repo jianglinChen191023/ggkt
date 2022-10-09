@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "tencent.cos.file")
+@ConfigurationProperties(prefix = "tencent.cos")
 public class CosProperties {
 
     /**
@@ -21,7 +21,7 @@ public class CosProperties {
     private String region;
 
     /**
-     * 秘钥 id
+     * 秘钥标识
      */
     private String secretId;
 
@@ -31,8 +31,13 @@ public class CosProperties {
     private String secretKey;
 
     /**
-     * 存储桶名称
+     * Bucket 名称
      */
     private String bucketName;
+
+    /**
+     * Bucket 域名
+     */
+    private String bucketDomain;
 
 }

@@ -27,16 +27,11 @@
             <artifactId>velocity-engine-core</artifactId>
             <version>2.0</version>
         </dependency>
-        <!-- 腾讯云对象存储 -->
+
         <dependency>
-            <groupId>com.qcloud</groupId>
-            <artifactId>cos_api</artifactId>
-            <version>5.6.75</version>
-        </dependency>
-        <!-- 日期工具栏依赖 -->
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
         <!-- 导入配置文件处理器, 配置文件进行绑定 -->
         <dependency>
