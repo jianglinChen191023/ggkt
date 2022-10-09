@@ -33,11 +33,20 @@
       </el-form>
     </el-card>
 
+    <!-- 工具按钮 -->
+    <el-card class="operate-container" shadow="never">
+      <i class="el-icon-tickets" style="margin-top: 5px"></i>
+      <span style="margin-top: 5px">数据列表</span>
+      <el-button class="btn-add" @click="add()" style="margin-left: 10px;">添加</el-button>
+      <el-button class="btn-add" @click="batchRemove()">批量删除</el-button>
+    </el-card>
+
     <!-- 表格 -->
     <el-table
       :data="list"
       border
       stripe
+      @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection"/>
       <el-table-column
@@ -59,10 +68,13 @@
       <el-table-column prop="joinDate" label="入驻时间" width="160"/>
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
-          <el-button type="text" size="mini" @click="removeById(scope.row.id)">删除</el-button>
+          <!-- 修改按钮 -->
           <router-link :to="'/vod/teacher/edit/'+scope.row.id">
-            <el-button type="text" size="mini">修改</el-button>
+            <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
           </router-link>
+          <!-- 删除按钮 -->
+          <el-button style="margin-left: 10px;" type="danger" icon="el-icon-delete" size="mini"
+                     @click="removeById(scope.row.id)"></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -137,7 +149,37 @@ export default {
         return teacherApi.removeById(id)
       }).then((response) => {
         this.getTeacherList()
-        this.$message.success(response.message)
+        this.$message.success("删除成功")
+      })
+    },
+    // 复选框触发事件
+    handleSelectionChange(selection) {
+      this.multipleSelection = selection
+    },
+    add() {
+      // 跳转到添加页面
+      this.$router.push({path: "/vod/teacher/create"})
+    },
+    // 批量删除
+    batchRemove() {
+      if (this.multipleSelection.length === 0) {
+        this.$message.warning('请选择要删除的记录!')
+        return
+      }
+
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const idList = []
+        // 遍历数组将 id 取出并存储到 idList 中
+        this.multipleSelection.forEach(teacher => idList.push(teacher.id))
+        // 批量删除
+        return teacherApi.batchRemove(idList)
+      }).then((response) => {
+        this.getTeacherList()
+        this.$message.success("批量删除成功")
       })
     }
   }
