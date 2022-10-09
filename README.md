@@ -179,6 +179,54 @@
   - [后台项目打包问题](#后台项目打包问题)
     - [追加依赖](#追加依赖)
 
+- [六 整合腾讯云对象存储](#六-整合腾讯云对象存储)
+    - [1 腾讯云对象存储 `COS`](#1-腾讯云对象存储-cos)
+        - [1.1 开通 `COS`](#11-开通-cos)
+        - [1.2 创建存储桶](#12-创建存储桶)
+        - [1.3 访问管理](#13-访问管理)
+        - [1.4 秘钥](#14-秘钥)
+        - [1.5 `SDK`](#15-sdk)
+        - [1.6 测试上传](#16-测试上传)
+    - [2 `service_utils` 工程](#2-service_utils-工程)
+        - [2.1 依赖](#21-依赖)
+        - [2.2 新建工具 `GgktUtil`](#22-新建工具-ggktutil)
+    - [3 `service_vod` 工程](#3-service_vod-工程)
+        - [3.1 新建 `CosProperties`](#31-新建-cosproperties)
+        - [3.2 配置](#32-配置)
+        - [3.3 测试上传](#33-测试上传)
+        - [3.4 上传接口](#34-上传接口)
+            - [3.4.1 新建 `FileUploadController`](#341-新建-fileuploadcontroller)
+            - [3.4.2 新建 `FileService`](#342-新建-fileservice)
+            - [2.4.3 新建 `FileServiceImpl`](#243-新建-fileserviceimpl)
+            - [2.4.4 修改 `Result`](#244-修改-result)
+    - [4 上传讲师头像](#4-上传讲师头像)
+    - [4.1 代码](#41-代码)
+    - [5 父组件样式作用到子组件](#5-父组件样式作用到子组件)
+        - [5.1 `::v-deep` 修饰符](#51-v-deep-修饰符)
+        - [5.2 `/deep/` 修饰符](#52-deep-修饰符)
+        - [5.3 `>>>` 修饰符](#53--修饰符)
+    - [修改](#修改)
+        - [1.6 测试上传](#16-测试上传-1)
+    - [2 `service_utils` 工程](#2-service_utils-工程-1)
+        - [2.1 依赖](#21-依赖-1)
+        - [2.2 新建工具 `GgktUtil`](#22-新建工具-ggktutil-1)
+    - [3 `service_vod` 工程](#3-service_vod-工程-1)
+        - [3.1 新建 `CosProperties`](#31-新建-cosproperties-1)
+        - [3.2 配置](#32-配置-1)
+        - [3.3 测试上传](#33-测试上传-1)
+        - [3.4 上传接口](#34-上传接口-1)
+            - [3.4.1 新建 `FileUploadController`](#341-新建-fileuploadcontroller-1)
+            - [3.4.2 新建 `FileService`](#342-新建-fileservice-1)
+            - [2.4.3 新建 `FileServiceImpl`](#243-新建-fileserviceimpl-1)
+            - [2.4.4 修改 `Result`](#244-修改-result-1)
+    - [4 上传讲师头像](#4-上传讲师头像-1)
+    - [4.1 代码](#41-代码-1)
+    - [5 父组件样式作用到子组件](#5-父组件样式作用到子组件-1)
+        - [5.1 `::v-deep` 修饰符](#51-v-deep-修饰符-1)
+        - [5.2 `/deep/` 修饰符](#52-deep-修饰符-1)
+        - [5.3 `>>>` 修饰符](#53--修饰符-1)
+    - [修改](#修改-1)
+    
 # 一 硅谷课堂
 
 ## 项目概述
@@ -5395,4 +5443,1536 @@ batchRemove() {
         </plugin>
     </plugins>
 </build>
+```
+
+# 六 整合腾讯云对象存储
+
+```
+git checkout -b 5.0.0_cos_subject
+```
+
+
+
+## 1 腾讯云对象存储 `COS`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665289529200-3cdee8cb-f509-4c36-9b84-131f8b42bc3a.png)
+
+
+
+- 文档: `https://cloud.tencent.com/document/product/436/10199`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665290564890-b1076c89-b83c-4c4b-ab08-07fc4e72ce3e.png)
+
+### 1.1 开通 `COS`
+
+- 点击`立即使用`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665289558131-e50ec189-9021-477c-a6af-8f7973eaa4e8.png)
+
+
+
+### 1.2 创建存储桶
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665291176707-34f48f89-0e11-4e66-869e-2284b7bb8d68.png)
+
+此处为语雀加密文本卡片，点击链接查看：https://www.yuque.com/lingchen-bf1rc/hoahc6/oiumqc#LAtVh
+
+### 1.3 访问管理
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665290371149-fd136231-c3b4-4b52-9446-8dae7fa6b459.png)
+
+
+
+### 1.4 秘钥
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665294030878-f8122979-5657-4e2d-b4f8-7740949374cc.png)
+
+此处为语雀加密文本卡片，点击链接查看：https://www.yuque.com/lingchen-bf1rc/hoahc6/oiumqc#zhMCL
+
+### 1.5 `SDK`
+
+```xml
+<!-- 腾讯云对象存储 -->
+<dependency>
+    <groupId>com.qcloud</groupId>
+    <artifactId>cos_api</artifactId>
+    <version>5.6.75</version>
+</dependency>
+```
+
+
+
+### 1.6 测试上传
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665293776332-6547f053-3856-4b22-8ce8-6c12d0df553a.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665293750121-cb7c7dca-577b-4d2e-baff-7139ffde4790.png)
+
+- `Region` 地域
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665294238303-d97fca74-a4ee-4745-a874-aa51fe68f2d0.png)
+
+```java
+package com.atguigu.ggkt;
+
+import com.alibaba.fastjson.JSON;
+import com.qcloud.cos.COSClient;
+import com.qcloud.cos.ClientConfig;
+import com.qcloud.cos.auth.BasicCOSCredentials;
+import com.qcloud.cos.auth.COSCredentials;
+import com.qcloud.cos.http.HttpProtocol;
+import com.qcloud.cos.model.PutObjectRequest;
+import com.qcloud.cos.model.PutObjectResult;
+import com.qcloud.cos.region.Region;
+
+import java.io.File;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/9 13:34
+ */
+public class TestCos {
+
+    public static void main(String[] args) {
+        // 1 初始化用户身份信息（secretId, secretKey）。
+        // SECRETID 和 SECRETKEY请登录访问管理控制台 https://console.cloud.tencent.com/cam/capi 进行查看和管理
+        String secretId = "id";
+        String secretKey = "key";
+        COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
+        // 2 设置 bucket 的地域, COS 地域的简称请参照 https://cloud.tencent.com/document/product/436/6224
+        // clientConfig 中包含了设置 region, https(默认 http), 超时, 代理等 set 方法, 使用可参见源码或者常见问题 Java SDK 部分。
+        Region region = new Region("ap-beijing");
+        ClientConfig clientConfig = new ClientConfig(region);
+        // 这里建议设置使用 https 协议
+        // 从 5.6.54 版本开始，默认使用了 https
+        clientConfig.setHttpProtocol(HttpProtocol.https);
+        // 3 生成 cos 客户端。
+        COSClient cosClient = new COSClient(cred, clientConfig);
+
+        // 指定要上传的文件
+        File localFile = new File("/Users/chenjianglin/Desktop/01.png");
+        // 指定文件将要存放的存储桶
+        String bucketName = "ggkt-atguigu-1301043802";
+        // 指定文件上传到 COS 上的路径，即对象键。例如对象键为folder/picture.jpg，则表示将文件 picture.jpg 上传到 folder 路径下
+        String key = "/2022/01/01.png";
+        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, localFile);
+        // 上传
+        PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
+        System.out.println(JSON.toJSONString(putObjectResult));
+    }
+
+}
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665295001466-99907acf-73d7-4d34-89cb-d6e785082858.png)
+
+
+
+## 2 `service_utils` 工程
+
+### 2.1 依赖
+
+```xml
+<dependencies>
+    <!-- 腾讯云对象存储 -->
+    <dependency>
+        <groupId>com.qcloud</groupId>
+        <artifactId>cos_api</artifactId>
+        <version>5.6.75</version>
+    </dependency>
+</dependencies>
+```
+
+
+
+### 2.2 新建工具 `GgktUtil`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665303728713-b056bc98-de4d-4aec-a7ee-747fd953c45d.png)
+
+```java
+package com.atguigu.ggkt.util;
+
+import com.atguigu.ggkt.result.Result;
+import com.qcloud.cos.COSClient;
+import com.qcloud.cos.ClientConfig;
+import com.qcloud.cos.auth.BasicCOSCredentials;
+import com.qcloud.cos.auth.COSCredentials;
+import com.qcloud.cos.http.HttpProtocol;
+import com.qcloud.cos.model.ObjectMetadata;
+import com.qcloud.cos.model.PutObjectRequest;
+import com.qcloud.cos.model.PutObjectResult;
+import com.qcloud.cos.model.StorageClass;
+import com.qcloud.cos.region.Region;
+
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
+
+/**
+ * 硅谷课堂工具类
+ *
+ * @author 陈江林
+ * @date 2022/10/9 15:30
+ */
+public class GgktUtil {
+
+    /**
+     * 专门负责上传文件到 COS 服务器的工具方法
+     *
+     * @param bucketName
+     * @param region
+     * @param bucketDomain
+     * @param secretId
+     * @param secretKey
+     * @param inputStream  要上传文件的输入流
+     * @param originalName 要上传文件的原始文件名
+     * @return {@link Result}<{@link String}>
+     */
+    public static Result<String> uploadFilterCos(String bucketName,
+                                                 String region,
+                                                 String bucketDomain,
+                                                 String secretId,
+                                                 String secretKey,
+                                                 InputStream inputStream,
+                                                 String originalName) {
+        COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
+        Region region1 = new Region(region);
+        ClientConfig clientConfig = new ClientConfig(region1);
+        // 从 5.6.54 版本开始，默认使用了 https
+        clientConfig.setHttpProtocol(HttpProtocol.https);
+        // 3 生成 cos 客户端。
+        COSClient cosClient = new COSClient(cred, clientConfig);
+
+        // 生成生成文件的目录
+        String folderName = new SimpleDateFormat("yyyyMMdd").format(new Date());
+        // 使用 UUID 生成文件主体名称
+        String fileMainName = UUID.randomUUID().toString().replace("_", "");
+        // 从原始文件名中获取文件扩展名
+        String extensionName = originalName.substring(originalName.lastIndexOf("."));
+        // 使用目录、文件主体名称、文件扩展名称拼接得到对象名称
+        String key = folderName + "/" + fileMainName + extensionName;
+
+        try {
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, inputStream, objectMetadata);
+            // 设置存储类型（如有需要，不需要请忽略此行代码）, 默认是标准(Standard), 低频(standard_ia)
+            putObjectRequest.setStorageClass(StorageClass.Standard_IA);
+            // 上传
+            PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
+            String cosFileAccessPath = bucketDomain + "/" + key;
+            // 返回上传文件的访问路径
+            return Result.ok(cosFileAccessPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(e.getMessage());
+        }
+    }
+
+}
+```
+
+
+
+## 3 `service_vod` 工程
+
+### 3.1 新建 `CosProperties`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665303943821-a1c07cb9-cce2-4ec5-b407-5fa374a49805.png)
+
+```java
+package com.atguigu.ggkt.vod.config;
+
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+/**
+ * 腾讯云对象存储 COS 的属性配置文件
+ *
+ * @author 陈江林
+ * @date 2022/10/9 14:36
+ */
+@Data
+@Component
+@ConfigurationProperties(prefix = "tencent.cos")
+public class CosProperties {
+
+    /**
+     * 所属地域
+     */
+    private String region;
+
+    /**
+     * 秘钥标识
+     */
+    private String secretId;
+
+    /**
+     * 秘钥
+     */
+    private String secretKey;
+
+    /**
+     * Bucket 名称
+     */
+    private String bucketName;
+
+    /**
+     * Bucket 域名
+     */
+    private String bucketDomain;
+
+}
+```
+
+
+
+### 3.2 配置
+
+```yaml
+spring:
+  # 上传文件配置
+  servlet:
+    multipart:
+      max-file-size: 1024MB
+      max-request-size: 1024MB
+
+# 腾讯云 COS 对象存储
+tencent:
+  cos:
+    region: 所属地域
+    secret-id: 访问标识
+    secret-key: 访问秘钥
+    bucket-name: Bucket 名称
+    bucket-domain: Bucket 域名
+```
+
+此处为语雀加密文本卡片，点击链接查看：https://www.yuque.com/lingchen-bf1rc/hoahc6/oiumqc#AWFpl
+
+
+
+### 3.3 测试上传
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665304155444-d961911d-cc94-4b0e-a18b-c0413a3d694a.png)
+
+```java
+package com.atguigu.ggkt;
+
+import com.alibaba.fastjson.JSON;
+import com.atguigu.ggkt.vod.config.CosProperties;
+import com.qcloud.cos.COSClient;
+import com.qcloud.cos.ClientConfig;
+import com.qcloud.cos.auth.BasicCOSCredentials;
+import com.qcloud.cos.auth.COSCredentials;
+import com.qcloud.cos.http.HttpProtocol;
+import com.qcloud.cos.model.PutObjectRequest;
+import com.qcloud.cos.model.PutObjectResult;
+import com.qcloud.cos.region.Region;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/9 13:34
+ */
+@SpringBootTest
+public class TestCos {
+
+    @Autowired
+    private CosProperties cosProperties;
+
+    @org.junit.jupiter.api.Test
+    public void TestCos() {
+        // 指定要上传的文件
+        File localFile = new File("/Users/chenjianglin/Desktop/01.png");
+        
+        // 1 初始化用户身份信息（secretId, secretKey）。
+        // SECRETID 和 SECRETKEY请登录访问管理控制台 https://console.cloud.tencent.com/cam/capi 进行查看和管理
+        String secretId = cosProperties.getSecretId();
+        String secretKey = cosProperties.getSecretKey();
+        // 指定文件将要存放的存储桶
+        String bucketName = cosProperties.getBucketName();
+
+        COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
+        // 2 设置 bucket 的地域, COS 地域的简称请参照 https://cloud.tencent.com/document/product/436/6224
+        // clientConfig 中包含了设置 region, https(默认 http), 超时, 代理等 set 方法, 使用可参见源码或者常见问题 Java SDK 部分。
+        Region region = new Region(cosProperties.getRegion());
+        ClientConfig clientConfig = new ClientConfig(region);
+        // 这里建议设置使用 https 协议
+        // 从 5.6.54 版本开始，默认使用了 https
+        clientConfig.setHttpProtocol(HttpProtocol.https);
+        // 3 生成 cos 客户端。
+        COSClient cosClient = new COSClient(cred, clientConfig);
+
+        // 指定文件上传到 COS 上的路径，即对象键。例如对象键为folder/picture.jpg，则表示将文件 picture.jpg 上传到 folder 路径下
+        // 生成生成文件的目录
+        String folderName = new SimpleDateFormat("yyyyMMdd").format(new Date());
+        // 使用 UUID 生成文件主体名称
+        String fileMainName = UUID.randomUUID().toString().replace("_", "");
+        // 使用目录、文件主体名称、文件扩展名称拼接得到对象名称
+        String key = folderName + "/" + fileMainName + ".png";
+
+        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, localFile);
+        // 上传
+        PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
+        System.out.println(JSON.toJSONString(putObjectResult));
+    }
+
+}
+```
+
+
+
+### 3.4 上传接口
+
+#### 3.4.1 新建 `FileUploadController`
+
+```java
+package com.atguigu.ggkt.vod.controller;
+
+import com.atguigu.ggkt.result.Result;
+import com.atguigu.ggkt.vod.service.FileService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/9 14:49
+ */
+@Api(tags = "文件上传接口")
+@RestController
+@RequestMapping("/admin/vod/file")
+public class FileUploadController {
+
+    @Autowired
+    private FileService fileService;
+
+    @ApiOperation("文件上传")
+    @PostMapping("/upload")
+    public Result<String> uploadFile(MultipartFile file) {
+        String url = fileService.upload(file);
+        return Result.ok(url).message("上传文件成功!");
+    }
+
+}
+```
+
+
+
+#### 3.4.2 新建 `FileService`
+
+```java
+package com.atguigu.ggkt.vod.service;
+
+import org.springframework.web.multipart.MultipartFile;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/9 14:51
+ */
+public interface FileService {
+
+    /**
+     * 上传文件
+     *
+     * @param file 文件
+     * @return {@link String}
+     */
+    String upload(MultipartFile file);
+
+}
+```
+
+
+
+#### 2.4.3 新建 `FileServiceImpl`
+
+```java
+package com.atguigu.ggkt.vod.service.impl;
+
+import com.atguigu.ggkt.result.Result;
+import com.atguigu.ggkt.util.GgktUtil;
+import com.atguigu.ggkt.vod.config.CosProperties;
+import com.atguigu.ggkt.vod.service.FileService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/9 14:51
+ */
+@Service
+public class FileServiceImpl implements FileService {
+
+    @Autowired
+    private CosProperties cosProperties;
+
+    @Override
+    public String upload(MultipartFile file) {
+        try {
+            // 上传文件
+            Result<String> result = GgktUtil.uploadFilterCos(cosProperties.getBucketName(),
+                    cosProperties.getRegion(),
+                    cosProperties.getBucketDomain(),
+                    cosProperties.getSecretId(),
+                    cosProperties.getSecretKey(),
+                    file.getInputStream(),
+                    file.getOriginalFilename());
+            // 如果上传成功则返回文件路径
+            if (result.getMessage().equals(Result.SUCCESS)) {
+                return result.getData();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+}
+```
+
+
+
+#### 2.4.4 修改 `Result`
+
+```java
+public static final String SUCCESS = "成功";
+public static final String FAILED = "失败";
+package com.atguigu.ggkt.result;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * 结果
+ * 统一返回结果类, 全局统一返回结果
+ *
+ * @author 陈江林
+ * @date 2022/10/2 09:36
+ */
+@ApiModel(value = "全局统一返回结果")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Result<T> {
+
+    public static final String SUCCESS = "成功";
+    public static final String FAILED = "失败";
+
+    /**
+     * 状态码
+     */
+    @ApiModelProperty(value = "返回码")
+    private Integer code;
+
+    /**
+     * 返回消息（成功、失败...）
+     */
+    @ApiModelProperty(value = "返回消息")
+    private String message;
+
+    /**
+     * 返回数据
+     */
+    @ApiModelProperty(value = "返回数据")
+    private T data;
+
+    /**
+     * 成功的方法, 没有 data 数据
+     *
+     * @return {@link Result}<{@link T}>
+     */
+    public static <T> Result<T> ok() {
+        return Result.ok(null);
+    }
+
+    /**
+     * 成功的方法, 有 data 数据
+     *
+     * @return {@link Result}<{@link T}>
+     */
+    public static <T> Result<T> ok(T data) {
+        return new Result<>(20000, SUCCESS, data);
+    }
+
+    /**
+     * 失败的方法, 没有 data 数据
+     *
+     * @return {@link Result}<{@link T}>
+     */
+    public static <T> Result<T> fail() {
+        return Result.fail(null);
+    }
+
+    /**
+     * 失败的方法, 有 data 数据
+     *
+     * @return {@link Result}<{@link T}>
+     */
+    public static <T> Result<T> fail(T data) {
+        return new Result<>(20001, FAILED, data);
+    }
+
+    /**
+     * 修改状态码
+     *
+     * @param code 状态码
+     * @return {@link Result}<{@link T}>
+     */
+    public Result<T> code(Integer code) {
+        this.setCode(code);
+        return this;
+    }
+
+    /**
+     * 修改消息
+     *
+     * @param message 消息
+     * @return {@link Result}<{@link T}>
+     */
+    public Result<T> message(String message) {
+        this.setMessage(message);
+        return this;
+    }
+
+}
+```
+
+
+
+## 4 上传讲师头像
+
+## 4.1 代码
+
+```vue
+      <!-- 讲师头像 -->
+      <el-form-item label="讲师头像">
+        <el-upload
+          class="avatar-uploader"
+          action="http://localhost:8301/admin/vod/file/upload"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :on-error="handleAvatarError"
+          :before-upload="beforeAvatarUpload">
+          <img v-if="teacher.avatar" :src="teacher.avatar" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+      </el-form-item>
+```
+
+- 方法
+
+```javascript
+// 上传成功触发
+    handleAvatarSuccess(res, file) {
+      if (res.code === 20000) {
+        this.teacher.avatar = res.data
+        // 强制重新渲染
+        this.$forceUpdate()
+      } else {
+        this.$message.error('上传失败（非0）')
+      }
+    },
+    handleAvatarError() {
+      this.$message.error('上传失败（http 失败）')
+    },
+    // 上传之前触发, 用于校验
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!');
+      }
+
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+
+      return isJPG && isLt2M;
+    }
+```
+
+- 样式
+
+```css
+<style scoped>
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+</style>
+```
+
+
+
+## 5 父组件样式作用到子组件
+
+### 5.1 `::v-deep` 修饰符
+
+### 5.2 `/deep/` 修饰符
+
+### 5.3 `>>>` 修饰符
+
+```css
+<style scoped>
+>>> .avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+>>> .avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+</style>
+```
+
+
+
+## 修改
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665304123179-db9e824a-1a63-429d-b78c-66779763db8c.png)
+
+```java
+package com.atguigu.ggkt;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/2 06:27
+ */
+@SpringBootApplication
+@ComponentScan(basePackages = "com.atguigu")
+public class ServiceVodApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ServiceVodApplication.class, args);
+    }
+
+}
+```# 六 整合腾讯云对象存储
+
+```
+git checkout -b 5.0.0_cos_subject
+```
+
+
+
+## 1 腾讯云对象存储 `COS`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665289529200-3cdee8cb-f509-4c36-9b84-131f8b42bc3a.png)
+
+
+
+- 文档: `https://cloud.tencent.com/document/product/436/10199`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665290564890-b1076c89-b83c-4c4b-ab08-07fc4e72ce3e.png)
+
+### 1.1 开通 `COS`
+
+- 点击`立即使用`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665289558131-e50ec189-9021-477c-a6af-8f7973eaa4e8.png)
+
+
+
+### 1.2 创建存储桶
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665291176707-34f48f89-0e11-4e66-869e-2284b7bb8d68.png)
+
+此处为语雀加密文本卡片，点击链接查看：https://www.yuque.com/lingchen-bf1rc/hoahc6/oiumqc#LAtVh
+
+### 1.3 访问管理
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665290371149-fd136231-c3b4-4b52-9446-8dae7fa6b459.png)
+
+
+
+### 1.4 秘钥
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665294030878-f8122979-5657-4e2d-b4f8-7740949374cc.png)
+
+此处为语雀加密文本卡片，点击链接查看：https://www.yuque.com/lingchen-bf1rc/hoahc6/oiumqc#zhMCL
+
+### 1.5 `SDK`
+
+```xml
+<!-- 腾讯云对象存储 -->
+<dependency>
+    <groupId>com.qcloud</groupId>
+    <artifactId>cos_api</artifactId>
+    <version>5.6.75</version>
+</dependency>
+```
+
+
+
+### 1.6 测试上传
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665293776332-6547f053-3856-4b22-8ce8-6c12d0df553a.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665293750121-cb7c7dca-577b-4d2e-baff-7139ffde4790.png)
+
+- `Region` 地域
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665294238303-d97fca74-a4ee-4745-a874-aa51fe68f2d0.png)
+
+```java
+package com.atguigu.ggkt;
+
+import com.alibaba.fastjson.JSON;
+import com.qcloud.cos.COSClient;
+import com.qcloud.cos.ClientConfig;
+import com.qcloud.cos.auth.BasicCOSCredentials;
+import com.qcloud.cos.auth.COSCredentials;
+import com.qcloud.cos.http.HttpProtocol;
+import com.qcloud.cos.model.PutObjectRequest;
+import com.qcloud.cos.model.PutObjectResult;
+import com.qcloud.cos.region.Region;
+
+import java.io.File;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/9 13:34
+ */
+public class TestCos {
+
+    public static void main(String[] args) {
+        // 1 初始化用户身份信息（secretId, secretKey）。
+        // SECRETID 和 SECRETKEY请登录访问管理控制台 https://console.cloud.tencent.com/cam/capi 进行查看和管理
+        String secretId = "id";
+        String secretKey = "key";
+        COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
+        // 2 设置 bucket 的地域, COS 地域的简称请参照 https://cloud.tencent.com/document/product/436/6224
+        // clientConfig 中包含了设置 region, https(默认 http), 超时, 代理等 set 方法, 使用可参见源码或者常见问题 Java SDK 部分。
+        Region region = new Region("ap-beijing");
+        ClientConfig clientConfig = new ClientConfig(region);
+        // 这里建议设置使用 https 协议
+        // 从 5.6.54 版本开始，默认使用了 https
+        clientConfig.setHttpProtocol(HttpProtocol.https);
+        // 3 生成 cos 客户端。
+        COSClient cosClient = new COSClient(cred, clientConfig);
+
+        // 指定要上传的文件
+        File localFile = new File("/Users/chenjianglin/Desktop/01.png");
+        // 指定文件将要存放的存储桶
+        String bucketName = "ggkt-atguigu-1301043802";
+        // 指定文件上传到 COS 上的路径，即对象键。例如对象键为folder/picture.jpg，则表示将文件 picture.jpg 上传到 folder 路径下
+        String key = "/2022/01/01.png";
+        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, localFile);
+        // 上传
+        PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
+        System.out.println(JSON.toJSONString(putObjectResult));
+    }
+
+}
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665295001466-99907acf-73d7-4d34-89cb-d6e785082858.png)
+
+
+
+## 2 `service_utils` 工程
+
+### 2.1 依赖
+
+```xml
+<dependencies>
+    <!-- 腾讯云对象存储 -->
+    <dependency>
+        <groupId>com.qcloud</groupId>
+        <artifactId>cos_api</artifactId>
+        <version>5.6.75</version>
+    </dependency>
+</dependencies>
+```
+
+
+
+### 2.2 新建工具 `GgktUtil`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665303728713-b056bc98-de4d-4aec-a7ee-747fd953c45d.png)
+
+```java
+package com.atguigu.ggkt.util;
+
+import com.atguigu.ggkt.result.Result;
+import com.qcloud.cos.COSClient;
+import com.qcloud.cos.ClientConfig;
+import com.qcloud.cos.auth.BasicCOSCredentials;
+import com.qcloud.cos.auth.COSCredentials;
+import com.qcloud.cos.http.HttpProtocol;
+import com.qcloud.cos.model.ObjectMetadata;
+import com.qcloud.cos.model.PutObjectRequest;
+import com.qcloud.cos.model.PutObjectResult;
+import com.qcloud.cos.model.StorageClass;
+import com.qcloud.cos.region.Region;
+
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
+
+/**
+ * 硅谷课堂工具类
+ *
+ * @author 陈江林
+ * @date 2022/10/9 15:30
+ */
+public class GgktUtil {
+
+    /**
+     * 专门负责上传文件到 COS 服务器的工具方法
+     *
+     * @param bucketName
+     * @param region
+     * @param bucketDomain
+     * @param secretId
+     * @param secretKey
+     * @param inputStream  要上传文件的输入流
+     * @param originalName 要上传文件的原始文件名
+     * @return {@link Result}<{@link String}>
+     */
+    public static Result<String> uploadFilterCos(String bucketName,
+                                                 String region,
+                                                 String bucketDomain,
+                                                 String secretId,
+                                                 String secretKey,
+                                                 InputStream inputStream,
+                                                 String originalName) {
+        COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
+        Region region1 = new Region(region);
+        ClientConfig clientConfig = new ClientConfig(region1);
+        // 从 5.6.54 版本开始，默认使用了 https
+        clientConfig.setHttpProtocol(HttpProtocol.https);
+        // 3 生成 cos 客户端。
+        COSClient cosClient = new COSClient(cred, clientConfig);
+
+        // 生成生成文件的目录
+        String folderName = new SimpleDateFormat("yyyyMMdd").format(new Date());
+        // 使用 UUID 生成文件主体名称
+        String fileMainName = UUID.randomUUID().toString().replace("_", "");
+        // 从原始文件名中获取文件扩展名
+        String extensionName = originalName.substring(originalName.lastIndexOf("."));
+        // 使用目录、文件主体名称、文件扩展名称拼接得到对象名称
+        String key = folderName + "/" + fileMainName + extensionName;
+
+        try {
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, inputStream, objectMetadata);
+            // 设置存储类型（如有需要，不需要请忽略此行代码）, 默认是标准(Standard), 低频(standard_ia)
+            putObjectRequest.setStorageClass(StorageClass.Standard_IA);
+            // 上传
+            PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
+            String cosFileAccessPath = bucketDomain + "/" + key;
+            // 返回上传文件的访问路径
+            return Result.ok(cosFileAccessPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(e.getMessage());
+        }
+    }
+
+}
+```
+
+
+
+## 3 `service_vod` 工程
+
+### 3.1 新建 `CosProperties`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665303943821-a1c07cb9-cce2-4ec5-b407-5fa374a49805.png)
+
+```java
+package com.atguigu.ggkt.vod.config;
+
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+/**
+ * 腾讯云对象存储 COS 的属性配置文件
+ *
+ * @author 陈江林
+ * @date 2022/10/9 14:36
+ */
+@Data
+@Component
+@ConfigurationProperties(prefix = "tencent.cos")
+public class CosProperties {
+
+    /**
+     * 所属地域
+     */
+    private String region;
+
+    /**
+     * 秘钥标识
+     */
+    private String secretId;
+
+    /**
+     * 秘钥
+     */
+    private String secretKey;
+
+    /**
+     * Bucket 名称
+     */
+    private String bucketName;
+
+    /**
+     * Bucket 域名
+     */
+    private String bucketDomain;
+
+}
+```
+
+
+
+### 3.2 配置
+
+```yaml
+spring:
+  # 上传文件配置
+  servlet:
+    multipart:
+      max-file-size: 1024MB
+      max-request-size: 1024MB
+
+# 腾讯云 COS 对象存储
+tencent:
+  cos:
+    region: 所属地域
+    secret-id: 访问标识
+    secret-key: 访问秘钥
+    bucket-name: Bucket 名称
+    bucket-domain: Bucket 域名
+```
+
+此处为语雀加密文本卡片，点击链接查看：https://www.yuque.com/lingchen-bf1rc/hoahc6/oiumqc#AWFpl
+
+
+
+### 3.3 测试上传
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665304155444-d961911d-cc94-4b0e-a18b-c0413a3d694a.png)
+
+```java
+package com.atguigu.ggkt;
+
+import com.alibaba.fastjson.JSON;
+import com.atguigu.ggkt.vod.config.CosProperties;
+import com.qcloud.cos.COSClient;
+import com.qcloud.cos.ClientConfig;
+import com.qcloud.cos.auth.BasicCOSCredentials;
+import com.qcloud.cos.auth.COSCredentials;
+import com.qcloud.cos.http.HttpProtocol;
+import com.qcloud.cos.model.PutObjectRequest;
+import com.qcloud.cos.model.PutObjectResult;
+import com.qcloud.cos.region.Region;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/9 13:34
+ */
+@SpringBootTest
+public class TestCos {
+
+    @Autowired
+    private CosProperties cosProperties;
+
+    @org.junit.jupiter.api.Test
+    public void TestCos() {
+        // 指定要上传的文件
+        File localFile = new File("/Users/chenjianglin/Desktop/01.png");
+        
+        // 1 初始化用户身份信息（secretId, secretKey）。
+        // SECRETID 和 SECRETKEY请登录访问管理控制台 https://console.cloud.tencent.com/cam/capi 进行查看和管理
+        String secretId = cosProperties.getSecretId();
+        String secretKey = cosProperties.getSecretKey();
+        // 指定文件将要存放的存储桶
+        String bucketName = cosProperties.getBucketName();
+
+        COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
+        // 2 设置 bucket 的地域, COS 地域的简称请参照 https://cloud.tencent.com/document/product/436/6224
+        // clientConfig 中包含了设置 region, https(默认 http), 超时, 代理等 set 方法, 使用可参见源码或者常见问题 Java SDK 部分。
+        Region region = new Region(cosProperties.getRegion());
+        ClientConfig clientConfig = new ClientConfig(region);
+        // 这里建议设置使用 https 协议
+        // 从 5.6.54 版本开始，默认使用了 https
+        clientConfig.setHttpProtocol(HttpProtocol.https);
+        // 3 生成 cos 客户端。
+        COSClient cosClient = new COSClient(cred, clientConfig);
+
+        // 指定文件上传到 COS 上的路径，即对象键。例如对象键为folder/picture.jpg，则表示将文件 picture.jpg 上传到 folder 路径下
+        // 生成生成文件的目录
+        String folderName = new SimpleDateFormat("yyyyMMdd").format(new Date());
+        // 使用 UUID 生成文件主体名称
+        String fileMainName = UUID.randomUUID().toString().replace("_", "");
+        // 使用目录、文件主体名称、文件扩展名称拼接得到对象名称
+        String key = folderName + "/" + fileMainName + ".png";
+
+        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, localFile);
+        // 上传
+        PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
+        System.out.println(JSON.toJSONString(putObjectResult));
+    }
+
+}
+```
+
+
+
+### 3.4 上传接口
+
+#### 3.4.1 新建 `FileUploadController`
+
+```java
+package com.atguigu.ggkt.vod.controller;
+
+import com.atguigu.ggkt.result.Result;
+import com.atguigu.ggkt.vod.service.FileService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/9 14:49
+ */
+@Api(tags = "文件上传接口")
+@RestController
+@RequestMapping("/admin/vod/file")
+public class FileUploadController {
+
+    @Autowired
+    private FileService fileService;
+
+    @ApiOperation("文件上传")
+    @PostMapping("/upload")
+    public Result<String> uploadFile(MultipartFile file) {
+        String url = fileService.upload(file);
+        return Result.ok(url).message("上传文件成功!");
+    }
+
+}
+```
+
+
+
+#### 3.4.2 新建 `FileService`
+
+```java
+package com.atguigu.ggkt.vod.service;
+
+import org.springframework.web.multipart.MultipartFile;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/9 14:51
+ */
+public interface FileService {
+
+    /**
+     * 上传文件
+     *
+     * @param file 文件
+     * @return {@link String}
+     */
+    String upload(MultipartFile file);
+
+}
+```
+
+
+
+#### 2.4.3 新建 `FileServiceImpl`
+
+```java
+package com.atguigu.ggkt.vod.service.impl;
+
+import com.atguigu.ggkt.result.Result;
+import com.atguigu.ggkt.util.GgktUtil;
+import com.atguigu.ggkt.vod.config.CosProperties;
+import com.atguigu.ggkt.vod.service.FileService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/9 14:51
+ */
+@Service
+public class FileServiceImpl implements FileService {
+
+    @Autowired
+    private CosProperties cosProperties;
+
+    @Override
+    public String upload(MultipartFile file) {
+        try {
+            // 上传文件
+            Result<String> result = GgktUtil.uploadFilterCos(cosProperties.getBucketName(),
+                    cosProperties.getRegion(),
+                    cosProperties.getBucketDomain(),
+                    cosProperties.getSecretId(),
+                    cosProperties.getSecretKey(),
+                    file.getInputStream(),
+                    file.getOriginalFilename());
+            // 如果上传成功则返回文件路径
+            if (result.getMessage().equals(Result.SUCCESS)) {
+                return result.getData();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+}
+```
+
+
+
+#### 2.4.4 修改 `Result`
+
+```java
+public static final String SUCCESS = "成功";
+public static final String FAILED = "失败";
+package com.atguigu.ggkt.result;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * 结果
+ * 统一返回结果类, 全局统一返回结果
+ *
+ * @author 陈江林
+ * @date 2022/10/2 09:36
+ */
+@ApiModel(value = "全局统一返回结果")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Result<T> {
+
+    public static final String SUCCESS = "成功";
+    public static final String FAILED = "失败";
+
+    /**
+     * 状态码
+     */
+    @ApiModelProperty(value = "返回码")
+    private Integer code;
+
+    /**
+     * 返回消息（成功、失败...）
+     */
+    @ApiModelProperty(value = "返回消息")
+    private String message;
+
+    /**
+     * 返回数据
+     */
+    @ApiModelProperty(value = "返回数据")
+    private T data;
+
+    /**
+     * 成功的方法, 没有 data 数据
+     *
+     * @return {@link Result}<{@link T}>
+     */
+    public static <T> Result<T> ok() {
+        return Result.ok(null);
+    }
+
+    /**
+     * 成功的方法, 有 data 数据
+     *
+     * @return {@link Result}<{@link T}>
+     */
+    public static <T> Result<T> ok(T data) {
+        return new Result<>(20000, SUCCESS, data);
+    }
+
+    /**
+     * 失败的方法, 没有 data 数据
+     *
+     * @return {@link Result}<{@link T}>
+     */
+    public static <T> Result<T> fail() {
+        return Result.fail(null);
+    }
+
+    /**
+     * 失败的方法, 有 data 数据
+     *
+     * @return {@link Result}<{@link T}>
+     */
+    public static <T> Result<T> fail(T data) {
+        return new Result<>(20001, FAILED, data);
+    }
+
+    /**
+     * 修改状态码
+     *
+     * @param code 状态码
+     * @return {@link Result}<{@link T}>
+     */
+    public Result<T> code(Integer code) {
+        this.setCode(code);
+        return this;
+    }
+
+    /**
+     * 修改消息
+     *
+     * @param message 消息
+     * @return {@link Result}<{@link T}>
+     */
+    public Result<T> message(String message) {
+        this.setMessage(message);
+        return this;
+    }
+
+}
+```
+
+
+
+## 4 上传讲师头像
+
+## 4.1 代码
+
+```vue
+      <!-- 讲师头像 -->
+      <el-form-item label="讲师头像">
+        <el-upload
+          class="avatar-uploader"
+          action="http://localhost:8301/admin/vod/file/upload"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :on-error="handleAvatarError"
+          :before-upload="beforeAvatarUpload">
+          <img v-if="teacher.avatar" :src="teacher.avatar" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+      </el-form-item>
+```
+
+- 方法
+
+```javascript
+// 上传成功触发
+    handleAvatarSuccess(res, file) {
+      if (res.code === 20000) {
+        this.teacher.avatar = res.data
+        // 强制重新渲染
+        this.$forceUpdate()
+      } else {
+        this.$message.error('上传失败（非0）')
+      }
+    },
+    handleAvatarError() {
+      this.$message.error('上传失败（http 失败）')
+    },
+    // 上传之前触发, 用于校验
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!');
+      }
+
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+
+      return isJPG && isLt2M;
+    }
+```
+
+- 样式
+
+```css
+<style scoped>
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+</style>
+```
+
+
+
+## 5 父组件样式作用到子组件
+
+### 5.1 `::v-deep` 修饰符
+
+### 5.2 `/deep/` 修饰符
+
+### 5.3 `>>>` 修饰符
+
+```css
+<style scoped>
+>>> .avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+>>> .avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+</style>
+```
+
+
+
+## 修改
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665304123179-db9e824a-1a63-429d-b78c-66779763db8c.png)
+
+```java
+package com.atguigu.ggkt;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/2 06:27
+ */
+@SpringBootApplication
+@ComponentScan(basePackages = "com.atguigu")
+public class ServiceVodApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ServiceVodApplication.class, args);
+    }
+
+}
 ```
