@@ -140,6 +140,44 @@
       - [5.3.4 安装转码器](#534-安装转码器)
     - [5.4 `ES6` 第二种写法](#54-es6-第二种写法)
 
+- [五 讲师管理模块前端](#五-讲师管理模块前端)
+  - [1  `vue-admin-template` 模板](#1--vue-admin-template-模板)
+  - [2 搭建环境](#2-搭建环境)
+  - [3 用户登录退出](#3-用户登录退出)
+    - [3.1 请求及数据](#31-请求及数据)
+    - [3.2 后台登录代码](#32-后台登录代码)
+      - [3.2.1 新建 `UserLoginController`](#321-新建-userlogincontroller)
+      - [3.2.2 修改 `Result` 默认成功状态码为 `20000`， 失败 `20001`](#322-修改-result-默认成功状态码为-20000-失败-20001)
+      - [3.2.3 修改前端请求路径](#323-修改前端请求路径)
+      - [3.2.4 修改前端请求接口](#324-修改前端请求接口)
+      - [3.2.5 测试](#325-测试)
+      - [3.2.6 退出](#326-退出)
+  - [4 安装插件`ESLint`](#4-安装插件eslint)
+  - [5 讲师前端列表功能](#5-讲师前端列表功能)
+    - [5.1 添加讲师路由](#51-添加讲师路由)
+    - [5.2 新建路由对应的页面](#52-新建路由对应的页面)
+      - [5.2.1 `form`](#521-form)
+      - [5.2.2 `list`](#522-list)
+    - [5.3 讲师分页列表 `list.vue`](#53-讲师分页列表-listvue)
+      - [5.3.1 新建请求接口文件 `teacher.js`](#531-新建请求接口文件-teacherjs)
+      - [5.3.2 调用请求接口获取并显示数据 `list.vue`](#532-调用请求接口获取并显示数据-listvue)
+    - [5.4 删除讲师](#54-删除讲师)
+      - [5.4.1 API](#541-api)
+      - [5.4.2 方法](#542-方法)
+    - [5.5 添加讲师](#55-添加讲师)
+      - [5.5.1 API](#551-api)
+      - [](#)
+      - [5.5.2 `form` 表单](#552-form-表单)
+    - [5.6 修改讲师](#56-修改讲师)
+      - [5.6.1 API](#561-api)
+      - [5.6.2 路由](#562-路由)
+      - [5.6.3 `from.vue` 的修改 - 数据回显](#563-fromvue-的修改---数据回显)
+      - [5.6.4 `from.vue` 的修改 - 修改功能](#564-fromvue-的修改---修改功能)
+    - [5.7 批量删除](#57-批量删除)
+      - [5.7.1 API](#571-api)
+      - [5.7.2 代码](#572-代码)
+  - [后台项目打包问题](#后台项目打包问题)
+    - [追加依赖](#追加依赖)
 
 # 一 硅谷课堂
 
@@ -1080,6 +1118,7 @@ public class ServiceTestsDemo {
 
 ![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664830148121-f88924a7-7a53-4238-a6b1-2ec2a2af187a.png)
 
+
 # 三 开发讲师管理接口
 
 ```
@@ -1376,7 +1415,7 @@ DROP TABLE IF EXISTS `video_visitor_max_view`;
 
 ![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664589847927-a8d8d343-f849-4579-a675-12d3bfaa0413.png)
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664589923042-b6c75044-bcf7-4638-9132-f09a849954b0.png)
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665206898473-92a6f3e8-d01a-427e-8f38-8c1863d1e4bc.png)
 
 - 删除 `src` 目录
 - 修改`SpringBoot` 版本: `2.2.1.RELEASE`
@@ -1537,7 +1576,7 @@ DROP TABLE IF EXISTS `video_visitor_max_view`;
 
 ![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664593089643-8d8cd590-a89e-49f9-b58b-97e2438d0c66.png)
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664593133603-bfe13f52-45b4-4e1b-9c86-c64740468da7.png)
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665206916401-a9c754b3-7b0e-491b-82f6-f1024fcb8bae.png)
 
 - 追加依赖 `pom.xml`
 
@@ -1607,7 +1646,7 @@ public class Test {
 
 #### 2.2.3 新建子模块 `service`
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664593968563-60a7870e-7978-4642-bed2-fa51543f80d8.png)
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665206926128-07283358-58cd-4f0f-9b45-b1b20ea0d3c6.png)
 
 - 删除 `src` 目录
 - 追加依赖 `pom.xml`
@@ -1690,7 +1729,7 @@ public class Test {
 
 #### 2.2.4 新建子模块 `service_vod`
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664594846172-70cf2a7b-f4de-49a7-a6a3-9b0ca578451a.png)
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665206933714-d99bd66f-0ee3-45f7-9040-ea133c0b713e.png)
 
 - 新建启动类 `ServiceVodApplication`
 
@@ -1773,7 +1812,7 @@ public class VodConfig {
 
 #### 2.2.5 新建子模块 `common`
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664666569037-286d14dc-9c3e-4cc5-b28e-358d0f285718.png)
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665206942489-15eefaf6-02bf-49bc-9d45-68ca73891351.png)
 
 - 追加依赖 `pom.xml`
 
@@ -1819,7 +1858,7 @@ public class VodConfig {
 
 #### 2.2.6 新建子模块 `service_utils`
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664666888125-bc9ccc37-7ef2-4c45-8d71-6c396b017819.png)
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665206949049-21651fe6-2e65-4ab9-9b63-ae56a88a7e90.png)
 
 - 新建空配置文件
 
@@ -2782,52 +2821,53 @@ public class TeacherController {
             return Result.fail();
         }
     }
-
+    
     /**
      * 条件查询分页列表
      *
-     * @param page           查询页数
+     * @param current        查询页数
      * @param limit          查询数量
      * @param teacherQueryVo 查询条件对象
      * @return {@link Result}
      */
-    @ApiOperation(value = "获取分页列表")
-    @GetMapping("/{page}/{limit}")
+    @ApiOperation(value = "条件查询分页")
+    @GetMapping("/findQueryPage/{current}/{limit}")
     public Result<IPage<Teacher>> index(
-            @ApiParam(name = "page", value = "当前页码", required = true)
-            @PathVariable Long page,
-            @ApiParam(name = "limit", value = "每页记录数", required = true)
+            @PathVariable Long current,
             @PathVariable Long limit,
-            @ApiParam(name = "teacherVo", value = "查询对象", required = false)
-            @RequestBody(required = false) TeacherQueryVo teacherQueryVo) {
-        //创建page对象，传递当前页和每页记录数
-        Page<Teacher> pageParam = new Page<>(page, limit);
-        //获取条件值
-        //讲师名称
-        String name = teacherQueryVo.getName();
-        //讲师级别
-        Integer level = teacherQueryVo.getLevel();
-        //开始时间
-        String joinDateBegin = teacherQueryVo.getJoinDateBegin();
-        //结束时间
-        String joinDateEnd = teacherQueryVo.getJoinDateEnd();
-        //封装条件
-        QueryWrapper<Teacher> wrapper = new QueryWrapper<>();
-        if (!StringUtils.isEmpty(name)) {
-            wrapper.like("name", name);
+            TeacherQueryVo teacherQueryVo) {
+        Page<Teacher> pageParam = new Page<>(current, limit);
+        if (null == teacherQueryVo) {
+            IPage<Teacher> pageModel = teacherService.page(pageParam);
+            return Result.ok(pageModel);
+        } else {
+            // 获取条件
+            String name = teacherQueryVo.getName();
+            Integer level = teacherQueryVo.getLevel();
+            String joinDateBegin = teacherQueryVo.getJoinDateBegin();
+            String joinDateEnd = teacherQueryVo.getJoinDateEnd();
+            // 进行非空判断, 条件封装
+            LambdaQueryWrapper<Teacher> wrapper = new LambdaQueryWrapper<>();
+            if (!StringUtils.isEmpty(name)) {
+                wrapper.like(Teacher::getName, name);
+            }
+
+            if (!StringUtils.isEmpty(level)) {
+                wrapper.eq(Teacher::getLevel, level);
+            }
+
+            if (!StringUtils.isEmpty(joinDateBegin)) {
+                wrapper.ge(Teacher::getJoinDate, joinDateBegin);
+            }
+
+            if (!StringUtils.isEmpty(joinDateEnd)) {
+                wrapper.le(Teacher::getJoinDate, joinDateEnd);
+            }
+
+            // 调用方法分页查询
+            IPage<Teacher> pageModel = teacherService.page(pageParam, wrapper);
+            return Result.ok(pageModel);
         }
-        if (!StringUtils.isEmpty(level)) {
-            wrapper.eq("level", level);
-        }
-        if (!StringUtils.isEmpty(joinDateBegin)) {
-            wrapper.ge("join_date", joinDateBegin);
-        }
-        if (!StringUtils.isEmpty(joinDateEnd)) {
-            wrapper.le("join_date", joinDateEnd);
-        }
-        //调用方法得到分页查询结果
-        IPage<Teacher> pageModel = teacherService.page(pageParam, wrapper);
-        return Result.ok(pageModel);
     }
 
 }
@@ -3082,7 +3122,7 @@ try {
 }
 ```
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664834371379-7f16b2fd-9b13-4e7d-8a1c-d4695730d63a.png)
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664834371379-7f16b2fd-9b13
 
 # 四 前端基础知识
 
@@ -4316,3 +4356,1043 @@ user.save()
 
 ![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664927261729-3d70d936-e7cf-43c9-953f-d8f904b29cc5.png)
 
+#  五 讲师管理模块前端
+
+```
+git checkout -b 4.0.0_vue-admin-template
+```
+
+## 1  `vue-admin-template` 模板
+
+- `vue-admin-template` 是基于 `vue-element-admin` 的一套后台管理系统基础模板（最少精简版）, 可作为模板进行二次开发
+- `GitHub` 模板: `https://github.com/PanjiaChen/vue-admin-template`
+
+
+
+## 2 搭建环境
+
+```bash
+# 克隆项目
+git clone https://github.com/PanJiaChen/vue-admin-template.git
+
+# 进入项目目录
+cd vue-admin-template
+
+# 安装依赖
+npm install
+
+# 建议不要直接使用 cnpm 安装以来，会有各种诡异的 bug。可以通过如下操作解决 npm 下载速度慢的问题
+npm install --registry=https://registry.npm.taobao.org
+
+# 启动服务
+npm run dev
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664968088002-3010edb6-c576-4094-bbe9-9fc747a7a3ef.png)
+
+
+
+## 3 用户登录退出
+
+### 3.1 请求及数据
+
+- http://localhost:9528/dev-api/vue-admin-template/user/login
+
+```json
+{
+  "code":20000,
+  "data":{"token":"admin-token"}
+}
+```
+
+- http://localhost:9528/dev-api/vue-admin-template/user/info?token=admin-token
+
+```json
+{
+  "code":20000,
+  "data":
+  	{
+      "roles":["admin"],
+      "introduction":"I am a super administrator",
+      "avatar":"https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif",
+      "name":"Super Admin"
+    }
+}
+```
+
+
+
+### 3.2 后台登录代码
+
+#### 3.2.1 新建 `UserLoginController`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664970533906-d770416a-177e-4f8b-b86f-ee95db4a39ff.png)
+
+```java
+@Api(tags = "用户登录")
+@RequestMapping("/admin/vod/user")
+@RestController
+public class UserLoginController {
+
+    
+    @PostMapping("/login")
+	public Result<Map<String, Object>> login() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("token", "admin-token");
+        return Result.ok(map);
+    }
+
+    @GetMapping("/info")
+    public Result info() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("roles", "admin");
+        map.put("introduction", "I am a super administrator");
+        map.put("avatar", "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
+        map.put("name", "Super Admin");
+        return Result.ok(map);
+    }
+    
+}
+```
+
+#### 3.2.2 修改 `Result` 默认成功状态码为 `20000`， 失败 `20001`
+
+```java
+package com.atguigu.ggkt.result;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * 结果
+ * 统一返回结果类, 全局统一返回结果
+ *
+ * @author 陈江林
+ * @date 2022/10/2 09:36
+ */
+@ApiModel(value = "全局统一返回结果")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Result<T> {
+
+    /**
+     * 状态码
+     */
+    @ApiModelProperty(value = "返回码")
+    private Integer code;
+
+    /**
+     * 返回消息（成功、失败...）
+     */
+    @ApiModelProperty(value = "返回消息")
+    private String message;
+
+    /**
+     * 返回数据
+     */
+    @ApiModelProperty(value = "返回数据")
+    private T data;
+
+    /**
+     * 成功的方法, 没有 data 数据
+     *
+     * @return {@link Result}<{@link T}>
+     */
+    public static <T> Result<T> ok() {
+        return Result.ok(null);
+    }
+
+    /**
+     * 成功的方法, 有 data 数据
+     *
+     * @return {@link Result}<{@link T}>
+     */
+    public static <T> Result<T> ok(T data) {
+        return new Result<>(20000, "成功", data);
+    }
+
+    /**
+     * 失败的方法, 没有 data 数据
+     *
+     * @return {@link Result}<{@link T}>
+     */
+    public static <T> Result<T> fail() {
+        return Result.fail(null);
+    }
+
+    /**
+     * 失败的方法, 有 data 数据
+     *
+     * @return {@link Result}<{@link T}>
+     */
+    public static <T> Result<T> fail(T data) {
+        return new Result<>(20001, "失败", data);
+    }
+
+    /**
+     * 修改状态码
+     *
+     * @param code 状态码
+     * @return {@link Result}<{@link T}>
+     */
+    public Result<T> code(Integer code) {
+        this.setCode(code);
+        return this;
+    }
+
+    /**
+     * 修改消息
+     *
+     * @param message 消息
+     * @return {@link Result}<{@link T}>
+     */
+    public Result<T> message(String message) {
+        this.setMessage(message);
+        return this;
+    }
+
+}
+```
+
+
+
+#### 3.2.3 修改前端请求路径
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664970949565-ac2914f5-84c4-48e5-b6f9-9cb861c342cb.png)
+
+```latex
+# just a flag
+ENV = 'development'
+
+# base api
+#VUE_APP_BASE_API = '/dev-api'
+VUE_APP_BASE_API = 'http://localhost:8301'
+```
+
+
+
+#### 3.2.4 修改前端请求接口
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664971052157-ec27ae07-7670-46d5-9427-e7c46905d2b7.png)
+
+```javascript
+import request from '@/utils/request'
+
+export function login(data) {
+  return request({
+    url: '/admin/vod/user/login',
+    method: 'post',
+    data
+  })
+}
+
+export function getInfo(token) {
+  return request({
+    url: '/admin/vod/user/info',
+    method: 'get',
+    params: { token }
+  })
+}
+
+export function logout() {
+  return request({
+    url: '/vue-admin-template/user/logout',
+    method: 'post'
+  })
+}
+```
+
+
+
+#### 3.2.5 测试
+
+前端`npm run dev`
+
+**报错: 跨域问题: 端口号不一致**
+
+- **以下有一个不同都会出现跨域问题**
+
+  - 访问协议: `http` `https`
+  - 访问 `ip`
+  - 端口号: `9528` `8301`
+
+- 跨域本质: 浏览器对 `ajax` 请求一种限制
+
+
+
+**解决**
+
+- `Controller` 添加注解 `@CrossOrigin`
+
+```java
+package com.atguigu.ggkt.vod.controller;
+
+import com.atguigu.ggkt.result.Result;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/5 19:31
+ */
+@Api("用户登录")
+@RestController
+@RequestMapping("/admin/vod/user")
+@CrossOrigin
+public class UserLoginController {
+
+    @ApiOperation("用户登录")
+    @PostMapping("/login")
+    public Result<Map<String, Object>> login() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("token", "admin-token");
+        return Result.ok(map);
+    }
+
+    @ApiOperation("用户信息")
+    @GetMapping("/info")
+    public Result<Map<String, Object>> info() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("roles", "admin");
+        map.put("introduction", "I am a super administrator");
+        map.put("avatar", "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
+        map.put("name", "Super Admin");
+        return Result.ok(map);
+    }
+
+}
+```
+
+- `TeacherController`
+
+```java
+package com.atguigu.ggkt.vod.controller;
+
+
+import com.atguigu.ggkt.exception.GgktException;
+import com.atguigu.ggkt.model.vod.Teacher;
+import com.atguigu.ggkt.result.Result;
+import com.atguigu.ggkt.vo.vod.TeacherQueryVo;
+import com.atguigu.ggkt.vod.service.TeacherService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * <p>
+ * 讲师 前端控制器
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-10-01
+ */
+@Api(tags = "讲师管理接口")
+@RestController
+@RequestMapping("/admin/vod/teacher")
+@CrossOrigin
+public class TeacherController {
+
+    @Autowired
+    private TeacherService teacherService;
+
+    /**
+     * 查询所有讲师
+     *
+     * @return {@link List}<{@link Teacher}>
+     */
+    @ApiOperation("查询所有讲师")
+    @GetMapping("/findAll")
+    public Result<List<Teacher>> findAllTeacher() {
+        // 模拟异常
+        try {
+            // int i = 10/0;
+        } catch (Exception e) {
+            // 抛出异常
+            throw new GgktException(201, "执行自定义异常处理");
+        }
+
+        List<Teacher> list = teacherService.list();
+        return Result.ok(list).message("查询数据成功");
+    }
+
+    /**
+     * 通过 id 逻辑删除讲师
+     *
+     * @param id id
+     * @return boolean
+     */
+    @ApiOperation("通过 id 逻辑删除讲师")
+    @DeleteMapping("/remove/{id}")
+    public Result removeTeacherById(
+            @ApiParam(name = "id", value = "ID", required = true)
+            @PathVariable("id") Long id) {
+        boolean b = teacherService.removeById(id);
+        if (b) {
+            return Result.ok();
+        } else {
+            return Result.fail();
+        }
+    }
+
+    /**
+     * 条件查询分页列表
+     *
+     * @param page           查询页数
+     * @param limit          查询数量
+     * @param teacherQueryVo 查询条件对象
+     * @return {@link Result}
+     */
+    @ApiOperation(value = "获取分页列表")
+    @GetMapping("/{page}/{limit}")
+    public Result<IPage<Teacher>> index(
+            @ApiParam(name = "page", value = "当前页码", required = true)
+            @PathVariable Long page,
+            @ApiParam(name = "limit", value = "每页记录数", required = true)
+            @PathVariable Long limit,
+            @ApiParam(name = "teacherVo", value = "查询对象", required = false)
+            @RequestBody(required = false) TeacherQueryVo teacherQueryVo) {
+        //创建page对象，传递当前页和每页记录数
+        Page<Teacher> pageParam = new Page<>(page, limit);
+        //获取条件值
+        //讲师名称
+        String name = teacherQueryVo.getName();
+        //讲师级别
+        Integer level = teacherQueryVo.getLevel();
+        //开始时间
+        String joinDateBegin = teacherQueryVo.getJoinDateBegin();
+        //结束时间
+        String joinDateEnd = teacherQueryVo.getJoinDateEnd();
+        //封装条件
+        QueryWrapper<Teacher> wrapper = new QueryWrapper<>();
+        if (!StringUtils.isEmpty(name)) {
+            wrapper.like("name", name);
+        }
+        if (!StringUtils.isEmpty(level)) {
+            wrapper.eq("level", level);
+        }
+        if (!StringUtils.isEmpty(joinDateBegin)) {
+            wrapper.ge("join_date", joinDateBegin);
+        }
+        if (!StringUtils.isEmpty(joinDateEnd)) {
+            wrapper.le("join_date", joinDateEnd);
+        }
+        //调用方法得到分页查询结果
+        IPage<Teacher> pageModel = teacherService.page(pageParam, wrapper);
+        return Result.ok(pageModel);
+    }
+
+    /**
+     * 新增讲师
+     *
+     * @param teacher 讲师对象
+     * @return {@link Result}
+     */
+    @ApiOperation(value = "新增讲师")
+    @PostMapping("/save")
+    public Result saveTeacher(@RequestBody Teacher teacher) {
+        // 执行保存操作
+        boolean isSuccess = teacherService.save(teacher);
+        // 判断是否执行成功
+        if (isSuccess) {
+            return Result.ok();
+        } else {
+            return Result.fail();
+        }
+    }
+
+    /**
+     * 修改讲师信息
+     *
+     * @param teacher 讲师对象
+     * @return {@link Result}
+     */
+    @ApiOperation(value = "修改讲师信息")
+    @PutMapping("/update")
+    public Result updateTeacher(@RequestBody Teacher teacher) {
+        // 执行修改操作
+        boolean isSuccess = teacherService.updateById(teacher);
+        // 判断是否执行成功
+        if (isSuccess) {
+            return Result.ok();
+        } else {
+            return Result.fail();
+        }
+    }
+
+    /**
+     * 根据 id 查询讲师
+     *
+     * @param id id
+     * @return {@link Result}<{@link Teacher}>
+     */
+    @ApiOperation(value = "根据 id 查询讲师")
+    @GetMapping("/get/{id}")
+    public Result<Teacher> get(@PathVariable Long id) {
+        // 根据 id 获取讲师对象
+        Teacher teacher = teacherService.getById(id);
+        return Result.ok(teacher);
+    }
+
+    /**
+     * 批量删除讲师
+     *
+     * @param idList id 列表
+     * @return {@link Result}
+     */
+    @ApiOperation(value = "批量删除讲师")
+    @DeleteMapping("/batch/remove")
+    public Result batchRemove(@RequestBody List<Long> idList) {
+        // 执行删除操作
+        boolean isSuccess = teacherService.removeByIds(idList);
+        // 判断是否执行成功
+        if (isSuccess) {
+            return Result.ok();
+        } else {
+            return Result.fail();
+        }
+    }
+
+}
+```
+
+
+
+#### 3.2.6 退出
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664973729879-31ccab88-d396-497b-a525-0e563ce5015d.png)
+
+```javascript
+  // user logout
+  logout({ commit, state }) {
+    return new Promise((resolve, reject) => {
+      // logout(state.token).then(() => {
+      removeToken() // must remove  token  first
+      resetRouter()
+      commit('RESET_STATE')
+      resolve()
+      // }).catch(error => {
+      //   reject(error)
+      // })
+    })
+  }
+```
+
+
+
+## 4 安装插件`ESLint`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664974405068-deb0f4b5-20f0-4c0e-b566-458ee24991fd.png)
+
+`VSCode` 进行扩展设置，依次点击 文件 > 首选项 > 设置
+
+打开 `VSCode` 配置文件(`settings.json`),添加如下配置
+
+```json
+    "files.autoSave":"off",
+    "eslint.validate": [
+       "javascript",
+       "javascriptreact",
+       "html",
+       { "language": "vue", "autoFix": true }
+     ],
+     "eslint.options": {
+        "plugins": ["html"]
+     }
+```
+
+这样每次保存的时候就可以根据根目录下`.eslintrc.js`你配置的`eslint`规则来检查和做一些简单的`fix`
+
+
+
+## 5 讲师前端列表功能
+
+### 5.1 添加讲师路由
+
+- `router` > `index.js` 中
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665111334330-ad2745d7-9696-4f99-9ad5-d466160304db.png)
+
+```javascript
+{
+  path: '/vod',
+  component: Layout,
+  redirect: '/vod/teacher/list',
+  name: 'vod',
+  meta: { title: '点播管理', icon: 'el-icon-s-help' },
+  children: [
+    {
+      path: 'teacher/list',
+      name: 'TeacherList',
+      component: () => import('@/views/vod/teacher/list'),
+      meta: { title: '讲师列表', icon: 'table' }
+    },
+    {
+      path: 'teacher/create',
+      name: 'TeacherCreate',
+      component: () => import('@/views/vod/teacher/form'),
+      meta: { title: '添加讲师', icon: 'tree' }
+    }
+  ]
+},
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665111503785-21aa949f-574c-410f-bf42-18e8e8843c75.png)
+
+
+
+### 5.2 新建路由对应的页面
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665113013322-e2ef216d-17a3-4a3e-ad2b-9afc21b2012d.png)
+
+#### 5.2.1 `form`
+
+```vue
+<template>
+  <div class="app-container">
+    讲师表单
+  </div>
+</template>
+
+
+<script>
+export default {
+  name: "form"
+}
+</script>
+
+<style scoped>
+
+</style>
+```
+
+
+
+#### 5.2.2 `list`
+
+```vue
+<template>
+  <div class="app-container">
+    讲师列表
+  </div>
+</template>
+
+
+<script>
+export default {
+  name: "list"
+}
+</script>
+
+<style scoped>
+
+</style>
+```
+
+
+
+### 5.3 讲师分页列表 `list.vue`
+
+#### 5.3.1 新建请求接口文件 `teacher.js`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665116130877-03cc6e38-7176-42f2-9fb7-0512591bb78d.png)
+
+```javascript
+import request from '@/utils/request'
+
+const api_name = '/admin/vod/teacher';
+export default {
+  // current 当前页, limit 每页记录数, searchObj 条件对象
+  getList(current, limit, searchObj) {
+    return request({
+      url: `${api_name}/${current}/${limit}`,
+      method: 'post',
+      data: searchObj
+    })
+  }
+}
+```
+
+
+
+#### 5.3.2 调用请求接口获取并显示数据 `list.vue`
+
+
+
+
+
+
+
+### 5.4 删除讲师
+
+#### 5.4.1 API
+
+```javascript
+import request from '@/utils/request'
+
+const api_name = '/admin/vod/teacher';
+export default {
+  // current 当前页, limit 每页记录数, searchObj 条件对象
+  getList(current, limit, params) {
+    return request({
+      url: `${api_name}/findQueryPage/${current}/${limit}`,
+      method: 'get',
+      params
+    })
+  },
+  removeById(id) {
+    return request({
+      url: `${api_name}/remove/${id}`,
+      method: 'delete'
+    })
+  }
+}
+```
+
+
+
+#### 5.4.2 方法
+
+```javascript
+// 根据 id 删除数据
+removeById(id) {
+  this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    return teacherApi.removeById(id)
+  }).then((response) => {
+    this.getTeacherList()
+    this.$message.success(response.message)
+  })
+}
+```
+
+
+
+### 5.5 添加讲师
+
+- 注意: 讲师名称(`name`) 是唯一的, 如果`李老师`被删除, 因为是逻辑删除, 所以`添加讲师`时`李老师`是无法添加成功的
+
+#### 5.5.1 API
+
+```javascript
+// 讲师添加
+saveTeacher(data) {
+  return request({
+    url: `${api_name}/save`,
+    method: 'post',
+    data
+  })
+}
+```
+
+####  
+
+#### 5.5.2 `form` 表单
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665223204439-9ea8a8ac-a6b3-4828-9222-fc245b87806e.png)
+
+```vue
+<template>
+  <div class="app-container">
+    <!-- 输入表单 -->
+    <el-form label-width="120px">
+      <el-form-item label="讲师名称">
+        <el-input v-model="teacher.name"/>
+      </el-form-item>
+      <el-form-item label="入驻时间">
+        <el-date-picker v-model="teacher.joinDate" value-format="yyyy-MM-dd"/>
+      </el-form-item>
+      <el-form-item label="讲师排序">
+        <el-input-number v-model="teacher.sort" :min="0"/>
+      </el-form-item>
+      <el-form-item label="讲师头衔">
+        <el-select v-model="teacher.level">
+          <!--
+            数据类型一定要和取出的json中的一致，否则没法回填
+            因此，这里value使用动态绑定的值，保证其数据类型是number
+            -->
+          <el-option :value="1" label="高级讲师"/>
+          <el-option :value="2" label="首席讲师"/>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="讲师简介">
+        <el-input v-model="teacher.intro"/>
+      </el-form-item>
+      <el-form-item label="讲师资历">
+        <el-input v-model="teacher.career" :rows="10" type="textarea"/>
+      </el-form-item>
+
+      <!-- 讲师头像 -->
+      <!--      <el-form-item label="讲师头像">-->
+      <!--      </el-form-item>-->
+
+      <el-form-item>
+        <el-button type="primary" @click="saveOrUpdate()">保存</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+
+<script>
+import teacherApi from '@/api/vod/teacher'
+
+export default {
+  name: "list",
+  created() {
+  },
+  data() {
+    return {
+      teacher: {
+        sort: 0,
+        level: 1
+      }
+    }
+  },
+  methods: {
+    // 保存数据
+    saveOrUpdate() {
+      teacherApi.saveTeacher(this.teacher)
+        .then(response => {
+          // 提示
+          this.$message.success("添加成功!");
+          // 跳转列表页面
+          this.$router.push({path: "/vod/teacher/list"});
+        })
+    }
+  }
+}
+
+</script>
+```
+
+
+
+### 5.6 修改讲师
+
+#### 5.6.1 API
+
+```javascript
+import request from '@/utils/request'
+
+const api_name = '/admin/vod/teacher';
+export default {
+  // current 当前页, limit 每页记录数, searchObj 条件对象
+  getList(current, limit, params) {
+    return request({
+      url: `${api_name}/findQueryPage/${current}/${limit}`,
+      method: 'get',
+      params
+    })
+  },
+  removeById(id) {
+    return request({
+      url: `${api_name}/remove/${id}`,
+      method: 'delete'
+    })
+  },
+  // 讲师添加
+  saveTeacher(data) {
+    return request({
+      url: `${api_name}/save`,
+      method: 'post',
+      data
+    })
+  },
+  // 讲师修改
+  updateTeacher(data) {
+    return request({
+      url: `${api_name}/update`,
+      method: 'put',
+      data
+    })
+  },
+  // 根据 id 获取讲师信息
+  getTeacherById(id) {
+    return request({
+      url: `${api_name}/get/${id}`,
+      method: 'get'
+    })
+  }
+}
+```
+
+
+
+#### 5.6.2 路由
+
+```javascript
+{
+  path: 'teacher/edit/:id',
+  name: 'TeacherEdit',
+  component: () => import('@/views/vod/teacher/form'),
+  meta: {title: '编辑讲师'},
+  hidden: true
+}
+```
+
+
+
+#### 5.6.3 `from.vue` 的修改 - 数据回显
+
+```vue
+created() {
+  // 获取路径 id 值, 根据 id 查询数据
+  const id = this.$route.params.id
+  if (id) {
+    teacherApi.getTeacherById(id)
+      .then(response => {
+        this.teacher = response.data
+      })
+  }
+}
+```
+
+
+
+#### 5.6.4 `from.vue` 的修改 - 修改功能
+
+```javascript
+methods: {
+  // 添加
+  save() {
+    teacherApi.saveTeacher(this.teacher)
+      .then(response => {
+        // 提示
+        this.$message.success("添加成功!");
+        // 跳转列表页面
+        this.$router.push({path: "/vod/teacher/list"});
+      })
+  },
+  // 修改
+  update() {
+    teacherApi.updateTeacher(this.teacher)
+      .then(response => {
+        // 提示
+        this.$message.success("修改成功!");
+        // 跳转列表页面
+        this.$router.push({path: "/vod/teacher/list"});
+      })
+  },
+  // 保存或修改
+  saveOrUpdate() {
+    if (this.teacher.id) {
+      this.update()
+    } else {
+      this.save()
+    }
+  }
+}
+```
+
+
+
+### 5.7 批量删除
+
+#### 5.7.1 API
+
+```javascript
+// 批量删除
+batchRemove(data) {
+  return request({
+    url: `${api_name}/batch/remove`,
+    method: 'delete',
+    data
+  })
+}
+```
+
+
+
+#### 5.7.2 代码
+
+- 在 `el-table` 中添加属性 `@selection-change="handleSelectionChange"`
+
+```vue
+<!-- 工具按钮 -->
+<el-card class="operate-container" shadow="never">
+  <i class="el-icon-tickets" style="margin-top: 5px"></i>
+  <span style="margin-top: 5px">数据列表</span>
+  <el-button class="btn-add" @click="add()" style="margin-left: 10px;">添加</el-button>
+  <el-button class="btn-add" @click="batchRemove()" >批量删除</el-button>
+</el-card>
+// 复选框触发事件
+handleSelectionChange(selection) {
+  this.multipleSelection = selection
+},
+add() {
+  // 跳转到添加页面
+  this.$router.push({path: "/vod/teacher/create"})
+},
+// 批量删除
+batchRemove() {
+  if (this.multipleSelection.length === 0) {
+    this.$message.warning('请选择要删除的记录!')
+    return
+  }
+  this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    const idList = []
+    // 遍历数组将 id 取出并存储到 idList 中
+    this.multipleSelection.forEach(teacher => idList.push(teacher.id))
+    // 批量删除
+    return teacherApi.batchRemove(idList)
+  }).then((response) => {
+    this.getTeacherList()
+    this.$message.success("批量删除成功")
+  })
+}
+```
+
+
+
+## 后台项目打包问题
+
+### 追加依赖
+
+- `model` 工程
+- `service_utils` 工程
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+                <!-- 取消查找本项目下的Main方法：为了解决Unable to find main class的问题 -->
+                <mainClass>none</mainClass>
+                <!-- 为了解决依赖模块找不到此模块中的类或属性 -->
+                <classifier>execute</classifier>
+            </configuration>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>repackage</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```
