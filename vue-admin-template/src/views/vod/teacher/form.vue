@@ -29,8 +29,18 @@
       </el-form-item>
 
       <!-- 讲师头像 -->
-      <!--      <el-form-item label="讲师头像">-->
-      <!--      </el-form-item>-->
+      <el-form-item label="讲师头像">
+        <el-upload
+          class="avatar-uploader"
+          :action="BASE_API + '/admin/vod/file/upload'"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :on-error="handleAvatarError"
+          :before-upload="beforeAvatarUpload">
+          <img v-if="teacher.avatar" :src="teacher.avatar" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+      </el-form-item>
 
       <el-form-item>
         <el-button type="primary" @click="saveOrUpdate()">保存</el-button>
@@ -59,7 +69,8 @@ export default {
       teacher: {
         sort: 0,
         level: 1
-      }
+      },
+      BASE_API: process.env.VUE_APP_BASE_API
     }
   },
   methods: {
@@ -90,8 +101,64 @@ export default {
       } else {
         this.save()
       }
+    },
+    // 上传成功触发
+    handleAvatarSuccess(res, file) {
+      if (res.code === 20000) {
+        this.teacher.avatar = res.data
+        // 强制重新渲染
+        this.$forceUpdate()
+      } else {
+        this.$message.error('上传失败（非0）')
+      }
+    },
+    handleAvatarError() {
+      this.$message.error('上传失败（http 失败）')
+    },
+    // 上传之前触发, 用于校验
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!');
+      }
+
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+
+      return isJPG && isLt2M;
     }
   }
 }
 
 </script>
+
+<style scoped>
+>>> .avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+>>> .avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+</style>
