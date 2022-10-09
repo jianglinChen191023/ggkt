@@ -1,145 +1,183 @@
 - [一 硅谷课堂](#一-硅谷课堂)
-  - [项目概述](#项目概述)
-  - [前置知识储备](#前置知识储备)
-  - [硅谷课堂功能架构图](#硅谷课堂功能架构图)
-  - [项目技术介绍](#项目技术介绍)
-  - [产品图](#产品图)
+    - [项目概述](#项目概述)
+    - [前置知识储备](#前置知识储备)
+    - [硅谷课堂功能架构图](#硅谷课堂功能架构图)
+    - [项目技术介绍](#项目技术介绍)
+    - [产品图](#产品图)
 
 - [二 `MyBatisPlus`](#二-mybatisplus)
-  - [1 `MyBatisPlus` 简介](#1-mybatisplus-简介)
-    - [1.1 概述](#11-概述)
-  - [1.2 特性](#12-特性)
-  - [2 `MyBatisPlus` 入门](#2-mybatisplus-入门)
-    - [2.1 创建测试数据库和表](#21-创建测试数据库和表)
-    - [2.2 创建项目和添加依赖](#22-创建项目和添加依赖)
-      - [2.2.1 前置目录](#221-前置目录)
-      - [2.2.2 创建项目模块](#222-创建项目模块)
-      - [2.2.3 项目引入依赖](#223-项目引入依赖)
-    - [2.3 配置文件](#23-配置文件)
-    - [2.4 编写代码](#24-编写代码)
-  - [3 MyBatisPlus 实现 CRUD 操作](#3-mybatisplus-实现-crud-操作)
-    - [3.1 插入操作](#31-插入操作)
-    - [3.2 主键策略](#32-主键策略)
-    - [3.3 根据 id 更新操作](#33-根据-id-更新操作)
-    - [3.4 分页查询](#34-分页查询)
-    - [3.5 根据 `id` 删除记录](#35-根据-id-删除记录)
-    - [3.6 批量删除](#36-批量删除)
-    - [3.7 逻辑删除（更新/修改数据）](#37-逻辑删除更新修改数据)
-      - [3.7.1 数据库中添加 `deleted` 字段](#371-数据库中添加-deleted-字段)
-      - [3.7.2 实体类添加 `deleted` 属性](#372-实体类添加-deleted-属性)
-      - [3.7.3 `application.yml` 配置删除标志](#373-applicationyml-配置删除标志)
-      - [3.7.4 测试](#374-测试)
-  - [4 `MyBatisPlus` 条件构造器](#4-mybatisplus-条件构造器)
-    - [4.1 `AbstractWrapper`](#41-abstractwrapper)
-    - [4.2 `QueryWrapper` 使用](#42-querywrapper-使用)
-    - [4.3 `LambdaQueryWrapper` 使用](#43-lambdaquerywrapper-使用)
-  - [5 `MybatisPuls` 对 `service` 的封装](#5-mybatispuls-对-service-的封装)
-    - [5.1 新建 `UserService` 接口](#51-新建-userservice-接口)
-    - [5.2 新建 `UserServiceImpl`](#52-新建-userserviceimpl)
-    - [5.3 测试: 新建 `ServiceTestsDemo` 类](#53-测试-新建-servicetestsdemo-类)
+    - [1 `MyBatisPlus` 简介](#1-mybatisplus-简介)
+        - [1.1 概述](#11-概述)
+    - [1.2 特性](#12-特性)
+    - [2 `MyBatisPlus` 入门](#2-mybatisplus-入门)
+        - [2.1 创建测试数据库和表](#21-创建测试数据库和表)
+        - [2.2 创建项目和添加依赖](#22-创建项目和添加依赖)
+            - [2.2.1 前置目录](#221-前置目录)
+            - [2.2.2 创建项目模块](#222-创建项目模块)
+            - [2.2.3 项目引入依赖](#223-项目引入依赖)
+        - [2.3 配置文件](#23-配置文件)
+        - [2.4 编写代码](#24-编写代码)
+    - [3 MyBatisPlus 实现 CRUD 操作](#3-mybatisplus-实现-crud-操作)
+        - [3.1 插入操作](#31-插入操作)
+        - [3.2 主键策略](#32-主键策略)
+        - [3.3 根据 id 更新操作](#33-根据-id-更新操作)
+        - [3.4 分页查询](#34-分页查询)
+        - [3.5 根据 `id` 删除记录](#35-根据-id-删除记录)
+        - [3.6 批量删除](#36-批量删除)
+        - [3.7 逻辑删除（更新/修改数据）](#37-逻辑删除更新修改数据)
+            - [3.7.1 数据库中添加 `deleted` 字段](#371-数据库中添加-deleted-字段)
+            - [3.7.2 实体类添加 `deleted` 属性](#372-实体类添加-deleted-属性)
+            - [3.7.3 `application.yml` 配置删除标志](#373-applicationyml-配置删除标志)
+            - [3.7.4 测试](#374-测试)
+    - [4 `MyBatisPlus` 条件构造器](#4-mybatisplus-条件构造器)
+        - [4.1 `AbstractWrapper`](#41-abstractwrapper)
+        - [4.2 `QueryWrapper` 使用](#42-querywrapper-使用)
+        - [4.3 `LambdaQueryWrapper` 使用](#43-lambdaquerywrapper-使用)
+    - [5 `MybatisPuls` 对 `service` 的封装](#5-mybatispuls-对-service-的封装)
+        - [5.1 新建 `UserService` 接口](#51-新建-userservice-接口)
+        - [5.2 新建 `UserServiceImpl`](#52-新建-userserviceimpl)
+        - [5.3 测试: 新建 `ServiceTestsDemo` 类](#53-测试-新建-servicetestsdemo-类)
 
 - [三 开发讲师管理接口](#三-开发讲师管理接口)
-  - [1 前后端分离开发](#1-前后端分离开发)
-  - [2 搭建后端环境 - 基于 `Maven` 聚合工程](#2-搭建后端环境---基于-maven-聚合工程)
-    - [2.1 创建数据库和表](#21-创建数据库和表)
-    - [2.2 `Maven` 聚合工程](#22-maven-聚合工程)
-      - [2.2.1 新建父工程 `ggkt_parent`](#221-新建父工程-ggkt_parent)
-      - [2.2.2 新建子模块 `model`](#222-新建子模块-model)
-      - [2.2.3 新建子模块 `service`](#223-新建子模块-service)
-      - [2.2.4 新建子模块 `service_vod`](#224-新建子模块-service_vod)
-      - [2.2.5 新建子模块 `common`](#225-新建子模块-common)
-      - [2.2.6 新建子模块 `service_utils`](#226-新建子模块-service_utils)
-  - [3 `service_vod` 工程中使用 `mp` 的代码生成器](#3-service_vod-工程中使用-mp-的代码生成器)
-    - [3.1 追加依赖](#31-追加依赖)
-    - [3.2 新建 `CodeGet` 类](#32-新建-codeget-类)
-  - [4 接口](#4-接口)
-    - [4.1 查询所有教师接口, 修改 `TeacherController`](#41-查询所有教师接口-修改-teachercontroller)
-    - [4.2 逻辑删除教师接口, 修改 `TeacherController`](#42-逻辑删除教师接口-修改-teachercontroller)
-  - [5 配置 `Swagger2` 生成 `API` 接口文档](#5-配置-swagger2-生成-api-接口文档)
-    - [5.1 概述](#51-概述)
-    - [5.2 配置 `Swagger2`](#52-配置-swagger2)
-      - [5.2.1 `service_utils` 工程中](#521-service_utils-工程中)
-      - [5.2.2 `service` 工程中](#522-service-工程中)
-      - [5.2.3 `service_vod` 工程中](#523-service_vod-工程中)
-    - [5.3 使用 `Swagger2`](#53-使用-swagger2)
-      - [5.3.1 可视化页面](#531-可视化页面)
-      - [5.3.2 相关注解](#532-相关注解)
-    - [5.4 使用注解](#54-使用注解)
-  - [6 统一返回结果](#6-统一返回结果)
-    - [6.1 规则](#61-规则)
-    - [6.2 新建统一返回结果类 `Result`](#62-新建统一返回结果类-result)
-    - [6.3 使用 `Result`, 修改 `TeacherController`](#63-使用-result-修改-teachercontroller)
-  - [7 条件分页查询讲师接口](#7-条件分页查询讲师接口)
-    - [7.1 配置`vodConfig`](#71-配置vodconfig)
-    - [7.2 查询条件对象 `TeacherQueryVo`](#72-查询条件对象-teacherqueryvo)
-    - [7.3 条件查询分页接口](#73-条件查询分页接口)
-  - [8 添加讲师接口](#8-添加讲师接口)
-  - [9 修改讲师接口](#9-修改讲师接口)
-    - [9.1 根据 `id` 查询讲师接口](#91-根据-id-查询讲师接口)
-  - [10 批量删除接口](#10-批量删除接口)
-  - [11 统一异常处理](#11-统一异常处理)
-    - [11.1 全局异常处理](#111-全局异常处理)
-    - [11.2 特定异常处理](#112-特定异常处理)
-    - [11.3 自定义异常处理](#113-自定义异常处理)
-      - [11.3.1 自定义异常处理](#1131-自定义异常处理)
-      - [11.3.2 新建自定义异常类 `GgktException`](#1132-新建自定义异常类-ggktexception)
-      - [11.3.3 测试](#1133-测试)
+    - [1 前后端分离开发](#1-前后端分离开发)
+    - [2 搭建后端环境 - 基于 `Maven` 聚合工程](#2-搭建后端环境---基于-maven-聚合工程)
+        - [2.1 创建数据库和表](#21-创建数据库和表)
+        - [2.2 `Maven` 聚合工程](#22-maven-聚合工程)
+            - [2.2.1 新建父工程 `ggkt_parent`](#221-新建父工程-ggkt_parent)
+            - [2.2.2 新建子模块 `model`](#222-新建子模块-model)
+            - [2.2.3 新建子模块 `service`](#223-新建子模块-service)
+            - [2.2.4 新建子模块 `service_vod`](#224-新建子模块-service_vod)
+            - [2.2.5 新建子模块 `common`](#225-新建子模块-common)
+            - [2.2.6 新建子模块 `service_utils`](#226-新建子模块-service_utils)
+    - [3 `service_vod` 工程中使用 `mp` 的代码生成器](#3-service_vod-工程中使用-mp-的代码生成器)
+        - [3.1 追加依赖](#31-追加依赖)
+        - [3.2 新建 `CodeGet` 类](#32-新建-codeget-类)
+    - [4 接口](#4-接口)
+        - [4.1 查询所有教师接口, 修改 `TeacherController`](#41-查询所有教师接口-修改-teachercontroller)
+        - [4.2 逻辑删除教师接口, 修改 `TeacherController`](#42-逻辑删除教师接口-修改-teachercontroller)
+    - [5 配置 `Swagger2` 生成 `API` 接口文档](#5-配置-swagger2-生成-api-接口文档)
+        - [5.1 概述](#51-概述)
+        - [5.2 配置 `Swagger2`](#52-配置-swagger2)
+            - [5.2.1 `service_utils` 工程中](#521-service_utils-工程中)
+            - [5.2.2 `service` 工程中](#522-service-工程中)
+            - [5.2.3 `service_vod` 工程中](#523-service_vod-工程中)
+        - [5.3 使用 `Swagger2`](#53-使用-swagger2)
+            - [5.3.1 可视化页面](#531-可视化页面)
+            - [5.3.2 相关注解](#532-相关注解)
+        - [5.4 使用注解](#54-使用注解)
+    - [6 统一返回结果](#6-统一返回结果)
+        - [6.1 规则](#61-规则)
+        - [6.2 新建统一返回结果类 `Result`](#62-新建统一返回结果类-result)
+        - [6.3 使用 `Result`, 修改 `TeacherController`](#63-使用-result-修改-teachercontroller)
+    - [7 条件分页查询讲师接口](#7-条件分页查询讲师接口)
+        - [7.1 配置`vodConfig`](#71-配置vodconfig)
+        - [7.2 查询条件对象 `TeacherQueryVo`](#72-查询条件对象-teacherqueryvo)
+        - [7.3 条件查询分页接口](#73-条件查询分页接口)
+    - [8 添加讲师接口](#8-添加讲师接口)
+    - [9 修改讲师接口](#9-修改讲师接口)
+        - [9.1 根据 `id` 查询讲师接口](#91-根据-id-查询讲师接口)
+    - [10 批量删除接口](#10-批量删除接口)
+    - [11 统一异常处理](#11-统一异常处理)
+        - [11.1 全局异常处理](#111-全局异常处理)
+        - [11.2 特定异常处理](#112-特定异常处理)
+        - [11.3 自定义异常处理](#113-自定义异常处理)
+            - [11.3.1 自定义异常处理](#1131-自定义异常处理)
+            - [11.3.2 新建自定义异常类 `GgktException`](#1132-新建自定义异常类-ggktexception)
+            - [11.3.3 测试](#1133-测试)
 
 - [四 前端基础知识](#四-前端基础知识)
-  - [1 开发工具和 `ES6`](#1-开发工具和-es6)
-    - [1.1 下载](#11-下载)
-    - [1.2 使用 `VS Code`](#12-使用-vs-code)
-      - [1.2.2 插件安装](#122-插件安装)
-      - [1.2.3 工作区](#123-工作区)
-      - [1.2.4 新建文件](#124-新建文件)
-      - [1.2.5 浏览器访问](#125-浏览器访问)
-      - [1.2.6 自动保存](#126-自动保存)
-    - [1.3 `ES6` 语法](#13-es6-语法)
-      - [1.3.1 `let` 声明变量](#131-let-声明变量)
-      - [1.3.2 `const` 声明常量（只读变量）](#132-const-声明常量只读变量)
-      - [1.3.3 03-解构赋值](#133-03-解构赋值)
-      - [1.3.4 04-模板字符串](#134-04-模板字符串)
-      - [1.3.5 05-方法简写](#135-05-方法简写)
-      - [1.3.6  06-对象拓展运算符](#136--06-对象拓展运算符)
-      - [1.3.7 07-箭头函数](#137-07-箭头函数)
-  - [2 `Vue`](#2-vue)
-    - [2.1 `Vue.js` 是什么](#21-vuejs-是什么)
-    - [2.2 初始化 `Vue.js`](#22-初始化-vuejs)
-      - [!img](#)
-    - [2.3 配置代码片段](#23-配置代码片段)
-    - [2.4 `Vue` 指令](#24-vue-指令)
-      - [2.4.1 `03-v-bind`](#241-03-v-bind)
-      - [2.4.2 `04-v-model`](#242-04-v-model)
-      - [2.4.3 `05-v-on`](#243-05-v-on)
-      - [2.4.4 `06-vue-if`](#244-06-vue-if)
-      - [2.4.5 `07-v-for`](#245-07-v-for)
-      - [2.4.6 08-生命周期](#246-08-生命周期)
-      - [2.4.7 09-组件](#247-09-组件)
-      - [2.4.8 10-路由](#248-10-路由)
-      - [2.4.9 `11-axios`](#249-11-axios)
-    - [2.5 `element-ui`](#25-element-ui)
-  - [3 `Node.js`](#3-nodejs)
-    - [3.1 什么是 `Node.js`](#31-什么是-nodejs)
-    - [3.2 `Node.js` 安装](#32-nodejs-安装)
-      - [3.2.1 下载](#321-下载)
-    - [3.3 入门](#33-入门)
-  - [4 `NPM`](#4-npm)
-    - [4.1 什么是 `NPM`](#41-什么是-npm)
-    - [4.2 `NPM` 工具的安装位置](#42-npm-工具的安装位置)
-    - [4.3 使用 `NPM`](#43-使用-npm)
-    - [4.4 `NPM` 镜像](#44-npm-镜像)
-    - [4.5 使用 `npm install` 命令](#45-使用-npm-install-命令)
-    - [4.6 其他命令](#46-其他命令)
-  - [5 模块化开发](#5-模块化开发)
-    - [5.1 `ES5` 写法](#51-es5-写法)
-    - [5.2 `ES6` 写法](#52-es6-写法)
-    - [5.3 `ES6` 转 `ES5`](#53-es6-转-es5)
-      - [5.3.1 安装 `Babel`](#531-安装-babel)
-      - [5.3.2 安装 `Babel` 报错 `Error: EACCES: permission denied`](#532-安装-babel-报错-error-eacces-permission-denied)
-      - [5.3.3 配置](#533-配置)
-      - [5.3.4 安装转码器](#534-安装转码器)
-    - [5.4 `ES6` 第二种写法](#54-es6-第二种写法)
+    - [1 开发工具和 `ES6`](#1-开发工具和-es6)
+        - [1.1 下载](#11-下载)
+        - [1.2 使用 `VS Code`](#12-使用-vs-code)
+            - [1.2.2 插件安装](#122-插件安装)
+            - [1.2.3 工作区](#123-工作区)
+            - [1.2.4 新建文件](#124-新建文件)
+            - [1.2.5 浏览器访问](#125-浏览器访问)
+            - [1.2.6 自动保存](#126-自动保存)
+        - [1.3 `ES6` 语法](#13-es6-语法)
+            - [1.3.1 `let` 声明变量](#131-let-声明变量)
+            - [1.3.2 `const` 声明常量（只读变量）](#132-const-声明常量只读变量)
+            - [1.3.3 03-解构赋值](#133-03-解构赋值)
+            - [1.3.4 04-模板字符串](#134-04-模板字符串)
+            - [1.3.5 05-方法简写](#135-05-方法简写)
+            - [1.3.6  06-对象拓展运算符](#136--06-对象拓展运算符)
+            - [1.3.7 07-箭头函数](#137-07-箭头函数)
+    - [2 `Vue`](#2-vue)
+        - [2.1 `Vue.js` 是什么](#21-vuejs-是什么)
+        - [2.2 初始化 `Vue.js`](#22-初始化-vuejs)
+            - [!img](#)
+        - [2.3 配置代码片段](#23-配置代码片段)
+        - [2.4 `Vue` 指令](#24-vue-指令)
+            - [2.4.1 `03-v-bind`](#241-03-v-bind)
+            - [2.4.2 `04-v-model`](#242-04-v-model)
+            - [2.4.3 `05-v-on`](#243-05-v-on)
+            - [2.4.4 `06-vue-if`](#244-06-vue-if)
+            - [2.4.5 `07-v-for`](#245-07-v-for)
+            - [2.4.6 08-生命周期](#246-08-生命周期)
+            - [2.4.7 09-组件](#247-09-组件)
+            - [2.4.8 10-路由](#248-10-路由)
+            - [2.4.9 `11-axios`](#249-11-axios)
+        - [2.5 `element-ui`](#25-element-ui)
+    - [3 `Node.js`](#3-nodejs)
+        - [3.1 什么是 `Node.js`](#31-什么是-nodejs)
+        - [3.2 `Node.js` 安装](#32-nodejs-安装)
+            - [3.2.1 下载](#321-下载)
+        - [3.3 入门](#33-入门)
+    - [4 `NPM`](#4-npm)
+        - [4.1 什么是 `NPM`](#41-什么是-npm)
+        - [4.2 `NPM` 工具的安装位置](#42-npm-工具的安装位置)
+        - [4.3 使用 `NPM`](#43-使用-npm)
+        - [4.4 `NPM` 镜像](#44-npm-镜像)
+        - [4.5 使用 `npm install` 命令](#45-使用-npm-install-命令)
+        - [4.6 其他命令](#46-其他命令)
+    - [5 模块化开发](#5-模块化开发)
+        - [5.1 `ES5` 写法](#51-es5-写法)
+        - [5.2 `ES6` 写法](#52-es6-写法)
+        - [5.3 `ES6` 转 `ES5`](#53-es6-转-es5)
+            - [5.3.1 安装 `Babel`](#531-安装-babel)
+            - [5.3.2 安装 `Babel` 报错 `Error: EACCES: permission denied`](#532-安装-babel-报错-error-eacces-permission-denied)
+            - [5.3.3 配置](#533-配置)
+            - [5.3.4 安装转码器](#534-安装转码器)
+        - [5.4 `ES6` 第二种写法](#54-es6-第二种写法)
 
+- [五 讲师管理模块前端](#五-讲师管理模块前端)
+    - [1  `vue-admin-template` 模板](#1--vue-admin-template-模板)
+    - [2 搭建环境](#2-搭建环境)
+    - [3 用户登录退出](#3-用户登录退出)
+        - [3.1 请求及数据](#31-请求及数据)
+        - [3.2 后台登录代码](#32-后台登录代码)
+            - [3.2.1 新建 `UserLoginController`](#321-新建-userlogincontroller)
+            - [3.2.2 修改 `Result` 默认成功状态码为 `20000`， 失败 `20001`](#322-修改-result-默认成功状态码为-20000-失败-20001)
+            - [3.2.3 修改前端请求路径](#323-修改前端请求路径)
+            - [3.2.4 修改前端请求接口](#324-修改前端请求接口)
+            - [3.2.5 测试](#325-测试)
+            - [3.2.6 退出](#326-退出)
+    - [4 安装插件`ESLint`](#4-安装插件eslint)
+    - [5 讲师前端列表功能](#5-讲师前端列表功能)
+        - [5.1 添加讲师路由](#51-添加讲师路由)
+        - [5.2 新建路由对应的页面](#52-新建路由对应的页面)
+            - [5.2.1 `form`](#521-form)
+            - [5.2.2 `list`](#522-list)
+        - [5.3 讲师分页列表 `list.vue`](#53-讲师分页列表-listvue)
+            - [5.3.1 新建请求接口文件 `teacher.js`](#531-新建请求接口文件-teacherjs)
+            - [5.3.2 调用请求接口获取并显示数据 `list.vue`](#532-调用请求接口获取并显示数据-listvue)
+        - [5.4 删除讲师](#54-删除讲师)
+            - [5.4.1 API](#541-api)
+            - [5.4.2 方法](#542-方法)
+        - [5.5 添加讲师](#55-添加讲师)
+            - [5.5.1 API](#551-api)
+            - [](#)
+            - [5.5.2 `form` 表单](#552-form-表单)
+        - [5.6 修改讲师](#56-修改讲师)
+            - [5.6.1 API](#561-api)
+            - [5.6.2 路由](#562-路由)
+            - [5.6.3 `from.vue` 的修改 - 数据回显](#563-fromvue-的修改---数据回显)
+            - [5.6.4 `from.vue` 的修改 - 修改功能](#564-fromvue-的修改---修改功能)
+        - [5.7 批量删除](#57-批量删除)
+            - [5.7.1 API](#571-api)
+            - [5.7.2 代码](#572-代码)
+    - [后台项目打包问题](#后台项目打包问题)
+        - [追加依赖](#追加依赖)
 
 # 一 硅谷课堂
 
@@ -147,8 +185,8 @@
 
 - 硅谷课堂是一款基于微信公众号 `B2C` 模式的在线学习平台, 该平台包含两大部分
 
-  - 后台管理系统
-  - 公众号系服务
+    - 后台管理系统
+    - 公众号系服务
 
 - 平台会定期推出直播或点播课程, 为学员构建一个全方位的在线学习平台
 
@@ -669,10 +707,10 @@ public void addUser() {
 - `MyBatis-plus` 默认的主键策略是: `ID_WORKER` 全局唯一 ID
 - 自增策略
 
-  - 需要主键自增需要配置如下主键策略
+    - 需要主键自增需要配置如下主键策略
 
-    - 数据库设置主键自增
-    - 实体字段中配置 `@TableId(type = IdType.AUTO)`
+        - 数据库设置主键自增
+        - 实体字段中配置 `@TableId(type = IdType.AUTO)`
 
 | **@TableId(type = IdType.AUTO)** | **说明**                                                     |
 | -------------------------------- | ------------------------------------------------------------ |
@@ -1080,6 +1118,7 @@ public class ServiceTestsDemo {
 
 ![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664830148121-f88924a7-7a53-4238-a6b1-2ec2a2af187a.png)
 
+
 # 三 开发讲师管理接口
 
 ```
@@ -1376,7 +1415,7 @@ DROP TABLE IF EXISTS `video_visitor_max_view`;
 
 ![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664589847927-a8d8d343-f849-4579-a675-12d3bfaa0413.png)
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664589923042-b6c75044-bcf7-4638-9132-f09a849954b0.png)
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665206898473-92a6f3e8-d01a-427e-8f38-8c1863d1e4bc.png)
 
 - 删除 `src` 目录
 - 修改`SpringBoot` 版本: `2.2.1.RELEASE`
@@ -1537,7 +1576,7 @@ DROP TABLE IF EXISTS `video_visitor_max_view`;
 
 ![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664593089643-8d8cd590-a89e-49f9-b58b-97e2438d0c66.png)
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664593133603-bfe13f52-45b4-4e1b-9c86-c64740468da7.png)
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665206916401-a9c754b3-7b0e-491b-82f6-f1024fcb8bae.png)
 
 - 追加依赖 `pom.xml`
 
@@ -1607,7 +1646,7 @@ public class Test {
 
 #### 2.2.3 新建子模块 `service`
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664593968563-60a7870e-7978-4642-bed2-fa51543f80d8.png)
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665206926128-07283358-58cd-4f0f-9b45-b1b20ea0d3c6.png)
 
 - 删除 `src` 目录
 - 追加依赖 `pom.xml`
@@ -1690,7 +1729,7 @@ public class Test {
 
 #### 2.2.4 新建子模块 `service_vod`
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664594846172-70cf2a7b-f4de-49a7-a6a3-9b0ca578451a.png)
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665206933714-d99bd66f-0ee3-45f7-9040-ea133c0b713e.png)
 
 - 新建启动类 `ServiceVodApplication`
 
@@ -1773,7 +1812,7 @@ public class VodConfig {
 
 #### 2.2.5 新建子模块 `common`
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664666569037-286d14dc-9c3e-4cc5-b28e-358d0f285718.png)
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665206942489-15eefaf6-02bf-49bc-9d45-68ca73891351.png)
 
 - 追加依赖 `pom.xml`
 
@@ -1819,7 +1858,7 @@ public class VodConfig {
 
 #### 2.2.6 新建子模块 `service_utils`
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664666888125-bc9ccc37-7ef2-4c45-8d71-6c396b017819.png)
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665206949049-21651fe6-2e65-4ab9-9b63-ae56a88a7e90.png)
 
 - 新建空配置文件
 
@@ -2164,21 +2203,21 @@ public class TeacherController {
 - 前后端分离开发中, `api` 文档是最好的沟通方式
 - `Swagger2` 是一个规范和完整的框架, 用于生成、描述、调用和可视化 `RESTful` 风格的 `Web` 服务
 
-  - 及时性
+    - 及时性
 
-    - 接口变更后, 能够及时准确地通知相关前后端开发人员
+        - 接口变更后, 能够及时准确地通知相关前后端开发人员
 
-  - 规范性
+    - 规范性
 
-    - 保证接口的规范性, 如接口的地址、请求方式、参数及响应格式和错误信息
+        - 保证接口的规范性, 如接口的地址、请求方式、参数及响应格式和错误信息
 
-  - 一致性
+    - 一致性
 
-    - 接口信息一致, 不会出现因开发人员拿到的文档版本不一致, 而出现分歧
+        - 接口信息一致, 不会出现因开发人员拿到的文档版本不一致, 而出现分歧
 
-  - 可测性
+    - 可测性
 
-    - 直接在接口文档上进行测试, 以方便理解业务
+        - 直接在接口文档上进行测试, 以方便理解业务
 
 
 
@@ -2293,7 +2332,7 @@ public class ServiceVodApplication {
 
 - 点击 `**Try it out**`**, 再点击** `**Execute**`
 
-  - **有参数则输入参数**
+    - **有参数则输入参数**
 
 ![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664668212277-8bacf026-56a7-4283-9816-152bbca656ab.png)
 
@@ -2782,52 +2821,53 @@ public class TeacherController {
             return Result.fail();
         }
     }
-
+    
     /**
      * 条件查询分页列表
      *
-     * @param page           查询页数
+     * @param current        查询页数
      * @param limit          查询数量
      * @param teacherQueryVo 查询条件对象
      * @return {@link Result}
      */
-    @ApiOperation(value = "获取分页列表")
-    @GetMapping("/{page}/{limit}")
+    @ApiOperation(value = "条件查询分页")
+    @GetMapping("/findQueryPage/{current}/{limit}")
     public Result<IPage<Teacher>> index(
-            @ApiParam(name = "page", value = "当前页码", required = true)
-            @PathVariable Long page,
-            @ApiParam(name = "limit", value = "每页记录数", required = true)
+            @PathVariable Long current,
             @PathVariable Long limit,
-            @ApiParam(name = "teacherVo", value = "查询对象", required = false)
-            @RequestBody(required = false) TeacherQueryVo teacherQueryVo) {
-        //创建page对象，传递当前页和每页记录数
-        Page<Teacher> pageParam = new Page<>(page, limit);
-        //获取条件值
-        //讲师名称
-        String name = teacherQueryVo.getName();
-        //讲师级别
-        Integer level = teacherQueryVo.getLevel();
-        //开始时间
-        String joinDateBegin = teacherQueryVo.getJoinDateBegin();
-        //结束时间
-        String joinDateEnd = teacherQueryVo.getJoinDateEnd();
-        //封装条件
-        QueryWrapper<Teacher> wrapper = new QueryWrapper<>();
-        if (!StringUtils.isEmpty(name)) {
-            wrapper.like("name", name);
+            TeacherQueryVo teacherQueryVo) {
+        Page<Teacher> pageParam = new Page<>(current, limit);
+        if (null == teacherQueryVo) {
+            IPage<Teacher> pageModel = teacherService.page(pageParam);
+            return Result.ok(pageModel);
+        } else {
+            // 获取条件
+            String name = teacherQueryVo.getName();
+            Integer level = teacherQueryVo.getLevel();
+            String joinDateBegin = teacherQueryVo.getJoinDateBegin();
+            String joinDateEnd = teacherQueryVo.getJoinDateEnd();
+            // 进行非空判断, 条件封装
+            LambdaQueryWrapper<Teacher> wrapper = new LambdaQueryWrapper<>();
+            if (!StringUtils.isEmpty(name)) {
+                wrapper.like(Teacher::getName, name);
+            }
+
+            if (!StringUtils.isEmpty(level)) {
+                wrapper.eq(Teacher::getLevel, level);
+            }
+
+            if (!StringUtils.isEmpty(joinDateBegin)) {
+                wrapper.ge(Teacher::getJoinDate, joinDateBegin);
+            }
+
+            if (!StringUtils.isEmpty(joinDateEnd)) {
+                wrapper.le(Teacher::getJoinDate, joinDateEnd);
+            }
+
+            // 调用方法分页查询
+            IPage<Teacher> pageModel = teacherService.page(pageParam, wrapper);
+            return Result.ok(pageModel);
         }
-        if (!StringUtils.isEmpty(level)) {
-            wrapper.eq("level", level);
-        }
-        if (!StringUtils.isEmpty(joinDateBegin)) {
-            wrapper.ge("join_date", joinDateBegin);
-        }
-        if (!StringUtils.isEmpty(joinDateEnd)) {
-            wrapper.le("join_date", joinDateEnd);
-        }
-        //调用方法得到分页查询结果
-        IPage<Teacher> pageModel = teacherService.page(pageParam, wrapper);
-        return Result.ok(pageModel);
     }
 
 }
@@ -3082,7 +3122,7 @@ try {
 }
 ```
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664834371379-7f16b2fd-9b13-4e7d-8a1c-d4695730d63a.png)
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664834371379-7f16b2fd-9b13
 
 # 四 前端基础知识
 
@@ -3958,8 +3998,8 @@ git checkout -b 3.0.0_base
 - `element-ui` 是饿了么前端出品的基于 `Vue.js` 的后台组件库, 方便程序员进行页面快速布局和构建
 - 官网:
 
-  - 基于 Vue 2.x`https://element-cn.eleme.io/#/zh-CN`
-  - 基于 Vue 3.x `https://element-plus.gitee.io/zh-CN/`
+    - 基于 Vue 2.x`https://element-cn.eleme.io/#/zh-CN`
+    - 基于 Vue 3.x `https://element-plus.gitee.io/zh-CN/`
 
 
 
@@ -4029,7 +4069,7 @@ npm init
 - `keywords`: {`Array`}关键词，便于用户搜索到我们的项目
 - 最后会生成 `package.json` 文件，这个是包的配置文件，相当于`maven` 的 `pom.xml`
 
-  - 我们之后也可以根据需要进行修改
+    - 我们之后也可以根据需要进行修改
 
 ![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664850405230-0c30f38d-3a90-4687-9599-8f9d578d581f.png)
 
@@ -4044,7 +4084,7 @@ npm init
 - `NPM` 官方的管理的包都是从 `http://npmjs.com` 下载的, 国内速度很满
 - 推荐使用淘宝 `NPM` 镜像 `http://npm.taobao.org/`
 
-  - 淘宝的 `NPM` 镜像是一个完整的 `npmjs.com` 镜像, 同步频率 10 分钟一次, 尽量保证与官网一致
+    - 淘宝的 `NPM` 镜像是一个完整的 `npmjs.com` 镜像, 同步频率 10 分钟一次, 尽量保证与官网一致
 
 **设置镜像地址**
 
@@ -4106,7 +4146,7 @@ npm uninstall -g 包名
 - 后端模块化开发: 三层、类与类之间 对象之间的调用
 - 前端模块化开发: `JS` 文件之间的方法调用
 
-  - `ES6` 的模块化无法在 `Node.js` 中执行, 需要用到 `Babel` 转换成 `ES5` 后再执行
+    - `ES6` 的模块化无法在 `Node.js` 中执行, 需要用到 `Babel` 转换成 `ES5` 后再执行
 
 ### 5.1 `ES5` 写法
 
@@ -4114,9 +4154,9 @@ npm uninstall -g 包名
 - 在 `moduledemo` 下创建 `es5` 文件夹
 - `moduledemo`
 
-  - `es5`
+    - `es5`
 
-    - `01.js`
+        - `01.js`
 
 ```javascript
 const sum = function(a, b) {
@@ -4158,9 +4198,9 @@ console.log(v2)
 
 - `moduledemo`
 
-  - `es6-1`
+    - `es6-1`
 
-    - `001.js`
+        - `001.js`
 
 ```javascript
 export function add() {
@@ -4213,7 +4253,7 @@ sudo npm install -g babel-cli
 - `presets` 字段设定转码规则
 - `moduledemo`
 
-  - `.babelrc`
+    - `.babelrc`
 
 ```json
 {
@@ -4243,9 +4283,9 @@ babel es6-1 -d bes6-1
 
 - `moduledemo`
 
-  - `bes6-1`
+    - `bes6-1`
 
-    - 生成的 `001.js`
+        - 生成的 `001.js`
 
 ```javascript
 'use strict';
@@ -4287,9 +4327,9 @@ var _ = require("./001.js");
 
 - `moduledemo`
 
-  - `es6-2`
+    - `es6-2`
 
-    - `1.js`
+        - `1.js`
 
 ```javascript
 export default {
@@ -4316,3 +4356,1043 @@ user.save()
 
 ![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664927261729-3d70d936-e7cf-43c9-953f-d8f904b29cc5.png)
 
+#  五 讲师管理模块前端
+
+```
+git checkout -b 4.0.0_vue-admin-template
+```
+
+## 1  `vue-admin-template` 模板
+
+- `vue-admin-template` 是基于 `vue-element-admin` 的一套后台管理系统基础模板（最少精简版）, 可作为模板进行二次开发
+- `GitHub` 模板: `https://github.com/PanjiaChen/vue-admin-template`
+
+
+
+## 2 搭建环境
+
+```bash
+# 克隆项目
+git clone https://github.com/PanJiaChen/vue-admin-template.git
+
+# 进入项目目录
+cd vue-admin-template
+
+# 安装依赖
+npm install
+
+# 建议不要直接使用 cnpm 安装以来，会有各种诡异的 bug。可以通过如下操作解决 npm 下载速度慢的问题
+npm install --registry=https://registry.npm.taobao.org
+
+# 启动服务
+npm run dev
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664968088002-3010edb6-c576-4094-bbe9-9fc747a7a3ef.png)
+
+
+
+## 3 用户登录退出
+
+### 3.1 请求及数据
+
+- http://localhost:9528/dev-api/vue-admin-template/user/login
+
+```json
+{
+  "code":20000,
+  "data":{"token":"admin-token"}
+}
+```
+
+- http://localhost:9528/dev-api/vue-admin-template/user/info?token=admin-token
+
+```json
+{
+  "code":20000,
+  "data":
+  	{
+      "roles":["admin"],
+      "introduction":"I am a super administrator",
+      "avatar":"https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif",
+      "name":"Super Admin"
+    }
+}
+```
+
+
+
+### 3.2 后台登录代码
+
+#### 3.2.1 新建 `UserLoginController`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664970533906-d770416a-177e-4f8b-b86f-ee95db4a39ff.png)
+
+```java
+@Api(tags = "用户登录")
+@RequestMapping("/admin/vod/user")
+@RestController
+public class UserLoginController {
+
+    
+    @PostMapping("/login")
+	public Result<Map<String, Object>> login() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("token", "admin-token");
+        return Result.ok(map);
+    }
+
+    @GetMapping("/info")
+    public Result info() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("roles", "admin");
+        map.put("introduction", "I am a super administrator");
+        map.put("avatar", "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
+        map.put("name", "Super Admin");
+        return Result.ok(map);
+    }
+    
+}
+```
+
+#### 3.2.2 修改 `Result` 默认成功状态码为 `20000`， 失败 `20001`
+
+```java
+package com.atguigu.ggkt.result;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * 结果
+ * 统一返回结果类, 全局统一返回结果
+ *
+ * @author 陈江林
+ * @date 2022/10/2 09:36
+ */
+@ApiModel(value = "全局统一返回结果")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Result<T> {
+
+    /**
+     * 状态码
+     */
+    @ApiModelProperty(value = "返回码")
+    private Integer code;
+
+    /**
+     * 返回消息（成功、失败...）
+     */
+    @ApiModelProperty(value = "返回消息")
+    private String message;
+
+    /**
+     * 返回数据
+     */
+    @ApiModelProperty(value = "返回数据")
+    private T data;
+
+    /**
+     * 成功的方法, 没有 data 数据
+     *
+     * @return {@link Result}<{@link T}>
+     */
+    public static <T> Result<T> ok() {
+        return Result.ok(null);
+    }
+
+    /**
+     * 成功的方法, 有 data 数据
+     *
+     * @return {@link Result}<{@link T}>
+     */
+    public static <T> Result<T> ok(T data) {
+        return new Result<>(20000, "成功", data);
+    }
+
+    /**
+     * 失败的方法, 没有 data 数据
+     *
+     * @return {@link Result}<{@link T}>
+     */
+    public static <T> Result<T> fail() {
+        return Result.fail(null);
+    }
+
+    /**
+     * 失败的方法, 有 data 数据
+     *
+     * @return {@link Result}<{@link T}>
+     */
+    public static <T> Result<T> fail(T data) {
+        return new Result<>(20001, "失败", data);
+    }
+
+    /**
+     * 修改状态码
+     *
+     * @param code 状态码
+     * @return {@link Result}<{@link T}>
+     */
+    public Result<T> code(Integer code) {
+        this.setCode(code);
+        return this;
+    }
+
+    /**
+     * 修改消息
+     *
+     * @param message 消息
+     * @return {@link Result}<{@link T}>
+     */
+    public Result<T> message(String message) {
+        this.setMessage(message);
+        return this;
+    }
+
+}
+```
+
+
+
+#### 3.2.3 修改前端请求路径
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664970949565-ac2914f5-84c4-48e5-b6f9-9cb861c342cb.png)
+
+```latex
+# just a flag
+ENV = 'development'
+
+# base api
+#VUE_APP_BASE_API = '/dev-api'
+VUE_APP_BASE_API = 'http://localhost:8301'
+```
+
+
+
+#### 3.2.4 修改前端请求接口
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664971052157-ec27ae07-7670-46d5-9427-e7c46905d2b7.png)
+
+```javascript
+import request from '@/utils/request'
+
+export function login(data) {
+  return request({
+    url: '/admin/vod/user/login',
+    method: 'post',
+    data
+  })
+}
+
+export function getInfo(token) {
+  return request({
+    url: '/admin/vod/user/info',
+    method: 'get',
+    params: { token }
+  })
+}
+
+export function logout() {
+  return request({
+    url: '/vue-admin-template/user/logout',
+    method: 'post'
+  })
+}
+```
+
+
+
+#### 3.2.5 测试
+
+前端`npm run dev`
+
+**报错: 跨域问题: 端口号不一致**
+
+- **以下有一个不同都会出现跨域问题**
+
+    - 访问协议: `http` `https`
+    - 访问 `ip`
+    - 端口号: `9528` `8301`
+
+- 跨域本质: 浏览器对 `ajax` 请求一种限制
+
+
+
+**解决**
+
+- `Controller` 添加注解 `@CrossOrigin`
+
+```java
+package com.atguigu.ggkt.vod.controller;
+
+import com.atguigu.ggkt.result.Result;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/5 19:31
+ */
+@Api("用户登录")
+@RestController
+@RequestMapping("/admin/vod/user")
+@CrossOrigin
+public class UserLoginController {
+
+    @ApiOperation("用户登录")
+    @PostMapping("/login")
+    public Result<Map<String, Object>> login() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("token", "admin-token");
+        return Result.ok(map);
+    }
+
+    @ApiOperation("用户信息")
+    @GetMapping("/info")
+    public Result<Map<String, Object>> info() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("roles", "admin");
+        map.put("introduction", "I am a super administrator");
+        map.put("avatar", "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
+        map.put("name", "Super Admin");
+        return Result.ok(map);
+    }
+
+}
+```
+
+- `TeacherController`
+
+```java
+package com.atguigu.ggkt.vod.controller;
+
+
+import com.atguigu.ggkt.exception.GgktException;
+import com.atguigu.ggkt.model.vod.Teacher;
+import com.atguigu.ggkt.result.Result;
+import com.atguigu.ggkt.vo.vod.TeacherQueryVo;
+import com.atguigu.ggkt.vod.service.TeacherService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * <p>
+ * 讲师 前端控制器
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-10-01
+ */
+@Api(tags = "讲师管理接口")
+@RestController
+@RequestMapping("/admin/vod/teacher")
+@CrossOrigin
+public class TeacherController {
+
+    @Autowired
+    private TeacherService teacherService;
+
+    /**
+     * 查询所有讲师
+     *
+     * @return {@link List}<{@link Teacher}>
+     */
+    @ApiOperation("查询所有讲师")
+    @GetMapping("/findAll")
+    public Result<List<Teacher>> findAllTeacher() {
+        // 模拟异常
+        try {
+            // int i = 10/0;
+        } catch (Exception e) {
+            // 抛出异常
+            throw new GgktException(201, "执行自定义异常处理");
+        }
+
+        List<Teacher> list = teacherService.list();
+        return Result.ok(list).message("查询数据成功");
+    }
+
+    /**
+     * 通过 id 逻辑删除讲师
+     *
+     * @param id id
+     * @return boolean
+     */
+    @ApiOperation("通过 id 逻辑删除讲师")
+    @DeleteMapping("/remove/{id}")
+    public Result removeTeacherById(
+            @ApiParam(name = "id", value = "ID", required = true)
+            @PathVariable("id") Long id) {
+        boolean b = teacherService.removeById(id);
+        if (b) {
+            return Result.ok();
+        } else {
+            return Result.fail();
+        }
+    }
+
+    /**
+     * 条件查询分页列表
+     *
+     * @param page           查询页数
+     * @param limit          查询数量
+     * @param teacherQueryVo 查询条件对象
+     * @return {@link Result}
+     */
+    @ApiOperation(value = "获取分页列表")
+    @GetMapping("/{page}/{limit}")
+    public Result<IPage<Teacher>> index(
+            @ApiParam(name = "page", value = "当前页码", required = true)
+            @PathVariable Long page,
+            @ApiParam(name = "limit", value = "每页记录数", required = true)
+            @PathVariable Long limit,
+            @ApiParam(name = "teacherVo", value = "查询对象", required = false)
+            @RequestBody(required = false) TeacherQueryVo teacherQueryVo) {
+        //创建page对象，传递当前页和每页记录数
+        Page<Teacher> pageParam = new Page<>(page, limit);
+        //获取条件值
+        //讲师名称
+        String name = teacherQueryVo.getName();
+        //讲师级别
+        Integer level = teacherQueryVo.getLevel();
+        //开始时间
+        String joinDateBegin = teacherQueryVo.getJoinDateBegin();
+        //结束时间
+        String joinDateEnd = teacherQueryVo.getJoinDateEnd();
+        //封装条件
+        QueryWrapper<Teacher> wrapper = new QueryWrapper<>();
+        if (!StringUtils.isEmpty(name)) {
+            wrapper.like("name", name);
+        }
+        if (!StringUtils.isEmpty(level)) {
+            wrapper.eq("level", level);
+        }
+        if (!StringUtils.isEmpty(joinDateBegin)) {
+            wrapper.ge("join_date", joinDateBegin);
+        }
+        if (!StringUtils.isEmpty(joinDateEnd)) {
+            wrapper.le("join_date", joinDateEnd);
+        }
+        //调用方法得到分页查询结果
+        IPage<Teacher> pageModel = teacherService.page(pageParam, wrapper);
+        return Result.ok(pageModel);
+    }
+
+    /**
+     * 新增讲师
+     *
+     * @param teacher 讲师对象
+     * @return {@link Result}
+     */
+    @ApiOperation(value = "新增讲师")
+    @PostMapping("/save")
+    public Result saveTeacher(@RequestBody Teacher teacher) {
+        // 执行保存操作
+        boolean isSuccess = teacherService.save(teacher);
+        // 判断是否执行成功
+        if (isSuccess) {
+            return Result.ok();
+        } else {
+            return Result.fail();
+        }
+    }
+
+    /**
+     * 修改讲师信息
+     *
+     * @param teacher 讲师对象
+     * @return {@link Result}
+     */
+    @ApiOperation(value = "修改讲师信息")
+    @PutMapping("/update")
+    public Result updateTeacher(@RequestBody Teacher teacher) {
+        // 执行修改操作
+        boolean isSuccess = teacherService.updateById(teacher);
+        // 判断是否执行成功
+        if (isSuccess) {
+            return Result.ok();
+        } else {
+            return Result.fail();
+        }
+    }
+
+    /**
+     * 根据 id 查询讲师
+     *
+     * @param id id
+     * @return {@link Result}<{@link Teacher}>
+     */
+    @ApiOperation(value = "根据 id 查询讲师")
+    @GetMapping("/get/{id}")
+    public Result<Teacher> get(@PathVariable Long id) {
+        // 根据 id 获取讲师对象
+        Teacher teacher = teacherService.getById(id);
+        return Result.ok(teacher);
+    }
+
+    /**
+     * 批量删除讲师
+     *
+     * @param idList id 列表
+     * @return {@link Result}
+     */
+    @ApiOperation(value = "批量删除讲师")
+    @DeleteMapping("/batch/remove")
+    public Result batchRemove(@RequestBody List<Long> idList) {
+        // 执行删除操作
+        boolean isSuccess = teacherService.removeByIds(idList);
+        // 判断是否执行成功
+        if (isSuccess) {
+            return Result.ok();
+        } else {
+            return Result.fail();
+        }
+    }
+
+}
+```
+
+
+
+#### 3.2.6 退出
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664973729879-31ccab88-d396-497b-a525-0e563ce5015d.png)
+
+```javascript
+  // user logout
+  logout({ commit, state }) {
+    return new Promise((resolve, reject) => {
+      // logout(state.token).then(() => {
+      removeToken() // must remove  token  first
+      resetRouter()
+      commit('RESET_STATE')
+      resolve()
+      // }).catch(error => {
+      //   reject(error)
+      // })
+    })
+  }
+```
+
+
+
+## 4 安装插件`ESLint`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1664974405068-deb0f4b5-20f0-4c0e-b566-458ee24991fd.png)
+
+`VSCode` 进行扩展设置，依次点击 文件 > 首选项 > 设置
+
+打开 `VSCode` 配置文件(`settings.json`),添加如下配置
+
+```json
+    "files.autoSave":"off",
+    "eslint.validate": [
+       "javascript",
+       "javascriptreact",
+       "html",
+       { "language": "vue", "autoFix": true }
+     ],
+     "eslint.options": {
+        "plugins": ["html"]
+     }
+```
+
+这样每次保存的时候就可以根据根目录下`.eslintrc.js`你配置的`eslint`规则来检查和做一些简单的`fix`
+
+
+
+## 5 讲师前端列表功能
+
+### 5.1 添加讲师路由
+
+- `router` > `index.js` 中
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665111334330-ad2745d7-9696-4f99-9ad5-d466160304db.png)
+
+```javascript
+{
+  path: '/vod',
+  component: Layout,
+  redirect: '/vod/teacher/list',
+  name: 'vod',
+  meta: { title: '点播管理', icon: 'el-icon-s-help' },
+  children: [
+    {
+      path: 'teacher/list',
+      name: 'TeacherList',
+      component: () => import('@/views/vod/teacher/list'),
+      meta: { title: '讲师列表', icon: 'table' }
+    },
+    {
+      path: 'teacher/create',
+      name: 'TeacherCreate',
+      component: () => import('@/views/vod/teacher/form'),
+      meta: { title: '添加讲师', icon: 'tree' }
+    }
+  ]
+},
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665111503785-21aa949f-574c-410f-bf42-18e8e8843c75.png)
+
+
+
+### 5.2 新建路由对应的页面
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665113013322-e2ef216d-17a3-4a3e-ad2b-9afc21b2012d.png)
+
+#### 5.2.1 `form`
+
+```vue
+<template>
+  <div class="app-container">
+    讲师表单
+  </div>
+</template>
+
+
+<script>
+export default {
+  name: "form"
+}
+</script>
+
+<style scoped>
+
+</style>
+```
+
+
+
+#### 5.2.2 `list`
+
+```vue
+<template>
+  <div class="app-container">
+    讲师列表
+  </div>
+</template>
+
+
+<script>
+export default {
+  name: "list"
+}
+</script>
+
+<style scoped>
+
+</style>
+```
+
+
+
+### 5.3 讲师分页列表 `list.vue`
+
+#### 5.3.1 新建请求接口文件 `teacher.js`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665116130877-03cc6e38-7176-42f2-9fb7-0512591bb78d.png)
+
+```javascript
+import request from '@/utils/request'
+
+const api_name = '/admin/vod/teacher';
+export default {
+  // current 当前页, limit 每页记录数, searchObj 条件对象
+  getList(current, limit, searchObj) {
+    return request({
+      url: `${api_name}/${current}/${limit}`,
+      method: 'post',
+      data: searchObj
+    })
+  }
+}
+```
+
+
+
+#### 5.3.2 调用请求接口获取并显示数据 `list.vue`
+
+
+
+
+
+
+
+### 5.4 删除讲师
+
+#### 5.4.1 API
+
+```javascript
+import request from '@/utils/request'
+
+const api_name = '/admin/vod/teacher';
+export default {
+  // current 当前页, limit 每页记录数, searchObj 条件对象
+  getList(current, limit, params) {
+    return request({
+      url: `${api_name}/findQueryPage/${current}/${limit}`,
+      method: 'get',
+      params
+    })
+  },
+  removeById(id) {
+    return request({
+      url: `${api_name}/remove/${id}`,
+      method: 'delete'
+    })
+  }
+}
+```
+
+
+
+#### 5.4.2 方法
+
+```javascript
+// 根据 id 删除数据
+removeById(id) {
+  this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    return teacherApi.removeById(id)
+  }).then((response) => {
+    this.getTeacherList()
+    this.$message.success(response.message)
+  })
+}
+```
+
+
+
+### 5.5 添加讲师
+
+- 注意: 讲师名称(`name`) 是唯一的, 如果`李老师`被删除, 因为是逻辑删除, 所以`添加讲师`时`李老师`是无法添加成功的
+
+#### 5.5.1 API
+
+```javascript
+// 讲师添加
+saveTeacher(data) {
+  return request({
+    url: `${api_name}/save`,
+    method: 'post',
+    data
+  })
+}
+```
+
+####  
+
+#### 5.5.2 `form` 表单
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665223204439-9ea8a8ac-a6b3-4828-9222-fc245b87806e.png)
+
+```vue
+<template>
+  <div class="app-container">
+    <!-- 输入表单 -->
+    <el-form label-width="120px">
+      <el-form-item label="讲师名称">
+        <el-input v-model="teacher.name"/>
+      </el-form-item>
+      <el-form-item label="入驻时间">
+        <el-date-picker v-model="teacher.joinDate" value-format="yyyy-MM-dd"/>
+      </el-form-item>
+      <el-form-item label="讲师排序">
+        <el-input-number v-model="teacher.sort" :min="0"/>
+      </el-form-item>
+      <el-form-item label="讲师头衔">
+        <el-select v-model="teacher.level">
+          <!--
+            数据类型一定要和取出的json中的一致，否则没法回填
+            因此，这里value使用动态绑定的值，保证其数据类型是number
+            -->
+          <el-option :value="1" label="高级讲师"/>
+          <el-option :value="2" label="首席讲师"/>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="讲师简介">
+        <el-input v-model="teacher.intro"/>
+      </el-form-item>
+      <el-form-item label="讲师资历">
+        <el-input v-model="teacher.career" :rows="10" type="textarea"/>
+      </el-form-item>
+
+      <!-- 讲师头像 -->
+      <!--      <el-form-item label="讲师头像">-->
+      <!--      </el-form-item>-->
+
+      <el-form-item>
+        <el-button type="primary" @click="saveOrUpdate()">保存</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+
+<script>
+import teacherApi from '@/api/vod/teacher'
+
+export default {
+  name: "list",
+  created() {
+  },
+  data() {
+    return {
+      teacher: {
+        sort: 0,
+        level: 1
+      }
+    }
+  },
+  methods: {
+    // 保存数据
+    saveOrUpdate() {
+      teacherApi.saveTeacher(this.teacher)
+        .then(response => {
+          // 提示
+          this.$message.success("添加成功!");
+          // 跳转列表页面
+          this.$router.push({path: "/vod/teacher/list"});
+        })
+    }
+  }
+}
+
+</script>
+```
+
+
+
+### 5.6 修改讲师
+
+#### 5.6.1 API
+
+```javascript
+import request from '@/utils/request'
+
+const api_name = '/admin/vod/teacher';
+export default {
+  // current 当前页, limit 每页记录数, searchObj 条件对象
+  getList(current, limit, params) {
+    return request({
+      url: `${api_name}/findQueryPage/${current}/${limit}`,
+      method: 'get',
+      params
+    })
+  },
+  removeById(id) {
+    return request({
+      url: `${api_name}/remove/${id}`,
+      method: 'delete'
+    })
+  },
+  // 讲师添加
+  saveTeacher(data) {
+    return request({
+      url: `${api_name}/save`,
+      method: 'post',
+      data
+    })
+  },
+  // 讲师修改
+  updateTeacher(data) {
+    return request({
+      url: `${api_name}/update`,
+      method: 'put',
+      data
+    })
+  },
+  // 根据 id 获取讲师信息
+  getTeacherById(id) {
+    return request({
+      url: `${api_name}/get/${id}`,
+      method: 'get'
+    })
+  }
+}
+```
+
+
+
+#### 5.6.2 路由
+
+```javascript
+{
+  path: 'teacher/edit/:id',
+  name: 'TeacherEdit',
+  component: () => import('@/views/vod/teacher/form'),
+  meta: {title: '编辑讲师'},
+  hidden: true
+}
+```
+
+
+
+#### 5.6.3 `from.vue` 的修改 - 数据回显
+
+```vue
+created() {
+  // 获取路径 id 值, 根据 id 查询数据
+  const id = this.$route.params.id
+  if (id) {
+    teacherApi.getTeacherById(id)
+      .then(response => {
+        this.teacher = response.data
+      })
+  }
+}
+```
+
+
+
+#### 5.6.4 `from.vue` 的修改 - 修改功能
+
+```javascript
+methods: {
+  // 添加
+  save() {
+    teacherApi.saveTeacher(this.teacher)
+      .then(response => {
+        // 提示
+        this.$message.success("添加成功!");
+        // 跳转列表页面
+        this.$router.push({path: "/vod/teacher/list"});
+      })
+  },
+  // 修改
+  update() {
+    teacherApi.updateTeacher(this.teacher)
+      .then(response => {
+        // 提示
+        this.$message.success("修改成功!");
+        // 跳转列表页面
+        this.$router.push({path: "/vod/teacher/list"});
+      })
+  },
+  // 保存或修改
+  saveOrUpdate() {
+    if (this.teacher.id) {
+      this.update()
+    } else {
+      this.save()
+    }
+  }
+}
+```
+
+
+
+### 5.7 批量删除
+
+#### 5.7.1 API
+
+```javascript
+// 批量删除
+batchRemove(data) {
+  return request({
+    url: `${api_name}/batch/remove`,
+    method: 'delete',
+    data
+  })
+}
+```
+
+
+
+#### 5.7.2 代码
+
+- 在 `el-table` 中添加属性 `@selection-change="handleSelectionChange"`
+
+```vue
+<!-- 工具按钮 -->
+<el-card class="operate-container" shadow="never">
+  <i class="el-icon-tickets" style="margin-top: 5px"></i>
+  <span style="margin-top: 5px">数据列表</span>
+  <el-button class="btn-add" @click="add()" style="margin-left: 10px;">添加</el-button>
+  <el-button class="btn-add" @click="batchRemove()" >批量删除</el-button>
+</el-card>
+// 复选框触发事件
+handleSelectionChange(selection) {
+  this.multipleSelection = selection
+},
+add() {
+  // 跳转到添加页面
+  this.$router.push({path: "/vod/teacher/create"})
+},
+// 批量删除
+batchRemove() {
+  if (this.multipleSelection.length === 0) {
+    this.$message.warning('请选择要删除的记录!')
+    return
+  }
+  this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    const idList = []
+    // 遍历数组将 id 取出并存储到 idList 中
+    this.multipleSelection.forEach(teacher => idList.push(teacher.id))
+    // 批量删除
+    return teacherApi.batchRemove(idList)
+  }).then((response) => {
+    this.getTeacherList()
+    this.$message.success("批量删除成功")
+  })
+}
+```
+
+
+
+## 后台项目打包问题
+
+### 追加依赖
+
+- `model` 工程
+- `service_utils` 工程
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+                <!-- 取消查找本项目下的Main方法：为了解决Unable to find main class的问题 -->
+                <mainClass>none</mainClass>
+                <!-- 为了解决依赖模块找不到此模块中的类或属性 -->
+                <classifier>execute</classifier>
+            </configuration>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>repackage</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```
