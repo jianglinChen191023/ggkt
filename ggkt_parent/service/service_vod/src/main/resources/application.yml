@@ -19,8 +19,22 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+  # 上传文件配置
+  servlet:
+    multipart:
+      max-file-size: 1024MB
+      max-request-size: 1024MB
 
   #mybatis日志
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# COS
+tencent:
+  cod:
+    file:
+      region: ap-beijing
+      secretid: 你的 id
+      secretkey: 你的 key
+      bucketname: ggkt-atguigu-1301043802
