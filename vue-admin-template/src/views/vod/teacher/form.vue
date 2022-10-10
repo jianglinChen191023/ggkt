@@ -53,7 +53,7 @@
 import teacherApi from '@/api/vod/teacher'
 
 export default {
-  name: "list",
+  name: "form",
   created() {
     // 获取路径 id 值, 根据 id 查询数据
     const id = this.$route.params.id
