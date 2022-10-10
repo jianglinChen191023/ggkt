@@ -226,7 +226,47 @@
         - [5.2 `/deep/` 修饰符](#52-deep-修饰符-1)
         - [5.3 `>>>` 修饰符](#53--修饰符-1)
     - [修改](#修改-1)
-    
+
+- [七 课堂分类管理模块](#七-课堂分类管理模块)
+  - [1 课程分类管理模块需求](#1-课程分类管理模块需求)
+    - [1.1 课程分类列表功能](#11-课程分类列表功能)
+    - [1.2 课程分类导出功能](#12-课程分类导出功能)
+    - [1.3 课程分类导入功能](#13-课程分类导入功能)
+    - [1.4 `EasyExcel` 技术](#14-easyexcel-技术)
+  - [2 接口](#2-接口)
+    - [2.1 代码生成器](#21-代码生成器)
+      - [2.1.1 控制器](#211-控制器)
+      - [2.1.2 服务接口](#212-服务接口)
+      - [2.1.3 服务实现类](#213-服务实现类)
+      - [2.1.4 `Mapper` 接口](#214-mapper-接口)
+  - [3 前端显示](#3-前端显示)
+    - [3.1 第一步 路由](#31-第一步-路由)
+    - [3.2 第二步 对应的页面](#32-第二步-对应的页面)
+    - [3.3 第三步 API 请求接口](#33-第三步-api-请求接口)
+  - [4 `EasyExcel`](#4-easyexcel)
+    - [4.1 什么是 `EasyExcel`](#41-什么是-easyexcel)
+    - [4.2 为什么使用 `EasyExcel`（特点）](#42-为什么使用-easyexcel特点)
+      - [4.3 怎么使用 `EasyExcel`](#43-怎么使用-easyexcel)
+      - [4.3.1 第一步 引入依赖](#431-第一步-引入依赖)
+    - [4.4 写 `Excel`](#44-写-excel)
+      - [4.4.1 第一步 创建 `excel` 对应的实体对象](#441-第一步-创建-excel-对应的实体对象)
+      - [4.4.2 第二步 写入](#442-第二步-写入)
+    - [4.5 读取 `Excel`](#45-读取-excel)
+      - [4.5.1 JDK8+, 新建测试类](#451-jdk8-新建测试类)
+  - [5 课程分类中的导出功能](#5-课程分类中的导出功能)
+    - [5.1 实体类 `SubjectEeVo`](#51-实体类-subjecteevo)
+    - [5.2 控制类](#52-控制类)
+    - [5.3 服务接口](#53-服务接口)
+    - [5.4 服务实现](#54-服务实现)
+    - [5.5 前端](#55-前端)
+  - [6 课程分类导入](#6-课程分类导入)
+    - [6.1 控制类](#61-控制类)
+    - [6.2 服务接口](#62-服务接口)
+    - [6.3 服务实现](#63-服务实现)
+    - [6.4 前端](#64-前端)
+  - [知识点](#知识点)
+    - [代码检查（默认开启）](#代码检查默认开启)
+
 # 一 硅谷课堂
 
 ## 项目概述
@@ -6976,3 +7016,882 @@ public class ServiceVodApplication {
 
 }
 ```
+
+# 七 课堂分类管理模块
+
+```
+git checkout -b 6.0.0_subject
+```
+
+## 1 课程分类管理模块需求
+
+### 1.1 课程分类列表功能
+
+- 树形显示
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665365443994-1825f20f-2292-43de-b246-06baf8e7dd44.png)
+
+- 官方示例
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665366251381-18e8a33e-be86-433e-8a14-bef2c7e3b8cb.png)
+
+支持树类型的数据的显示。当 row 中包含 children 字段时，被视为树形数据。渲染树形数据时，必须要指定 row-key。支持子节点数据异步加载。设置 Table 的 lazy 属性为 true 与加载函数 load 。通过指定 row 中的 hasChildren 字段来指定哪些行是包含子节点。children 与 hasChildren 都可以通过 tree-props 配置。
+
+```vue
+<template>
+<div>
+  <el-table
+    :data="tableData"
+    style="width: 100%;margin-bottom: 20px;"
+    row-key="id"
+    border
+    default-expand-all
+    :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+    <el-table-column
+      prop="date"
+      label="日期"
+      sortable
+      width="180">
+    </el-table-column>
+    <el-table-column
+      prop="name"
+      label="姓名"
+      sortable
+      width="180">
+    </el-table-column>
+    <el-table-column
+      prop="address"
+      label="地址">
+    </el-table-column>
+  </el-table>
+
+  <el-table
+    :data="tableData1"
+    style="width: 100%"
+    row-key="id"
+    border
+    lazy
+    :load="load"
+    :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+    <el-table-column
+      prop="date"
+      label="日期"
+      width="180">
+    </el-table-column>
+    <el-table-column
+      prop="name"
+      label="姓名"
+      width="180">
+    </el-table-column>
+    <el-table-column
+      prop="address"
+      label="地址">
+    </el-table-column>
+  </el-table>
+</div>
+</template>
+<script>
+  export default {
+    data() {
+      return {
+        tableData: [{
+          id: 1,
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          id: 2,
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1517 弄'
+        }, {
+          id: 3,
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1519 弄',
+          children: [{
+              id: 31,
+              date: '2016-05-01',
+              name: '王小虎',
+              address: '上海市普陀区金沙江路 1519 弄'
+            }, {
+              id: 32,
+              date: '2016-05-01',
+              name: '王小虎',
+              address: '上海市普陀区金沙江路 1519 弄'
+          }]
+        }, {
+          id: 4,
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1516 弄'
+        }],
+        tableData1: [{
+          id: 1,
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          id: 2,
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1517 弄'
+        }, {
+          id: 3,
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1519 弄',
+          hasChildren: true
+        }, {
+          id: 4,
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1516 弄'
+        }]
+      }
+    },
+    methods: {
+      load(tree, treeNode, resolve) {
+        setTimeout(() => {
+          resolve([
+            {
+              id: 31,
+              date: '2016-05-01',
+              name: '王小虎',
+              address: '上海市普陀区金沙江路 1519 弄'
+            }, {
+              id: 32,
+              date: '2016-05-01',
+              name: '王小虎',
+              address: '上海市普陀区金沙江路 1519 弄'
+            }
+          ])
+        }, 1000)
+      }
+    },
+  }
+</script>
+```
+
+### 1.2 课程分类导出功能
+
+- 导出到 `excel`
+
+
+
+### 1.3 课程分类导入功能
+
+- 把 `excel` 添加数据库表
+
+
+
+### 1.4 `EasyExcel` 技术
+
+
+
+
+
+## 2 接口
+
+### 2.1 代码生成器
+
+- `setInclude("subject");`
+
+  - 删除实体类
+  - 使用 model 中的实体类
+
+    - `@TableField(exist = false)` 表示数据库中没有该字段
+
+#### 2.1.1 控制器
+
+```java
+package com.atguigu.ggkt.vod.controller;
+
+
+import com.atguigu.ggkt.model.vod.Subject;
+import com.atguigu.ggkt.result.Result;
+import com.atguigu.ggkt.vod.service.SubjectService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * <p>
+ * 课程分类 前端控制器
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-10-10
+ */
+@Api(tags = "课程分类")
+@RestController
+@RequestMapping("/admin/vod/subject")
+@CrossOrigin
+public class SubjectController {
+
+    @Autowired
+    private SubjectService subjectService;
+
+    @ApiOperation("课程分类列表")
+    @GetMapping("/getChildSubject/{id}")
+    public Result<List<Subject>> getChildSubject(@PathVariable Long id) {
+        List<Subject> list = subjectService.selectSubjectList(id);
+        return Result.ok(list);
+    }
+
+}
+```
+
+#### 2.1.2 服务接口
+
+```java
+package com.atguigu.ggkt.vod.service;
+
+import com.atguigu.ggkt.model.vod.Subject;
+import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
+
+/**
+ * <p>
+ * 课程分类 服务类
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-10-10
+ */
+public interface SubjectService extends IService<Subject> {
+
+    /**
+     * 查询课程分类列表
+     *
+     * @param id id
+     * @return {@link List}<{@link Subject}>
+     */
+    List<Subject> selectSubjectList(Long id);
+}
+```
+
+#### 2.1.3 服务实现类
+
+```java
+package com.atguigu.ggkt.vod.service.impl;
+
+import com.atguigu.ggkt.model.vod.Subject;
+import com.atguigu.ggkt.vod.mapper.SubjectMapper;
+import com.atguigu.ggkt.vod.service.SubjectService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * <p>
+ * 课程分类 服务实现类
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-10-10
+ */
+@Service
+public class SubjectServiceImpl extends ServiceImpl<SubjectMapper, Subject> implements SubjectService {
+
+    @Override
+    public List<Subject> selectSubjectList(Long id) {
+        LambdaQueryWrapper<Subject> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Subject::getParentId, id);
+        List<Subject> list = baseMapper.selectList(wrapper);
+        list.forEach(subject -> {
+            // 判断是否有子数据, 如果有设置 hashChildren = true
+            Long subjectId = subject.getId();
+            // 查询
+            boolean isChild = this.isChildren(subjectId);
+            subject.setHasChildren(isChild);
+        });
+
+        return list;
+    }
+
+    /**
+     * 判断是否有子数据
+     *
+     * @param subjectId 对象 id
+     * @return boolean
+     */
+    public boolean isChildren(Long subjectId) {
+        LambdaQueryWrapper<Subject> wrapper = new LambdaQueryWrapper();
+        wrapper.eq(Subject::getParentId, subjectId);
+        Integer count = baseMapper.selectCount(wrapper);
+        return count > 0;
+    }
+
+}
+```
+
+
+
+#### 2.1.4 `Mapper` 接口
+
+```xml
+package com.atguigu.ggkt.vod.mapper;
+
+import com.atguigu.ggkt.model.vod.Subject;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+/**
+ * <p>
+ * 课程分类 Mapper 接口
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-10-10
+ */
+public interface SubjectMapper extends BaseMapper<Subject> {
+
+}
+```
+
+
+
+## 3 前端显示
+
+### 3.1 第一步 路由
+
+```javascript
+  {
+    path: '/subject',
+    component: Layout,
+    redirect: '/subject/list',
+    name: '课程分类管理',
+    alwaysShow: true,
+    meta: {title: '课程分类管理', icon: 'example'},
+    children: [
+      {
+        path: 'list',
+        name: '课程分类列表',
+        component: () => import('@/views/vod/subject/list'),
+        meta: {title: '课程分类列表', icon: 'table'}
+      }
+    ]
+  },
+```
+
+
+
+### 3.2 第二步 对应的页面
+
+- 新建 `src/views/vod/subject/list.vue`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665377911820-9410bd04-d374-4cd6-ac0b-9ca8644db9ed.png)
+
+```vue
+<template>
+  <div class="app-container">
+    <el-table
+      :data="list"
+      style="width: 100%"
+      row-key="id"
+      border
+      lazy
+      :load="load"
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+      <el-table-column
+        prop="title"
+        label="名称"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="createTime"
+        label="创建时间"
+        width="180">
+      </el-table-column>
+    </el-table>
+  </div>
+</template>
+
+<script>
+import subjectApi from '@/api/vod/subject'
+
+export default {
+  name: 'list',
+  data() {
+    return {
+      list: [] //数据字典列表数组
+    }
+  },
+  created() {
+    this.getSubList(0)
+  },
+  methods: {
+    //数据字典列表
+    getSubList(id) {
+      subjectApi.getList(id)
+        .then(response => {
+          this.list = response.data
+        })
+    },
+    load(tree, treeNode, resolve) {
+      subjectApi.getList(tree.id).then(response => {
+        resolve(response.data)
+      })
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>
+```
+
+
+
+### 3.3 第三步 API 请求接口
+
+- 新建 `src/api/vod/subject.js`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665378024479-30d15157-9112-4e05-9715-65071ef5e9ee.png)
+
+```javascript
+import request from '@/utils/request'
+
+const api_name = '/admin/vod/subject';
+export default {
+  // current 当前页, limit 每页记录数, searchObj 条件对象
+  getList(id) {
+    return request({
+      url: `${api_name}/getChildSubject/${id}`,
+      method: 'get'
+    })
+  }
+}
+```
+
+
+
+## 4 `EasyExcel`
+
+### 4.1 什么是 `EasyExcel`
+
+- `EasyExcel` 是阿里巴巴开源的一个 `excel` 处理框架, **以使用简单, 节省内存著称**
+- `EasyExcel` 能大大减少占用内存的注意原因是解析 `Excel` 时没有将文件数据一次性全部加载到内存中, 而是从磁盘上一行行读取数据, 逐个解析
+
+
+
+### 4.2 为什么使用 `EasyExcel`（特点）
+
+- `java` 领域解析、生成 `Excel` 比较有名的框架有 `Apache poi`、`jxl` 等。但它们都存在一个严重的问题就是非常的耗内存。如果系统并发量不大的话还可以, 但并发上来后一定会 `OOM` 或者 `JVM` 频繁的 `full gc`
+- `EasyExcel` 采用一行一行的解析模式, 并将一行的解析结果及**观察者**的模式通知处理（`AnalysisEventListener`）
+- `EasyExcel` 是一个基于 `java` 的简单、省内存的读写 `Excel` 的开源项目。可以在尽可能节约内存的情况下支持读写百 `M` 的 `Excel`
+- `03` 版依赖 `POI` 的 `sax` 模式，在上层做了模型转换的封装，让使用者更加简单方便
+
+#### 4.3 怎么使用 `EasyExcel`
+
+#### 4.3.1 第一步 引入依赖
+
+```xml
+<!-- 腾讯云 COS 对象存储 -->
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>easyexcel</artifactId>
+    <version>3.1.1</version>
+</dependency>
+```
+
+
+
+### 4.4 写 `Excel`
+
+```java
+/**
+ * 最简单的写
+ * <p>1. 创建excel对应的实体对象 参照{@link com.alibaba.easyexcel.test.demo.write.DemoData}
+ * <p>2. 直接写即可
+ */
+@Test
+public void simpleWrite() {
+    String fileName = TestFileUtil.getPath() + "write" + System.currentTimeMillis() + ".xlsx";
+    // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+    // 如果这里想使用03 则 传入excelType参数即可
+    EasyExcel.write(fileName, DemoData.class).sheet("模板").doWrite(data());
+}
+```
+
+
+
+#### 4.4.1 第一步 创建 `excel` 对应的实体对象
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665380385953-05267d12-02a1-47ea-a234-51bd56c88274.png)
+
+```java
+package com.atguigu.ggkt.excel;
+
+import com.alibaba.excel.annotation.ExcelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * EasyExcel 测试实体类
+ *
+ * @author 陈江林
+ * @date 2022/10/10 13:35
+ */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class User {
+
+    @ExcelProperty("用户编号")
+    private Integer id;
+
+    @ExcelProperty("用户名称")
+    private String name;
+
+}
+```
+
+
+
+#### 4.4.2 第二步 写入
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665380445848-fa95ac37-335d-4dec-aa28-fbe32546aedc.png)
+
+```java
+package com.atguigu.ggkt;
+
+import com.alibaba.excel.EasyExcel;
+import com.atguigu.ggkt.excel.User;
+
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 测试 EasyExcel 写入 Excel
+ *
+ * @author 陈江林
+ * @date 2022/10/10 13:40
+ */
+public class TestWrite {
+
+    public static void main(String[] args) {
+        String fileName = TestWrite.class.getResource("/").getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
+        System.out.println(fileName);
+        EasyExcel.write(fileName, User.class)
+                .sheet("模板")
+                .doWrite(() -> {
+                    // 分页查询数据
+                    return data();
+                });
+
+        try {
+            // 打开文件
+            Desktop.getDesktop().open(new File(fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static List<User> data() {
+        List<User> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            User user = new User(i, "lucy" + i);
+            list.add(user);
+        }
+
+        return list;
+    }
+
+}
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665381166537-0df69068-e9d7-4f72-876c-61134f3097fd.png)
+
+
+
+### 4.5 读取 `Excel`
+
+- 官方实例
+
+```java
+    /**
+     * 最简单的读
+     * <p>1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
+     * <p>3. 直接读即可
+     */
+    @Test
+    public void simpleRead() {
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet 文件流会自动关闭
+        EasyExcel.read(fileName, DemoData.class, new DemoDataListener()).sheet().doRead();
+    }
+```
+
+
+
+#### 4.5.1 JDK8+, 新建测试类
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665381258861-106cb434-6758-47de-a672-ff19cb88b7bb.png)
+
+```java
+package com.atguigu.ggkt;
+
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.read.listener.PageReadListener;
+import com.alibaba.fastjson.JSON;
+import com.atguigu.ggkt.excel.User;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 测试 EasyExcel 读取 Excel
+ *
+ * @author 陈江林
+ * @date 2022/10/10 13:53
+ */
+@Slf4j
+public class TestRead {
+
+    public static void main(String[] args) {
+        // 写法1：JDK8+ ,不用额外写一个DemoDataListener
+        // since: 3.0.0-beta1
+        String fileName = "/Users/chenjianglin/IdeaProjects/ggkt/ggkt_parent/service/service_vod/target/test-classes/simpleWrite1665381066271.xlsx";
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet 文件流会自动关闭
+        // 这里每次会读取100条数据 然后返回过来 直接调用使用数据就行
+        EasyExcel.read(fileName, User.class, new PageReadListener<User>(dataList -> {
+            for (User user : dataList) {
+                log.info("读取到一条数据{}", JSON.toJSONString(user));
+            }
+        })).sheet().doRead();
+    }
+
+}
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665381487368-99397d65-79f6-4c52-8b55-5fd8c269e48b.png)
+
+
+
+## 5 课程分类中的导出功能
+
+### 5.1 实体类 `SubjectEeVo`
+
+### 5.2 控制类
+
+```java
+    @ApiOperation("课程分类导出")
+    @GetMapping("/exportData")
+    public void exportData(HttpServletResponse response) {
+        subjectService.exportData(response);
+    }
+```
+
+### 5.3 服务接口
+
+```java
+    /**
+     * 导出数据为 Excel 文件
+     *
+     * @param response 响应
+     */
+    void exportData(HttpServletResponse response);
+```
+
+### 5.4 服务实现
+
+```java
+    @Override
+    public void exportData(HttpServletResponse response) {
+        try {
+            response.setContentType("application/vnd.ms-excel");
+            response.setCharacterEncoding("utf-8");
+            // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
+            String fileName = URLEncoder.encode("课程分类", "UTF-8");
+            response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
+
+            List<Subject> dictList = baseMapper.selectList(null);
+            List<SubjectEeVo> dictVoList = new ArrayList<>(dictList.size());
+            for (Subject dict : dictList) {
+                SubjectEeVo dictVo = new SubjectEeVo();
+                BeanUtils.copyProperties(dict, dictVo);
+                dictVoList.add(dictVo);
+            }
+
+            EasyExcel.write(response.getOutputStream(), SubjectEeVo.class).sheet("课程分类").doWrite(dictVoList);
+        } catch (Exception e) {
+            throw new GgktException(20001, "导出失败");
+        }
+    }
+```
+
+
+
+### 5.5 前端
+
+```html
+<div class="el-toolbar">
+    <div class="el-toolbar-body" style="justify-content: flex-start;">
+      <el-button type="text" @click="exportData"><i class="fa fa-plus"/> 导出</el-button>
+    </div>
+</div>
+```
+
+- 对应的数据
+
+```javascript
+data() {
+  return {
+    basePath: process.env.VUE_APP_BASE_API
+  }
+}
+```
+
+- 对应方法
+
+```javascript
+// 导出数据为 Excel 文件
+exportData() {
+  window.open(this.basePath + "/admin/vod/subject/exportData")
+}
+```
+
+
+
+## 6 课程分类导入
+
+### 6.1 控制类
+
+```java
+    @ApiOperation("课程分类导入")
+    @PostMapping("/importData")
+    public Result importData(MultipartFile file) {
+        subjectService.importData(file);
+        return Result.ok();
+    }
+```
+
+### 6.2 服务接口
+
+```java
+    /**
+     * 导入数据
+     *
+     * @param file 文件
+     */
+    void importData(MultipartFile file);
+```
+
+### 6.3 服务实现
+
+```java
+    @Override
+    public void importData(MultipartFile file) {
+        try {
+            EasyExcel.read(file.getInputStream(), SubjectEeVo.class, new PageReadListener<SubjectEeVo>(dataList -> {
+                dataList.forEach(subjectEeVo -> {
+                    Subject subject = new Subject();
+                    Date date = new Date();
+                    subject.setCreateTime(date);
+                    subject.setUpdateTime(date);
+                    BeanUtils.copyProperties(subjectEeVo, subject);
+                    subjectMapper.insert(subject);
+                });
+            })).sheet().doRead();
+        } catch (Exception e) {
+            throw new GgktException(20001, "导入失败");
+        }
+    }
+```
+
+
+
+### 6.4 前端
+
+```html
+<el-button type="text" @click="importData"><i class="fa fa-plus"/> 导入</el-button>
+```
+
+- 对应的数据
+
+```javascript
+data() {
+    return {
+        dialogImportVisible: false
+    }
+},
+```
+
+- 对应的方法
+
+```javascript
+  	// 上传文件
+    onUploadSuccess(response) {
+      // 清空上传列表
+      this.$refs.upload.clearFiles();
+      if (response.code === 20000) {
+        this.$message.success('导入成功')
+        this.dialogImportVisible = false
+        this.getSubList(0)
+      } else {
+        this.$message.error('导入失败')
+      }
+    },
+    handleError() {
+      this.$message.error('上传失败')
+    },
+    // 上传之前触发
+    beforeUpload(file) {
+      const isJPG = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+      const isLt2M = file.size / 1024 < 500;
+      if (!isJPG) {
+        this.$message.error('上传文件只能是 xls 格式!');
+      }
+
+      if (!isLt2M) {
+        this.$message.error('上传文件大小不能超过 500KB!');
+      }
+
+      return isJPG && isLt2M;
+    }
+```
+
+- 弹出层
+
+```html
+  	<!-- 弹出框 -->
+    <el-dialog title="导入" :visible.sync="dialogImportVisible" width="480px">
+      <el-form label-position="right" label-width="170px">
+        <el-form-item label="文件">
+          <el-upload
+            ref="upload"
+            :multiple="false"
+            :on-error="handleError"
+            :before-upload="beforeUpload"
+            :on-success="onUploadSuccess"
+            :action="basePath + '/admin/vod/subject/importData'"
+            class="upload-demo">
+            <el-button size="small" type="primary">点击上传</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传xls文件，且不超过500kb</div>
+          </el-upload>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogImportVisible = false">取消</el-button>
+      </div>
+    </el-dialog>
+```
+
+
+
+## 知识点
+
+### 代码检查（默认开启）
+
+- 关闭代码检查:`vue.config.js` 文件 `lintOnSve: false`
