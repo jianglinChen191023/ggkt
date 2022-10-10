@@ -70,7 +70,8 @@
         <template slot-scope="scope">
           <!-- 修改按钮 -->
           <router-link :to="'/vod/teacher/edit/'+scope.row.id">
-            <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
+            <!--            <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>-->
+            <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
           </router-link>
           <!-- 删除按钮 -->
           <el-button style="margin-left: 10px;" type="danger" icon="el-icon-delete" size="mini"
