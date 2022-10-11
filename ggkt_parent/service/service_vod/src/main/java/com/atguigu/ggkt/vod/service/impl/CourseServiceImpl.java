@@ -8,10 +8,7 @@ import com.atguigu.ggkt.vo.vod.CourseFormVo;
 import com.atguigu.ggkt.vo.vod.CoursePublishVo;
 import com.atguigu.ggkt.vo.vod.CourseQueryVo;
 import com.atguigu.ggkt.vod.mapper.CourseMapper;
-import com.atguigu.ggkt.vod.service.CourseDescriptionService;
-import com.atguigu.ggkt.vod.service.CourseService;
-import com.atguigu.ggkt.vod.service.SubjectService;
-import com.atguigu.ggkt.vod.service.TeacherService;
+import com.atguigu.ggkt.vod.service.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -44,6 +41,12 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
     @Autowired
     private CourseDescriptionService courseDescriptionService;
+
+    @Autowired
+    private VideoService videoService;
+
+    @Autowired
+    private ChapterService chapterService;
 
     @Override
     public Map<String, Object> findPageCourse(Long page, Long limit, CourseQueryVo courseQueryVo) {
@@ -173,6 +176,18 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         course.setStatus(1);
         course.setPublishTime(new Date());
         baseMapper.updateById(course);
+    }
+
+    @Override
+    public void removeCourseById(Long id) {
+        // 根据课程 id 删除小节
+        videoService.removeVideoByCourseId(id);
+        // 根据课程 id 删除章节
+        chapterService.removeChapterByCourseId(id);
+        // 根据课程 id 删除课程描述
+        courseDescriptionService.removeById(id);
+        // 根据课程 id 删除课程
+        baseMapper.deleteById(id);
     }
 
 }

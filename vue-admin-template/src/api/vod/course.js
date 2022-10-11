@@ -33,5 +33,26 @@ export default {
       method: 'put',
       data
     })
+  },
+  //获取发布课程信息
+  getCoursePublishById(id) {
+    return request({
+      url: `${api_name}/getCoursePublishVo/${id}`,
+      method: 'get'
+    })
+  },
+  //发布课程
+  publishCourseById(id) {
+    return request({
+      url: `${api_name}/publishCourse/${id}`,
+      method: 'put'
+    })
+  },
+  // 根据 id 删除数据
+  removeById(id) {
+    return request({
+      url: `${api_name}/remove/${id}`,
+      method: 'delete'
+    })
   }
 }

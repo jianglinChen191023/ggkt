@@ -188,10 +188,26 @@ export default {
   },
 
   methods: {
+    // 根据id删除数据
+    removeById(id) {
+      this.$confirm('此操作将永久删除该课程，以及该课程下的章节和视频，是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return courseApi.removeById(id)
+      }).then(response => {
+        this.fetchData()
+        this.$message.success(response.message)
+      }).catch((response) => {
+        if (response === 'cancel') {
+          this.$message.info('取消删除')
+        }
+      })
+    },
     fetchData() {
       courseApi.getPageList(this.page, this.limit, this.searchObj).then(response => {
         this.list = response.data.records
-        console.log(this.list)
         this.total = response.data.total
       })
     },
