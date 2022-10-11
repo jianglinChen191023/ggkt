@@ -29,6 +29,8 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  # mapper.xml 位置
+  mapper-locations: classpath:com/atguigu/ggkt/vod/mapper/xml/*.xml
 
 # 腾讯云 COS 对象存储
 tencent:

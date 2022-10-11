@@ -3,6 +3,7 @@ package com.atguigu.ggkt.vod.controller;
 
 import com.atguigu.ggkt.result.Result;
 import com.atguigu.ggkt.vo.vod.CourseFormVo;
+import com.atguigu.ggkt.vo.vod.CoursePublishVo;
 import com.atguigu.ggkt.vo.vod.CourseQueryVo;
 import com.atguigu.ggkt.vod.service.CourseService;
 import io.swagger.annotations.Api;
@@ -56,6 +57,20 @@ public class CourseController {
     @PutMapping("/update")
     public Result get(@RequestBody CourseFormVo courseFormVo) {
         courseService.updateCourseId(courseFormVo);
+        return Result.ok();
+    }
+
+    @ApiOperation("根据 id 查询发布课程信息")
+    @GetMapping("/getCoursePublishVo/{id}")
+    public Result<CoursePublishVo> getCoursePublishVo(@PathVariable Long id) {
+        CoursePublishVo coursePublishVo = courseService.getCoursePublishVo(id);
+        return Result.ok(coursePublishVo);
+    }
+
+    @ApiOperation("课程最终发布")
+    @GetMapping("/publishCourse/{id}")
+    public Result publishCourse(@PathVariable Long id) {
+        courseService.publishCourse(id);
         return Result.ok();
     }
 

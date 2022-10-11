@@ -5,6 +5,7 @@ import com.atguigu.ggkt.model.vod.CourseDescription;
 import com.atguigu.ggkt.model.vod.Subject;
 import com.atguigu.ggkt.model.vod.Teacher;
 import com.atguigu.ggkt.vo.vod.CourseFormVo;
+import com.atguigu.ggkt.vo.vod.CoursePublishVo;
 import com.atguigu.ggkt.vo.vod.CourseQueryVo;
 import com.atguigu.ggkt.vod.mapper.CourseMapper;
 import com.atguigu.ggkt.vod.service.CourseDescriptionService;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -157,6 +159,20 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         CourseDescription description = new CourseDescription();
         description.setDescription(courseFormVo.getDescription());
         courseDescriptionService.updateById(description);
+    }
+
+    @Override
+    public CoursePublishVo getCoursePublishVo(Long id) {
+        return baseMapper.selectCoursePublishVoById(id);
+    }
+
+    @Override
+    public void publishCourse(Long id) {
+        Course course = baseMapper.selectById(id);
+        // 已经发布
+        course.setStatus(1);
+        course.setPublishTime(new Date());
+        baseMapper.updateById(course);
     }
 
 }
