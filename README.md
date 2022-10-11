@@ -267,6 +267,72 @@
   - [知识点](#知识点)
     - [代码检查（默认开启）](#代码检查默认开启)
 
+- [八 点播管理模块](#八-点播管理模块)
+  - [1 点播管理模块需求](#1-点播管理模块需求)
+  - [2 生成代码](#2-生成代码)
+  - [3 课程列表](#3-课程列表)
+    - [3.1 接口](#31-接口)
+      - [3.1.1 控制类](#311-控制类)
+      - [3.1.2 服务实现](#312-服务实现)
+    - [3.2 前端](#32-前端)
+      - [3.2.1 第一步 路由](#321-第一步-路由)
+      - [3.2.2 第二步 创建 `List.vue`](#322-第二步-创建-listvue)
+      - [3.2.3 第三步 API](#323-第三步-api)
+  - [4 课程添加](#4-课程添加)
+    - [4.1 接口](#41-接口)
+      - [4.1.1 控制类 `CourseController`](#411-控制类-coursecontroller)
+      - [4.1.2 服务实现](#412-服务实现)
+    - [4.2 前端](#42-前端)
+      - [4.2.1 `API`](#421-api)
+      - [4.2.2 `List.vue` 关键代码](#422-listvue-关键代码)
+      - [4.2.3 新建 `Form.vue` 页面](#423-新建-formvue-页面)
+  - [5 修改课程基本信息](#5-修改课程基本信息)
+    - [5.1 接口](#51-接口)
+      - [5.1.1 控制层 `CourseController`](#511-控制层-coursecontroller)
+      - [5.1.2 服务实现](#512-服务实现)
+    - [5.2 前端](#52-前端)
+      - [5.2.1 `API`](#521-api)
+      - [5.2.2 修改 `Info.vue`](#522-修改-infovue)
+  - [6 编辑课程大纲](#6-编辑课程大纲)
+    - [6.1 章节接口](#61-章节接口)
+      - [6.1.1 控制类 ChapterController](#611-控制类-chaptercontroller)
+      - [6.2.2 服务实现](#622-服务实现)
+    - [6.2 课程视频接口](#62-课程视频接口)
+      - [6.2.1 控制类 `VideoController`](#621-控制类-videocontroller)
+    - [6.3 前端](#63-前端)
+      - [6.3.1 `API`](#631-api)
+      - [6.3.2 `Chapter.vue`](#632-chaptervue)
+  - [7 发布课程](#7-发布课程)
+    - [7.1 接口](#71-接口)
+      - [7.1.1 控制类 `CourseController`](#711-控制类-coursecontroller)
+      - [7.1.2 服务实现](#712-服务实现)
+      - [7.1.3 `CourseMapper`](#713-coursemapper)
+      - [7.1.4 `CourseMapper.xml`](#714-coursemapperxml)
+    - [7.2 `service_vod` 追加依赖](#72-service_vod-追加依赖)
+    - [7.3 配置](#73-配置)
+    - [7.4 前端](#74-前端)
+      - [7.4.1 `API`](#741-api)
+      - [7.4.2 `Publish.vue`](#742-publishvue)
+  - [8 课程删除功能](#8-课程删除功能)
+    - [8.1 接口](#81-接口)
+      - [8.1.1 控制类](#811-控制类)
+      - [8.1.2 服务实现](#812-服务实现)
+    - [8.2 前端](#82-前端)
+      - [8.2.1 `API`](#821-api)
+      - [8.2.2 追加代码 `course/List.vue`](#822-追加代码-courselistvue)
+  - [9 课程统计](#9-课程统计)
+    - [9.1 生成代码](#91-生成代码)
+      - [](#)
+    - [9.2 接口](#92-接口)
+      - [9.2.1 控制类](#921-控制类)
+      - [9.2.2 服务实现](#922-服务实现)
+      - [9.2.3 `Mapper` 接口](#923-mapper-接口)
+      - [9.2.4 `Mapper.xml`](#924-mapperxml)
+    - [9.3 前端](#93-前端)
+      - [9.3.1 安装 `echarts` 插件](#931-安装-echarts-插件)
+      - [9.3.2 `API`](#932-api)
+      - [9.3.3 `Chart.vue`](#933-chartvue)
+
 # 一 硅谷课堂
 
 ## 项目概述
@@ -7895,3 +7961,2531 @@ data() {
 ### 代码检查（默认开启）
 
 - 关闭代码检查:`vue.config.js` 文件 `lintOnSve: false`
+
+# 八 点播管理模块
+
+```
+git checkout -b 7.0.0_video
+```
+
+## 1 点播管理模块需求
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665389316943-f9b5c91c-0686-40ac-a6b4-e8fbbc4ceffb.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665389468053-7b5c4222-bafc-42bd-8805-60787601fef6.png)
+
+
+
+## 2 生成代码
+
+```
+setInclude("course", "course_description", "chapter", "video")
+```
+
+- 删除 `entity`
+- 删除 `CourseDescriptionController`
+- 修改代码中的实体类
+
+
+
+## 3 课程列表
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665449902027-c2ccf561-ab30-4b22-8628-b64f38894130.png)
+
+### 3.1 接口
+
+#### 3.1.1 控制类
+
+```java
+package com.atguigu.ggkt.vod.controller;
+
+
+import com.atguigu.ggkt.result.Result;
+import com.atguigu.ggkt.vo.vod.CourseQueryVo;
+import com.atguigu.ggkt.vod.service.CourseService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+/**
+ * <p>
+ * 课程 前端控制器
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-10-11
+ */
+@Api(tags = "点播课程")
+@RestController
+@RequestMapping("/admin/vod/course")
+@CrossOrigin
+public class CourseController {
+
+    @Autowired
+    private CourseService courseService;
+
+    @ApiOperation("点播课程列表")
+    @GetMapping("/{page}/{limit}")
+    public Result<Map<String, Object>> courseList(@PathVariable Long page,
+                                                  @PathVariable Long limit,
+                                                  CourseQueryVo courseQueryVo) {
+        Map<String, Object> map = courseService.findPageCourse(page, limit, courseQueryVo);
+        return Result.ok(map);
+    }
+
+}
+```
+
+
+
+#### 3.1.2 服务实现
+
+```java
+package com.atguigu.ggkt.vod.service.impl;
+
+import com.atguigu.ggkt.model.vod.Course;
+import com.atguigu.ggkt.model.vod.Subject;
+import com.atguigu.ggkt.model.vod.Teacher;
+import com.atguigu.ggkt.vo.vod.CourseQueryVo;
+import com.atguigu.ggkt.vod.mapper.CourseMapper;
+import com.atguigu.ggkt.vod.service.CourseService;
+import com.atguigu.ggkt.vod.service.SubjectService;
+import com.atguigu.ggkt.vod.service.TeacherService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * <p>
+ * 课程 服务实现类
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-10-11
+ */
+@Service
+public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> implements CourseService {
+
+    @Autowired
+    private TeacherService teacherService;
+
+    @Autowired
+    private SubjectService subjectService;
+
+    @Override
+    public Map<String, Object> findPageCourse(Long page, Long limit, CourseQueryVo courseQueryVo) {
+        Map<String, Object> map = new HashMap<>();
+        Page<Course> pageParam = new Page<>(page, limit);
+        LambdaQueryWrapper<Course> wrapper = new LambdaQueryWrapper<>();
+        if (courseQueryVo != null) {
+            // 获取条件值
+            String title = courseQueryVo.getTitle();
+            Long subjectId = courseQueryVo.getSubjectId();
+            Long subjectParentId = courseQueryVo.getSubjectParentId();
+            Long teacherId = courseQueryVo.getTeacherId();
+
+            // 判断条件
+            if (!StringUtils.isEmpty(title)) {
+                wrapper.like(Course::getTitle, title);
+            }
+
+            if (!StringUtils.isEmpty(subjectId)) {
+                wrapper.eq(Course::getSubjectId, subjectId);
+            }
+
+            if (!StringUtils.isEmpty(subjectParentId)) {
+                wrapper.eq(Course::getSubjectParentId, subjectParentId);
+            }
+
+            if (!StringUtils.isEmpty(teacherId)) {
+                wrapper.eq(Course::getTeacherId, teacherId);
+            }
+        }
+
+        // 查询数据
+        Page<Course> pages = baseMapper.selectPage(pageParam, wrapper);
+        Long totalCount = pages.getTotal();
+        Long totalPage = pages.getPages();
+        List<Course> list = pages.getRecords();
+
+        // 查询数据里面有几个 id
+        // 讲师 id, 课程分类 id（一层 和 而层）
+        // 获取这些 id 对应的名称, 进行封装, 最终显示
+        list.forEach(course -> {
+            // 封装数据
+            // 根据讲师 id 获取讲师名称
+            Teacher teacher = teacherService.getById(course.getTeacherId());
+            if (teacher != null) {
+                String name = teacher.getName();
+                course.getParam().put("teacherName", name);
+            }
+
+            // 根据课程分类 id 获取课程分类名称
+            Subject subjectOne = subjectService.getById(course.getSubjectParentId());
+            if (subjectOne != null) {
+                course.getParam().put("subjectParentTitle", subjectOne.getTitle());
+            }
+
+            Subject subjectTwo = subjectService.getById(course.getSubjectId());
+            if (subjectTwo != null) {
+                course.getParam().put("subjectTitle", subjectTwo.getTitle());
+            }
+        });
+
+        map.put("total", totalCount);
+        map.put("page", totalPage);
+        map.put("records", list);
+        return map;
+    }
+    
+}
+```
+
+
+
+### 3.2 前端
+
+#### 3.2.1 第一步 路由
+
+```javascript
+  // 课程管理
+  {
+    path: '/vod/course',
+    component: Layout,
+    redirect: '/vod/course/list',
+    name: 'Course',
+    meta: {
+      title: '点播管理',
+      icon: 'el-icon-bank-card'
+    },
+    alwaysShow: true,
+    children: [
+      {
+        path: 'list',
+        name: 'CourseList',
+        component: () => import('@/views/vod/course/List'),
+        meta: {title: '课程列表', icon: 'table'}
+      },
+      {
+        path: 'info',
+        name: 'CourseInfo',
+        component: () => import('@/views/vod/course/Form'),
+        meta: {title: '发布课程'},
+        hidden: true
+      },
+      {
+        path: 'info/:id',
+        name: 'CourseInfoEdit',
+        component: () => import('@/views/vod/course/Form'),
+        meta: {title: '编辑课程'},
+        hidden: true
+      },
+      {
+        path: 'chapter/:id',
+        name: 'CourseChapterEdit',
+        component: () => import('@/views/vod/course/Form'),
+        meta: {title: '编辑大纲'},
+        hidden: true
+      },
+      {
+        path: 'chart/:id',
+        name: 'CourseChart',
+        component: () => import('@/views/vod/course/Chart'),
+        meta: {title: '课程统计'},
+        hidden: true
+      }
+    ]
+  },
+```
+
+
+
+#### 3.2.2 第二步 创建 `List.vue`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665448604819-204d0f84-e830-4fb0-8f97-7b9681fd6ffc.png)
+
+```vue
+<template>
+  <div class="app-container">
+    <!--查询表单-->
+    <el-card class="operate-container" shadow="never">
+      <el-form :inline="true" class="demo-form-inline">
+
+        <!-- 所属分类：级联下拉列表 -->
+        <!-- 一级分类 -->
+        <el-form-item label="课程类别">
+          <el-select
+            v-model="searchObj.subjectParentId"
+            placeholder="请选择"
+            @change="subjectLevelOneChanged">
+            <el-option
+              v-for="subject in subjectList"
+              :key="subject.id"
+              :label="subject.title"
+              :value="subject.id"/>
+          </el-select>
+
+          <!-- 二级分类 -->
+          <el-select v-model="searchObj.subjectId" placeholder="请选择">
+            <el-option
+              v-for="subject in subjectLevelTwoList"
+              :key="subject.id"
+              :label="subject.title"
+              :value="subject.id"/>
+          </el-select>
+        </el-form-item>
+
+        <!-- 标题 -->
+        <el-form-item label="课程信息">
+          <el-input v-model="searchObj.title" placeholder="课程标题"/>
+        </el-form-item>
+        <!-- 讲师 -->
+        <el-form-item label="讲师">
+          <el-select
+            v-model="searchObj.teacherId"
+            placeholder="请选择讲师">
+            <el-option
+              v-for="teacher in teacherList"
+              :key="teacher.id"
+              :label="teacher.name"
+              :value="teacher.id"/>
+          </el-select>
+        </el-form-item>
+
+        <el-button type="primary" icon="el-icon-search" @click="fetchData()">查询</el-button>
+        <el-button type="default" @click="resetData()">清空</el-button>
+      </el-form>
+    </el-card>
+
+    <!-- 工具按钮 -->
+    <el-card class="operate-container" shadow="never">
+      <i class="el-icon-tickets" style="margin-top: 5px"></i>
+      <span style="margin-top: 5px">数据列表</span>
+      <el-button class="btn-add" @click="add()">添加</el-button>
+    </el-card>
+
+    <!-- 表格 -->
+    <el-table :data="list" border stripe>
+      <el-table-column label="#" width="50">
+        <template slot-scope="scope">
+          {{ (page - 1) * limit + scope.$index + 1 }}
+        </template>
+      </el-table-column>
+
+      <el-table-column label="封面" width="200" align="center">
+        <template slot-scope="scope">
+          <img :src="scope.row.cover" alt="scope.row.title" width="100%">
+        </template>
+      </el-table-column>
+      <el-table-column label="课程信息">
+        <template slot-scope="scope">
+          <a href="">{{ scope.row.title }}</a>
+          <p>
+            分类：{{ scope.row.param.subjectParentTitle }} > {{ scope.row.param.subjectTitle }}
+          </p>
+          <p>
+            课时：{{ scope.row.lessonNum }} /
+            浏览：{{ scope.row.viewCount }} /
+            付费学员：{{ scope.row.buyCount }}
+          </p>
+        </template>
+      </el-table-column>
+      <el-table-column label="讲师" width="100" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.param.teacherName }}
+        </template>
+      </el-table-column>
+      <el-table-column label="价格(元)" width="100" align="center">
+        <template slot-scope="scope">
+          <!-- {{ typeof '0' }}  {{ typeof 0 }} {{ '0' == 0 }} -->
+          <!-- {{ typeof scope.row.price }}
+          {{ typeof Number(scope.row.price) }}
+          {{ typeof Number(scope.row.price).toFixed(2) }} -->
+
+          <el-tag v-if="Number(scope.row.price) === 0" type="success">免费</el-tag>
+
+          <!-- 前端解决保留两位小数的问题 -->
+          <!-- <el-tag v-else>{{ Number(scope.row.price).toFixed(2) }}</el-tag> -->
+
+          <!-- 后端解决保留两位小数的问题，前端不用处理 -->
+          <el-tag v-else>{{ scope.row.price }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="status" label="课程状态" width="100" align="center">
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.status === 0 ? 'warning' : 'success'">{{
+              scope.row.status === 0 ? '未发布' : '已发布'
+            }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="发布时间" width="140" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.createTime ? scope.row.createTime.substr(0, 16) : '' }}
+        </template>
+      </el-table-column>
+
+      <el-table-column label="操作" width="210" align="center">
+        <template slot-scope="scope">
+          <router-link :to="'/vod/course/info/'+scope.row.id">
+            <el-button type="text" icon="el-icon-edit">修改</el-button>
+          </router-link>
+          <router-link :to="'/vod/course/chapter/'+scope.row.id">
+            <el-button type="text" icon="el-icon-edit">编辑大纲</el-button>
+          </router-link>
+          <router-link :to="'/vod/course/chart/'+scope.row.id">
+            <el-button type="text" icon="el-icon-edit">课程统计</el-button>
+          </router-link>
+          <el-button type="text" icon="el-icon-delete" @click="removeById(scope.row.id)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <!-- 分页组件 -->
+    <el-pagination
+      :current-page="page"
+      :total="total"
+      :page-size="limit"
+      :page-sizes="[5, 10, 20, 30, 40, 50, 100]"
+      style="padding: 30px 0; text-align: center;"
+      layout="total, sizes, prev, pager, next, jumper"
+      @size-change="changePageSize"
+      @current-change="changeCurrentPage"
+    />
+  </div>
+</template>
+
+<script>
+import courseApi from '@/api/vod/course'
+import teacherApi from '@/api/vod/teacher'
+import subjectApi from '@/api/vod/subject'
+
+export default {
+  name: "List",
+  data() {
+    return {
+      // 课程列表
+      list: [],
+      // 总记录数
+      total: 0,
+      // 页码
+      page: 1,
+      // 每页记录数
+      limit: 10,
+      searchObj: {
+        // 解决查询表单无法选中二级类别
+        subjectId: ''
+      },
+      /* 查询条件 */
+      // 讲师列表
+      teacherList: [],
+      // 一级分类列表
+      subjectList: [],
+      // 二级分类列表
+      subjectLevelTwoList: []
+    }
+  },
+
+  created() {
+    this.fetchData()
+    // 初始化分类列表
+    this.initSubjectList()
+    // 获取讲师列表
+    this.initTeacherList()
+  },
+
+  methods: {
+    fetchData() {
+      courseApi.getPageList(this.page, this.limit, this.searchObj).then(response => {
+        this.list = response.data.records
+        console.log(this.list)
+        this.total = response.data.total
+      })
+    },
+
+    initTeacherList() {
+      teacherApi.getAllTeacher().then(response => {
+        this.teacherList = response.data
+      })
+    },
+
+    initSubjectList() {
+      subjectApi.getList(0).then(response => {
+        this.subjectList = response.data
+      })
+    },
+
+    subjectLevelOneChanged(value) {
+      subjectApi.getList(value).then(response => {
+        this.subjectLevelTwoList = response.data
+        this.searchObj.subjectId = ''
+      })
+    },
+
+    add() {
+      // 跳转到 Form 页面
+      this.$router.push({path: '/vod/course/info'})
+    },
+
+    // 每页记录数改变，size：回调参数，表示当前选中的“每页条数”
+    changePageSize(size) {
+      this.limit = size
+      this.fetchData()
+    },
+
+    // 改变页码，page：回调参数，表示当前选中的“页码”
+    changeCurrentPage(page) {
+      this.page = page
+      this.fetchData()
+    },
+
+    // 重置表单
+    resetData() {
+      this.searchObj = {}
+      this.subjectLevelTwoList = [] // 二级分类列表
+      this.fetchData()
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>
+```
+
+
+
+#### 3.2.3 第三步 API
+
+- 新建 `course.js`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665448576056-0634f1fd-404f-48bb-9b00-ff0d838f216f.png)
+
+```javascript
+import request from '@/utils/request'
+
+const api_name = '/admin/vod/course'
+
+export default {
+  //课程列表
+  getPageList(page, limit, params) {
+    return request({
+      url: `${api_name}/${page}/${limit}`,
+      method: 'get',
+      params
+    })
+  }
+}
+```
+
+- 追加代码
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665448687265-1c572cda-20dc-41e5-8d14-e4155e27d84b.png)
+
+```javascript
+// 获取所有讲师
+  getAllTeacher() {
+    return request({
+      url: `${api_name}/findAll`,
+      method: 'get'
+    })
+  }
+```
+
+
+
+## 4 课程添加
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665450450829-c39c876f-a37b-4324-bb66-78cda6926e88.png)
+
+### 4.1 接口
+
+#### 4.1.1 控制类 `CourseController`
+
+```java
+@ApiOperation("添加课程基本信息")
+@PostMapping("/save")
+public Result<Long> save(@RequestBody CourseFormVo courseFormVo) {
+    Long courseId = courseService.saveCourseInfo(courseFormVo);
+    return Result.ok(courseId);
+}
+```
+
+
+
+#### 4.1.2 服务实现
+
+```java
+@Override
+public Long saveCourseInfo(CourseFormVo courseFormVo) {
+    // 添加课程基本信息, 操作 course 表
+    Course course = new Course();
+    BeanUtils.copyProperties(courseFormVo, course);
+    baseMapper.insert(course);
+    // 添加课程描述信息, 操作 course_description
+    CourseDescription courseDescription = new CourseDescription();
+    courseDescription.setDescription(courseFormVo.getDescription());
+    // 设置课程的 id
+    courseDescription.setId(course.getId());
+    courseDescriptionService.save(courseDescription);
+
+    return course.getId();
+}
+```
+
+
+
+### 4.2 前端
+
+#### 4.2.1 `API`
+
+- 追加代码 `course.js`
+
+```javascript
+//添加课程基本信息
+saveCourseInfo(data) {
+  return request({
+    url: `${api_name}/save`,
+    method: 'post',
+    data
+  })
+}
+```
+
+
+
+#### 4.2.2 `List.vue` 关键代码
+
+```javascript
+add() {
+  // 跳转到 Form 页面
+  this.$router.push({path: '/vod/course/info'})
+},
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665450426483-532cb2e8-4f31-44fd-a3b2-7921b2120cd5.png)
+
+
+
+#### 4.2.3 新建 `Form.vue` 页面
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665449160991-d8a5f6ec-ab20-4f56-bc56-55ebfe0d1bff.png)
+
+```vue
+<template>
+  <div class="app-container">
+    <h2 style="text-align: center;">发布新课程</h2>
+    <el-steps :active="active" finish-status="success" simple style="margin-bottom: 40px">
+      <el-step title="填写课程基本信息"/>
+      <el-step title="创建课程大纲"/>
+      <el-step title="发布课程"/>
+    </el-steps>
+    <!-- 填写课程基本信息 -->
+    <info v-if="active === 0"/>
+    <!-- 创建课程大纲 -->
+    <chapter v-if="active === 1"/>
+    <!-- 发布课程 -->
+    <Publish v-if="active === 2 || active === 3"/>
+  </div>
+</template>
+
+<script>
+// 引入子组件
+import Info from '@/views/vod/course/components/Info'
+import Chapter from '@/views/vod/course/components/Chapter'
+import Publish from '@/views/vod/course/components/Publish'
+
+export default {
+  name: "Form",
+  // 注册子组件
+  components: {Info, Chapter, Publish},
+  data() {
+    return {
+      active: 0,
+      courseId: null
+    }
+  },
+  created() {
+    // 获取路由id
+    if (this.$route.params.id) {
+      this.courseId = this.$route.params.id
+    }
+
+    if (this.$route.name === 'CourseInfoEdit') {
+      this.active = 0
+    }
+
+    if (this.$route.name === 'CourseChapterEdit') {
+      this.active = 1
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>
+```
+
+- 新建 `components/Info` 页面
+
+```vue
+<template>
+  <div class="app-container">
+    <!-- 课程信息表单 -->
+    <el-form label-width="120px">
+      <el-form-item label="课程标题">
+        <el-input v-model="courseInfo.title" placeholder=" 示例：机器学习项目课：从基础到搭建项目视频课程。专业名称注意大小写"/>
+      </el-form-item>
+      <!-- 课程讲师 -->
+      <el-form-item label="课程讲师">
+        <el-select
+          v-model="courseInfo.teacherId"
+          placeholder="请选择">
+          <el-option
+            v-for="teacher in teacherList"
+            :key="teacher.id"
+            :label="teacher.name"
+            :value="teacher.id"/>
+        </el-select>
+      </el-form-item>
+      <!-- 所属分类：级联下拉列表 -->
+      <el-form-item label="课程类别">
+        <!-- 一级分类 -->
+        <el-select
+          v-model="courseInfo.subjectParentId"
+          placeholder="请选择"
+          @change="subjectChanged">
+          <el-option
+            v-for="subject in subjectList"
+            :key="subject.id"
+            :label="subject.title"
+            :value="subject.id"/>
+        </el-select>
+        <!-- 二级分类 -->
+        <el-select v-model="courseInfo.subjectId" placeholder="请选择">
+          <el-option
+            v-for="subject in subjectLevelTwoList"
+            :key="subject.id"
+            :label="subject.title"
+            :value="subject.id"/>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="总课时">
+        <el-input-number :min="0" v-model="courseInfo.lessonNum" controls-position="right" placeholder="请填写课程的总课时数"/>
+      </el-form-item>
+      <!-- 课程简介-->
+      <el-form-item label="课程简介">
+        <el-input v-model="courseInfo.description" type="textarea" rows="5"/>
+      </el-form-item>
+      <!-- 课程封面 -->
+      <el-form-item label="课程封面">
+        <el-upload
+          :show-file-list="false"
+          :on-success="handleCoverSuccess"
+          :before-upload="beforeCoverUpload"
+          :on-error="handleCoverError"
+          :action="BASE_API + '/admin/vod/file/upload?module=cover'"
+          class="cover-uploader">
+          <img v-if="courseInfo.cover" :src="courseInfo.cover">
+          <i v-else class="el-icon-plus avatar-uploader-icon"/>
+        </el-upload>
+      </el-form-item>
+      <el-form-item label="课程价格">
+        <el-input-number :min="0" v-model="courseInfo.price" controls-position="right" placeholder="免费课程请设置为0元"/>
+        元
+      </el-form-item>
+    </el-form>
+
+    <div style="text-align:center">
+      <el-button :disabled="saveBtnDisabled" type="primary" @click="saveAndNext()">保存并下一步</el-button>
+    </div>
+  </div>
+</template>
+<script>
+import courseApi from '@/api/vod/course'
+import teacherApi from '@/api/vod/teacher'
+import subjectApi from '@/api/vod/subject'
+
+export default {
+  name: 'Info',
+  data() {
+    return {
+      BASE_API: process.env.VUE_APP_BASE_API,
+      // 按钮是否禁用
+      saveBtnDisabled: false,
+      // 表单数据
+      courseInfo: {
+        price: 0,
+        lessonNum: 0,
+        // 以下解决表单数据不全时insert语句非空校验
+        teacherId: '',
+        subjectId: '',
+        subjectParentId: '',
+        cover: '',
+        description: ''
+      },
+      // 讲师列表
+      teacherList: [],
+      // 一级分类列表
+      subjectList: [],
+      // 二级分类列表
+      subjectLevelTwoList: []
+    }
+  },
+  created() {
+    // 初始化分类列表
+    this.initSubjectList()
+    // 获取讲师列表
+    this.initTeacherList()
+  },
+  methods: {
+    // 获取讲师列表
+    initTeacherList() {
+      teacherApi.getAllTeacher().then(response => {
+        this.teacherList = response.data
+      })
+    },
+
+    // 初始化分类列表
+    initSubjectList() {
+      subjectApi.getList(0).then(response => {
+        this.subjectList = response.data
+      })
+    },
+
+    // 选择一级分类，切换二级分类
+    subjectChanged(value) {
+      subjectApi.getList(value).then(response => {
+        this.courseInfo.subjectId = ''
+        this.subjectLevelTwoList = response.data
+      })
+    },
+
+    // 上传成功回调
+    handleCoverSuccess(res, file) {
+      this.courseInfo.cover = res.data
+    },
+
+    // 上传校验
+    beforeCoverUpload(file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
+
+    // 错误处理
+    handleCoverError() {
+      this.$message.error('上传失败2')
+    },
+
+    // 保存并下一步
+    saveAndNext() {
+      this.saveBtnDisabled = true
+      if (!this.$parent.courseId) {
+        this.saveData()
+      } else {
+        //this.updateData()
+      }
+    },
+
+    // 保存
+    saveData() {
+      courseApi.saveCourseInfo(this.courseInfo).then(response => {
+        this.$message.success(response.message)
+        this.$parent.courseId = response.data // 获取courseId
+        this.$parent.active = 1 // 下一步
+      })
+    }
+  }
+}
+</script>
+
+<style scoped>
+.tinymce-container {
+  position: relative;
+  line-height: normal;
+}
+
+.cover-uploader .avatar-uploader-icon {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+
+  font-size: 28px;
+  color: #8c939d;
+  width: 640px;
+  height: 357px;
+  line-height: 357px;
+  text-align: center;
+}
+
+.cover-uploader .avatar-uploader-icon:hover {
+  border-color: #409EFF;
+}
+
+.cover-uploader img {
+  width: 640px;
+  height: 357px;
+  display: block;
+}
+</style>
+```
+
+- 新建 `components/Chapter.vue` 页面
+- 新建 `components/Publish.vue` 页面
+
+
+
+## 5 修改课程基本信息
+
+- 回显课程基本信息
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665452852438-bd7b8a5e-e377-4f4e-ac99-b31984c46f29.png)
+
+### 5.1 接口
+
+#### 5.1.1 控制层 `CourseController`
+
+```java
+@ApiOperation("根据 id 获取课程信息")
+@GetMapping("/get/{id}")
+public Result<CourseFormVo> get(@PathVariable Long id) {
+    CourseFormVo courseFormVo = courseService.getCourseInfoById(id);
+    return Result.ok(courseFormVo);
+}
+
+@ApiOperation("修改课程信息")
+@PutMapping("/update")
+public Result get(@RequestBody CourseFormVo courseFormVo) {
+    courseService.updateCourseId(courseFormVo);
+    return Result.ok();
+}
+```
+
+
+
+#### 5.1.2 服务实现
+
+```java
+    @Override
+    public CourseFormVo getCourseInfoById(Long id) {
+        // 查询课程信息
+        Course course = baseMapper.selectById(id);
+
+        // 查询课程描述信息
+        CourseDescription courseDescription = courseDescriptionService.getById(id);
+
+        // 封装数据
+        CourseFormVo courseFormVo = new CourseFormVo();
+        if (course != null) {
+            BeanUtils.copyProperties(course, courseFormVo);
+        }
+
+        if (courseDescription != null) {
+            courseFormVo.setDescription(courseDescription.getDescription());
+        }
+
+        return courseFormVo;
+    }
+
+    @Override
+    public void updateCourseId(CourseFormVo courseFormVo) {
+        // 修改课程基本信息
+        Course course = new Course();
+        BeanUtils.copyProperties(courseFormVo, course);
+        baseMapper.updateById(course);
+
+        // 修改课程的描述信息
+        CourseDescription description = new CourseDescription();
+        description.setDescription(courseFormVo.getDescription());
+        courseDescriptionService.updateById(description);
+    }
+```
+
+
+
+### 5.2 前端
+
+#### 5.2.1 `API`
+
+```javascript
+// 根据 id 获取课程信息
+getCourseInfoById(id) {
+  return request({
+    url: `${api_name}/get/${id}`,
+    method: 'get'
+  })
+},
+// 根据 id 修改课程信息
+updateCourseInfoById(data) {
+  return request({
+    url: `${api_name}/update`,
+    method: 'put',
+    data
+  })
+}
+```
+
+
+
+#### 5.2.2 修改 `Info.vue`
+
+```javascript
+  created() {
+    if (this.$parent.courseId) {
+      // 修改, 数据回显
+      this.fetchCourseInfoById(this.$parent.courseId);
+    } else {
+      // 新增
+      // 初始化分类列表
+      this.initSubjectList()
+    }
+
+    // 获取讲师列表
+    this.initTeacherList()
+  },
+  methods: {
+    // 保存并下一步
+    saveAndNext() {
+      this.saveBtnDisabled = true
+      if (!this.$parent.courseId) {
+        this.saveData()
+      } else {
+        this.updateData()
+      }
+    },
+    // 修改
+    updateData() {
+      courseApi.updateCourseInfoById(this.courseInfo).then(response => {
+        this.$message.success(response.message)
+        // 下一步
+        this.$parent.active = 1
+      })
+    },
+    // 获取课程信息
+    fetchCourseInfoById(id) {
+      courseApi.getCourseInfoById(id)
+        .then(response => {
+          this.courseInfo = response.data
+          // 初始化分类列表
+          subjectApi.getList(0)
+            .then(response => {
+              this.subjectList = response.data
+              // 填充二级菜单: 遍历一级菜单列表
+              this.subjectList.forEach(subject => {
+                // 找到和 courseInfo.subjectParentId 一致的父类记录
+                if (subject.id === this.courseInfo.subjectParentId) {
+                  // 拿到当前类别下的字类别列表
+                  subjectApi.getList(subject.id)
+                    .then(response => {
+                      this.subjectLevelTwoList = response.data
+                    })
+                }
+              })
+            })
+        })
+    }
+  }
+```
+
+
+
+##  6 编辑课程大纲
+
+### 6.1 章节接口
+
+#### 6.1.1 控制类 ChapterController
+
+```java
+package com.atguigu.ggkt.vod.controller;
+
+import com.atguigu.ggkt.model.vod.Chapter;
+import com.atguigu.ggkt.result.Result;
+import com.atguigu.ggkt.vo.vod.ChapterVo;
+import com.atguigu.ggkt.vod.service.ChapterService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * <p>
+ * 章节 前端控制器
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-10-11
+ */
+@Api(tags = "章节")
+@RestController
+@RequestMapping("/admin/vod/chapter")
+@CrossOrigin
+public class ChapterController {
+
+    @Autowired
+    private ChapterService chapterService;
+
+    @ApiOperation("根据课程 id 获取大纲列表（章节和小节列表）")
+    @GetMapping("/getNestedTreeList/{courseId}")
+    public Result<List<ChapterVo>> get(@PathVariable Long courseId) {
+        List<ChapterVo> list = chapterService.getTreeList(courseId);
+        return Result.ok(list);
+    }
+
+    @ApiOperation("添加章节")
+    @PostMapping("/save")
+    public Result add(@RequestBody Chapter chapter) {
+        chapterService.save(chapter);
+        return Result.ok();
+    }
+
+    @ApiOperation("根据课程 id 获取章节")
+    @GetMapping("/get/{id}")
+    public Result<Chapter> getById(@PathVariable Long id) {
+        Chapter chapter = chapterService.getById(id);
+        return Result.ok(chapter);
+    }
+
+    @ApiOperation("修改章节信息")
+    @PutMapping("/update")
+    public Result update(@RequestBody Chapter chapter) {
+        chapterService.updateById(chapter);
+        return Result.ok();
+    }
+
+    @ApiOperation("删除章节")
+    @DeleteMapping("/remove/{id}")
+    public Result remove(@PathVariable Long id) {
+        chapterService.removeById(id);
+        return Result.ok();
+    }
+
+}
+```
+
+
+
+#### 6.2.2 服务实现
+
+```java
+package com.atguigu.ggkt.vod.service.impl;
+
+import com.atguigu.ggkt.model.vod.Chapter;
+import com.atguigu.ggkt.model.vod.Video;
+import com.atguigu.ggkt.vo.vod.ChapterVo;
+import com.atguigu.ggkt.vo.vod.VideoVo;
+import com.atguigu.ggkt.vod.mapper.ChapterMapper;
+import com.atguigu.ggkt.vod.service.ChapterService;
+import com.atguigu.ggkt.vod.service.VideoService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * <p>
+ * 章节 服务实现类
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-10-11
+ */
+@Service
+public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> implements ChapterService {
+
+    @Autowired
+    private VideoService videoService;
+
+    @Override
+    public List<ChapterVo> getTreeList(Long courseId) {
+        // 定义最终数据
+        List<ChapterVo> chapterVoList = new ArrayList<>();
+
+        // 根据 courseId 获取所有章节
+        LambdaQueryWrapper<Chapter> wrapperChapter = new LambdaQueryWrapper<>();
+        // eq(=)
+        wrapperChapter.eq(Chapter::getCourseId, courseId);
+        // 查询章节
+        List<Chapter> chapterList = baseMapper.selectList(wrapperChapter);
+
+        // 根据 course 获取所有小节
+        LambdaQueryWrapper<Video> wrapperVideo = new LambdaQueryWrapper<>();
+        // eq(=)
+        wrapperVideo.eq(Video::getCourseId, courseId);
+        // 查询小节
+        List<Video> videoList = videoService.list(wrapperVideo);
+
+        // 封装数据
+        // 遍历所有章节
+        chapterList.forEach(chapter -> {
+            // 创建一个章节视图对象
+            ChapterVo chapterVo = new ChapterVo();
+            // 复制属性
+            BeanUtils.copyProperties(chapter, chapterVo);
+            // 存储章节视图对象
+            chapterVoList.add(chapterVo);
+
+            // 封装章节 > 小节
+            List<VideoVo> videoVoList = new ArrayList<>();
+            // 遍历小节
+            videoList.forEach(video -> {
+                // 判断该小节在那个章节下面
+                if (chapter.getId().equals(video.getChapterId())) {
+                    // 创建一个小节视图对象
+                    VideoVo videoVo = new VideoVo();
+                    // 复制属性
+                    BeanUtils.copyProperties(video, videoVo);
+                    // 存储小节视图对象
+                    videoVoList.add(videoVo);
+                }
+            });
+
+            // 存储小节, 该章节 > 小节集合
+            chapterVo.setChildren(videoVoList);
+        });
+
+        return chapterVoList;
+    }
+}
+```
+
+
+
+### 6.2 课程视频接口
+
+#### 6.2.1 控制类 `VideoController`
+
+```java
+package com.atguigu.ggkt.vod.controller;
+
+
+import com.atguigu.ggkt.model.vod.Video;
+import com.atguigu.ggkt.result.Result;
+import com.atguigu.ggkt.vod.service.VideoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+/**
+ * <p>
+ * 课程视频 前端控制器
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-10-11
+ */
+@Api(tags = "课程小结（课时）")
+@RestController
+@RequestMapping(value = "/admin/vod/video")
+@CrossOrigin
+public class VideoController {
+
+    @Autowired
+    private VideoService videoService;
+
+    @ApiOperation(value = "获取")
+    @GetMapping("/get/{id}")
+    public Result get(@PathVariable Long id) {
+        Video video = videoService.getById(id);
+        return Result.ok(video);
+    }
+
+    @ApiOperation(value = "新增")
+    @PostMapping("/save")
+    public Result save(@RequestBody Video video) {
+        videoService.save(video);
+        return Result.ok(null);
+    }
+
+    @ApiOperation(value = "修改")
+    @PutMapping("/update")
+    public Result updateById(@RequestBody Video video) {
+        videoService.updateById(video);
+        return Result.ok(null);
+    }
+
+    @ApiOperation(value = "删除")
+    @DeleteMapping("/remove/{id}")
+    public Result remove(@PathVariable Long id) {
+        videoService.removeById(id);
+        return Result.ok(null);
+    }
+
+}
+```
+
+
+
+### 6.3 前端
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665454833590-f4529599-18fa-4974-9443-a46b9ade95f9.png)
+
+
+
+#### 6.3.1 `API`
+
+- 新建 `chapter.js`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665453640202-362ea3ad-56e2-44f3-b139-f633776e7a21.png)
+
+```javascript
+import request from '@/utils/request'
+
+const api_name = '/admin/vod/chapter'
+
+export default {
+
+  getNestedTreeList(courseId) {
+    return request({
+      url: `${api_name}/getNestedTreeList/${courseId}`,
+      method: 'get'
+    })
+  },
+
+  removeById(id) {
+    return request({
+      url: `${api_name}/remove/${id}`,
+      method: 'delete'
+    })
+  },
+
+  save(chapter) {
+    return request({
+      url: `${api_name}/save`,
+      method: 'post',
+      data: chapter
+    })
+  },
+
+  getById(id) {
+    return request({
+      url: `${api_name}/get/${id}`,
+      method: 'get'
+    })
+  },
+
+  updateById(chapter) {
+    return request({
+      url: `${api_name}/update`,
+      method: 'put',
+      data: chapter
+    })
+  }
+}
+```
+
+- 新建 `video.js`
+
+```javascript
+import request from '@/utils/request'
+
+const api_name = '/admin/vod/video'
+
+export default {
+
+  save(video) {
+    return request({
+      url: `${api_name}/save`,
+      method: 'post',
+      data: video
+    })
+  },
+
+  getById(id) {
+    return request({
+      url: `${api_name}/get/${id}`,
+      method: 'get'
+    })
+  },
+
+  updateById(video) {
+    return request({
+      url: `${api_name}/update`,
+      method: 'put',
+      data: video
+    })
+  },
+
+  removeById(id) {
+    return request({
+      url: `${api_name}/remove/${id}`,
+      method: 'delete'
+    })
+  }
+}
+```
+
+
+
+#### 6.3.2 `Chapter.vue`
+
+- 子组件
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665454445833-4caddcab-8fc8-43b7-a2fb-4ccbb5149196.png)
+
+```vue
+<template>
+  <div class="app-container">
+
+    <!-- 添加章节按钮 -->
+    <div>
+      <el-button type="primary" @click="addChapter()">添加章节</el-button>
+    </div>
+
+    <!-- 章节列表 -->
+    <ul class="chapterList">
+      <li
+        v-for="chapter in chapterList"
+        :key="chapter.id">
+        <p>
+          {{ chapter.title }}
+          <span class="acts">
+            <el-button type="text" @click="addVideo(chapter.id)">添加课时</el-button>
+            <el-button type="text" @click="editChapter(chapter.id)">编辑</el-button>
+            <el-button type="text" @click="removeChapterById(chapter.id)">删除</el-button>
+          </span>
+        </p>
+        <!-- 视频 -->
+        <ul class="chapterList videoList">
+          <li
+            v-for="video in chapter.children"
+            :key="video.id">
+            <p>
+              {{ video.title }}
+              <el-tag v-if="!video.videoSourceId" size="mini" type="danger">
+                {{ '尚未上传视频' }}
+              </el-tag>
+              <span class="acts">
+                <el-tag v-if="video.isFree" size="mini" type="success">{{ '免费观看' }}</el-tag>
+                <el-button type="text" @click="editVideo(chapter.id, video.id)">编辑</el-button>
+                <el-button type="text" @click="removeVideoById(video.id)">删除</el-button>
+              </span>
+            </p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <!-- 章节表单对话框 -->
+    <chapter-form ref="chapterForm" />
+    <!-- 课时表单对话框 -->
+    <video-form ref="videoForm" />
+    <div style="text-align:center">
+      <el-button type="primary" @click="prev()">上一步</el-button>
+      <el-button type="primary" @click="next()">下一步</el-button>
+    </div>
+  </div>
+</template>
+<script>
+import chapterApi from '@/api/vod/chapter'
+import videoApi from '@/api/vod/video'
+
+// 引入组件
+import ChapterForm from '@/views/vod/course/components/Chapter/Form'
+import VideoForm from '@/views/vod/course/components/Video/Form'
+
+export default {
+  // 注册组件
+  components: { ChapterForm, VideoForm },
+  data() {
+    return {
+      chapterList: [] // 章节嵌套列表
+    }
+  },
+  created() {
+    this.fetchNodeList()
+  },
+  methods: {
+    // 获取章节小节数据
+    fetchNodeList() {
+      chapterApi.getNestedTreeList(this.$parent.courseId).then(response => {
+        this.chapterList = response.data
+      })
+    },
+    //删除章节
+    removeChapterById(chapterId) {
+      this.$confirm('此操作将永久删除该章节，是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return chapterApi.removeById(chapterId)
+      }).then(response => {
+        this.fetchNodeList()
+        this.$message.success(response.message)
+      }).catch((response) => {
+        if (response === 'cancel') {
+          this.$message.info('取消删除')
+        }
+      })
+    },
+    // 添加章节
+    addChapter() {
+      this.$refs.chapterForm.open()
+    },
+    // 编辑章节
+    editChapter(chapterId) {
+      this.$refs.chapterForm.open(chapterId)
+    },
+    // 添加课时
+    addVideo(chapterId) {
+      this.$refs.videoForm.open(chapterId)
+    },
+    // 编辑课时
+    editVideo(chapterId, videoId) {
+      this.$refs.videoForm.open(chapterId, videoId)
+    },
+    // 删除课时
+    removeVideoById(videoId) {
+      this.$confirm('此操作将永久删除该课时, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return videoApi.removeById(videoId)
+      }).then(response => {
+        this.fetchNodeList()
+        this.$message.success(response.message)
+      }).catch((response) => {
+        if (response === 'cancel') {
+          this.$message.info('取消删除')
+        }
+      })
+    },
+    // 上一步
+    prev() {
+      this.$parent.active = 0
+    },
+    // 下一步
+    next() {
+      this.$parent.active = 2
+    }
+  }
+}
+</script>
+<style scoped>
+.chapterList{
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.chapterList li{
+  position: relative;
+}
+.chapterList p{
+  float: left;
+  font-size: 20px;
+  margin: 10px 0;
+  padding: 10px;
+  height: 70px;
+  line-height: 50px;
+  width: 100%;
+  border: 1px solid #DDD;
+}
+.chapterList .acts {
+    float: right;
+    font-size: 14px;
+}
+
+.videoList{
+  padding-left: 50px;
+}
+.videoList p{
+  float: left;
+  font-size: 14px;
+  margin: 10px 0;
+  padding: 10px;
+  height: 50px;
+  line-height: 30px;
+  width: 100%;
+  border: 1px dashed #DDD;
+}
+</style>
+```
+
+- `ChapterForm`
+
+```vue
+<template>
+  <!-- 添加和修改章节表单 -->
+  <el-dialog :visible="dialogVisible" title="添加章节" @close="close()">
+    <el-form :model="chapter" label-width="120px">
+      <el-form-item label="章节标题">
+        <el-input v-model="chapter.title"/>
+      </el-form-item>
+      <el-form-item label="章节排序">
+        <el-input-number v-model="chapter.sort" :min="0"/>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="close()">取 消</el-button>
+      <el-button type="primary" @click="saveOrUpdate()">确 定</el-button>
+    </div>
+  </el-dialog>
+</template>
+
+<script>
+import chapterApi from '@/api/vod/chapter'
+
+export default {
+  name: "ChapterForm",
+  data() {
+    return {
+      dialogVisible: false,
+      chapter: {
+        sort: 0
+      }
+    }
+  },
+  methods: {
+    open(chapterId) {
+      this.dialogVisible = true
+      if (chapterId) {
+        chapterApi.getById(chapterId).then(response => {
+          this.chapter = response.data.item
+        })
+      }
+    },
+
+    close() {
+      this.dialogVisible = false
+      // 重置表单
+      this.resetForm()
+    },
+
+    resetForm() {
+      this.chapter = {
+        sort: 0
+      }
+    },
+
+    saveOrUpdate() {
+      if (!this.chapter.id) {
+        this.save()
+      } else {
+        this.update()
+      }
+    },
+
+    save() {
+      this.chapter.courseId = this.$parent.$parent.courseId
+      chapterApi.save(this.chapter).then(response => {
+        this.$message.success(response.message)
+        // 关闭组件
+        this.close()
+        // 刷新列表
+        this.$parent.fetchNodeList()
+      })
+    },
+
+    update() {
+      chapterApi.updateById(this.chapter).then(response => {
+        this.$message.success(response.message)
+        // 关闭组件
+        this.close()
+        // 刷新列表
+        this.$parent.fetchNodeList()
+      })
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>
+```
+
+- `VideoForm`
+
+```vue
+<template>
+  <!-- 添加和修改课时表单 -->
+  <el-dialog :visible="dialogVisible" title="添加课时" @close="close()">
+    <el-form :model="video" label-width="120px">
+      <el-form-item label="课时标题">
+        <el-input v-model="video.title"/>
+      </el-form-item>
+      <el-form-item label="课时排序">
+        <el-input-number v-model="video.sort" :min="0"/>
+      </el-form-item>
+      <el-form-item label="是否免费">
+        <el-radio-group v-model="video.isFree">
+          <el-radio :label="0">免费</el-radio>
+          <el-radio :label="1">默认</el-radio>
+        </el-radio-group>
+      </el-form-item>
+
+      <!-- 上传视频 -->
+      <el-form-item label="上传视频">
+        <el-upload
+          ref="upload"
+          :auto-upload="false"
+          :on-success="handleUploadSuccess"
+          :on-error="handleUploadError"
+          :on-exceed="handleUploadExceed"
+          :file-list="fileList"
+          :limit="1"
+          :before-remove="handleBeforeRemove"
+          :on-remove="handleOnRemove"
+          :action="BASE_API+'/admin/vod/upload'">
+          <el-button slot="trigger" size="small" type="primary">选择视频</el-button>
+          <el-button
+            :disabled="uploadBtnDisabled"
+            style="margin-left: 10px;"
+            size="small"
+            type="success"
+            @click="submitUpload()">上传
+          </el-button>
+        </el-upload>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="close()">取 消</el-button>
+      <el-button type="primary" @click="saveOrUpdate()">确 定</el-button>
+    </div>
+  </el-dialog>
+</template>
+
+<script>
+import videoApi from '@/api/vod/video'
+
+export default {
+  name: "VideoForm",
+  data() {
+    return {
+      BASE_API: process.env.VUE_APP_BASE_API,
+      dialogVisible: false,
+      video: {
+        sort: 0,
+        free: false
+      },
+      fileList: [], // 上传文件列表
+      uploadBtnDisabled: false
+    }
+  },
+
+  methods: {
+    open(chapterId, videoId) {
+      this.dialogVisible = true
+      this.video.chapterId = chapterId
+      if (videoId) {
+        videoApi.getById(videoId).then(response => {
+          this.video = response.data
+          // 回显
+          if (this.video.videoOriginalName) {
+            this.fileList = [{'name': this.video.videoOriginalName}]
+          }
+        })
+      }
+    },
+
+    close() {
+      this.dialogVisible = false
+      // 重置表单
+      this.resetForm()
+    },
+
+    resetForm() {
+      this.video = {
+        sort: 0,
+        free: false
+      }
+
+      this.fileList = [] // 重置视频上传列表
+    },
+
+    saveOrUpdate() {
+      if (!this.video.id) {
+        this.save()
+      } else {
+        this.update()
+      }
+    },
+
+    save() {
+      this.video.courseId = this.$parent.$parent.courseId
+      videoApi.save(this.video).then(response => {
+        this.$message.success(response.message)
+        // 关闭组件
+        this.close()
+        // 刷新列表
+        this.$parent.fetchNodeList()
+      })
+    },
+
+    update() {
+      videoApi.updateById(this.video).then(response => {
+        this.$message.success(response.message)
+        // 关闭组件
+        this.close()
+        // 刷新列表
+        this.$parent.fetchNodeList()
+      })
+    },
+
+    // 上传多于一个视频
+    handleUploadExceed(files, fileList) {
+      this.$message.warning('想要重新上传视频，请先删除已上传的视频')
+    },
+
+    // 上传
+    submitUpload() {
+      this.uploadBtnDisabled = true
+      this.$refs.upload.submit() // 提交上传请求
+    },
+
+    // 视频上传成功的回调
+    handleUploadSuccess(response, file, fileList) {
+      this.uploadBtnDisabled = false
+      this.video.videoSourceId = response.data
+      this.video.videoOriginalName = file.name
+    },
+
+    // 失败回调
+    handleUploadError() {
+      this.uploadBtnDisabled = false
+      this.$message.error('上传失败2')
+    },
+
+    // 删除视频文件确认
+    handleBeforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`)
+    },
+
+    // 执行视频文件的删除
+    handleOnRemove(file, fileList) {
+      if (!this.video.videoSourceId) {
+        return
+      }
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>
+```
+
+
+
+## 7 发布课程
+
+
+
+### 7.1 接口
+
+#### 7.1.1 控制类 `CourseController`
+
+```java
+@ApiOperation("根据 id 查询发布课程信息")
+@GetMapping("/getCoursePublishVo/{id}")
+public Result<CoursePublishVo> getCoursePublishVo(@PathVariable Long id) {
+	CoursePublishVo coursePublishVo = courseService.getCoursePublishVo(id);
+    return Result.ok(coursePublishVo);
+}
+
+@ApiOperation("课程最终发布")
+@PutMapping("/publishCourse/{id}")
+public Result publishCourse(@PathVariable Long id) {
+	courseService.publishCourse(id);
+    return Result.ok();
+}
+```
+
+
+
+#### 7.1.2 服务实现
+
+```java
+    @Override
+    public CoursePublishVo getCoursePublishVo(Long id) {
+        return baseMapper.selectCoursePublishVoById(id);
+    }
+
+    @Override
+    public void publishCourse(Long id) {
+        Course course = baseMapper.selectById(id);
+        // 已经发布
+        course.setStatus(1);
+        course.setPublishTime(new Date());
+        baseMapper.updateById(course);
+    }
+```
+
+
+
+#### 7.1.3 `CourseMapper`
+
+```xml
+package com.atguigu.ggkt.vod.mapper;
+
+import com.atguigu.ggkt.model.vod.Course;
+import com.atguigu.ggkt.vo.vod.CoursePublishVo;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+/**
+ * <p>
+ * 课程 Mapper 接口
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-10-11
+ */
+public interface CourseMapper extends BaseMapper<Course> {
+
+    /**
+     * 根据 id 查询发布课程信息
+     *
+     * @param id id
+     * @return {@link CoursePublishVo}
+     */
+    CoursePublishVo selectCoursePublishVoById(Long id);
+
+}
+```
+
+#### 7.1.4 `CourseMapper.xml`
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.ggkt.vod.mapper.CourseMapper">
+
+    <select id="selectCoursePublishVoById" resultType="com.atguigu.ggkt.vo.vod.CoursePublishVo"
+            parameterType="java.lang.Long">
+        SELECT c.id,
+               c.title,
+               c.cover,
+               c.lesson_num AS lessonNum,
+               c.price,
+               t.name       AS teacherName,
+               s1.title     AS subjectParentTitle,
+               s2.title     AS subjectTitle
+        FROM `course` c
+                 LEFT OUTER JOIN `teacher` t ON c.teacher_id = t.id
+                 LEFT OUTER JOIN `subject` s1 ON c.subject_id = s1.id
+                 LEFT OUTER JOIN `subject` s2 ON c.subject_id = s2.id
+        WHERE c.id = #{id}
+    </select>
+
+</mapper>
+```
+
+
+
+### 7.2 `service_vod` 追加依赖
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+        </plugin>
+    </plugins>
+    <resources>
+        <resource>
+            <directory>src/main/java</directory>
+            <includes>
+                <include>**/*.yml</include>
+                <include>**/*.properties</include>
+                <include>**/*.xml</include>
+            </includes>
+            <filtering>false</filtering>
+        </resource>
+        <resource>
+            <directory>src/main/resources</directory>
+            <includes> <include>**/*.yml</include>
+                <include>**/*.properties</include>
+                <include>**/*.xml</include>
+            </includes>
+            <filtering>false</filtering>
+        </resource>
+    </resources>
+</build>
+```
+
+
+
+### 7.3 配置
+
+```yaml
+mybatis-plus:
+	# mapper.xml 位置
+  mapper-locations: classpath:com/atguigu/ggkt/vod/mapper/xml/*.xml
+```
+
+
+
+### 7.4 前端
+
+#### 7.4.1 `API`
+
+- 追加代码 `course.js`
+
+```javascript
+//获取发布课程信息  
+getCoursePublishById(id) {
+  return request({
+    url: `${api_name}/getCoursePublishVo/${id}`,
+    method: 'get'
+  })
+},
+//发布课程  
+publishCourseById(id) {
+  return request({
+    url: `${api_name}/publishCourse/${id}`,
+    method: 'put'
+  })
+}
+```
+
+
+
+#### 7.4.2 `Publish.vue`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665465224802-45826ef0-bd52-4166-bf59-7eebe5289f82.png)
+
+```vue
+<template>
+  <div class="app-container">
+    <!--课程预览-->
+    <div class="ccInfo">
+      <img :src="coursePublish.cover">
+      <div class="main">
+        <h2>{{ coursePublish.title }}</h2>
+        <p class="gray"><span>共{{ coursePublish.lessonNum }}课时</span></p>
+        <p><span>所属分类：{{ coursePublish.subjectParentTitle }} — {{ coursePublish.subjectTitle }}</span></p>
+        <p>课程讲师：{{ coursePublish.teacherName }}</p>
+        <h3 class="red">￥{{ coursePublish.price }}</h3>
+      </div>
+    </div>
+    <div style="text-align:center">
+      <el-button type="primary" @click="prev()">上一步</el-button>
+      <el-button :disabled="publishBtnDisabled" type="primary" @click="publish()">发布课程</el-button>
+    </div>
+  </div>
+</template>
+
+<script>
+import courseApi from '@/api/vod/course'
+
+export default {
+  name: "Publish",
+  data() {
+    return {
+      publishBtnDisabled: false, // 按钮是否禁用
+      coursePublish: {}
+    }
+  },
+  created() {
+    if (this.$parent.courseId) {
+      this.fetchCoursePublishById(this.$parent.courseId)
+    }
+  },
+  methods: {
+    // 获取课程发布信息
+    fetchCoursePublishById(id) {
+      courseApi.getCoursePublishById(id).then(response => {
+        this.coursePublish = response.data
+      })
+    },
+    // 上一步
+    prev() {
+      this.$parent.active = 1
+    },
+    // 下一步
+    publish() {
+      this.publishBtnDisabled = true
+      courseApi.publishCourseById(this.$parent.courseId).then(response => {
+        this.$parent.active = 3
+        this.$message.success(response.message)
+        this.$router.push({path: '/vod/course/list'})
+      })
+    }
+  }
+}
+</script>
+<style scoped>
+.ccInfo {
+  background: #f5f5f5;
+  padding: 20px;
+  overflow: hidden;
+  border: 1px dashed #DDD;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.ccInfo img {
+  background: #d6d6d6;
+  width: 500px;
+  height: 278px;
+  display: block;
+  float: left;
+  border: none;
+}
+
+.ccInfo .main {
+  margin-left: 520px;
+}
+
+.ccInfo .main h2 {
+  font-size: 28px;
+  margin-bottom: 30px;
+  line-height: 1;
+  font-weight: normal;
+}
+
+.ccInfo .main p {
+  margin-bottom: 10px;
+  word-wrap: break-word;
+  line-height: 24px;
+  max-height: 48px;
+  overflow: hidden;
+}
+
+.ccInfo .main p {
+  margin-bottom: 10px;
+  word-wrap: break-word;
+  line-height: 24px;
+  max-height: 48px;
+  overflow: hidden;
+}
+
+.ccInfo .main h3 {
+  left: 540px;
+  bottom: 20px;
+  line-height: 1;
+  font-size: 28px;
+  color: #d32f24;
+  font-weight: normal;
+  position: absolute;
+}
+</style>
+
+<style scoped>
+
+</style>
+```
+
+
+
+## 8 课程删除功能
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665468726150-55f150a7-4c4a-498b-9ad8-288edb1247a2.png)
+
+### 8.1 接口
+
+#### 8.1.1 控制类
+
+```java
+@ApiOperation("根据 id 删除课程")
+@DeleteMapping("/remove/{id}")
+public Result remove(@PathVariable Long id) {
+    courseService.removeCourseById(id);
+    return Result.ok();
+}
+```
+
+
+
+#### 8.1.2 服务实现
+
+- `CourseServiceImpl`
+
+```java
+    @Override
+    public void removeCourseById(Long id) {
+        // 根据课程 id 删除小节
+        videoService.removeVideoByCourseId(id);
+        // 根据课程 id 删除章节
+        chapterService.removeChapterByCourseId(id);
+        // 根据课程 id 删除课程描述
+        courseDescriptionService.removeById(id);
+        // 根据课程 id 删除课程
+        baseMapper.deleteById(id);
+    }
+```
+
+- `VideoServiceImpl`
+
+```java
+    @Override
+    public void removeVideoByCourseId(Long id) {
+        // 创建条件对象
+        LambdaQueryWrapper<Video> wrapper = new LambdaQueryWrapper<>();
+        // eq(=)
+        wrapper.eq(Video::getCourseId, id);
+        // 执行删除操作
+        baseMapper.delete(wrapper);
+    }
+```
+
+- `ChapterServiceImpl`
+
+```java
+    @Override
+    public void removeChapterByCourseId(Long id) {
+        // 创建条件对象
+        LambdaQueryWrapper<Chapter> wrapper = new LambdaQueryWrapper<>();
+        // eq(=)
+        wrapper.eq(Chapter::getCourseId, id);
+        // 执行删除操作
+        baseMapper.delete(wrapper);
+    }
+```
+
+
+
+### 8.2 前端
+
+#### 8.2.1 `API`
+
+- `course.js`
+
+```javascript
+// 根据 id 删除数据
+removeById(id) {
+  return request({
+    url: `${api_name}/remove/${id}`,
+    method: 'delete'
+  })
+}
+```
+
+
+
+#### 8.2.2 追加代码 `course/List.vue`
+
+```javascript
+methods: {
+	// 根据id删除数据
+ 	removeById(id) {
+ 	  this.$confirm('此操作将永久删除该课程，以及该课程下的章节和视频，是否继续?', '提示', {
+ 	    confirmButtonText: '确定',
+ 	    cancelButtonText: '取消',
+ 	    type: 'warning'
+ 	  }).then(() => {
+ 	    return courseApi.removeById(id)
+ 	  }).then(response => {
+ 	    this.fetchData()
+ 	    this.$message.success(response.message)
+ 	  }).catch((response) => { // 失败
+ 	    if (response === 'cancel') {
+ 	      this.$message.info('取消删除')
+ 	    }
+ 	  })
+ 	}
+}
+```
+
+
+
+## 9 课程统计
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665473671431-353ef28e-e075-4def-af51-6673cba1229f.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665474322949-bac1730d-c2a3-4d94-bae5-2dd3098383da.png)
+
+### 9.1 生成代码
+
+- `strategy.setInclude("video_visitor");`
+
+#### 
+
+### 9.2 接口
+
+#### 9.2.1 控制类
+
+```java
+package com.atguigu.ggkt.vod.controller;
+
+
+import com.atguigu.ggkt.result.Result;
+import com.atguigu.ggkt.vod.service.VideoVisitorService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+/**
+ * <p>
+ * 课程统计 前端控制器
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-10-11
+ */
+@Api(tags = "课程统计")
+@RestController
+@RequestMapping("/admin/vod/videoVisitor")
+@CrossOrigin
+public class VideoVisitorController {
+
+    @Autowired
+    private VideoVisitorService videoVisitorService;
+
+    @ApiOperation("获取课程统计数据")
+    @GetMapping("/findCount/{courseId}/{startDate}/{endDate}")
+    public Result<Map<String, Object>> findCount(@PathVariable Long courseId,
+                                                 @PathVariable String startDate,
+                                                 @PathVariable String endDate) {
+        Map<String, Object> map = videoVisitorService.findCount(courseId, startDate, endDate);
+        return Result.ok(map);
+    }
+
+}
+```
+
+
+
+#### 9.2.2 服务实现
+
+```java
+    @Override
+    public Map<String, Object> findCount(Long courseId, String startDate, String endDate) {
+        // 创建 Map 对象
+        Map<String, Object> map = new HashMap<>();
+        // 查询数据
+        List<VideoVisitorCountVo> videoVisitorCountVoList = baseMapper.findCount(courseId, startDate, endDate);
+        // Echarts 需要两个集合(日期, 数据)
+        List<String> dateList = videoVisitorCountVoList.stream()
+                .map(videoVisitorCountVo -> {
+                    Date joinTime = videoVisitorCountVo.getJoinTime();
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    String format = simpleDateFormat.format(joinTime);
+                    return format;
+                })
+                .collect(Collectors.toList());
+        List<Integer> dataList = videoVisitorCountVoList.stream()
+                .map(VideoVisitorCountVo::getUserCount).collect(Collectors.toList());
+
+        map.put("xData", dateList);
+        map.put("yData", dataList);
+        return map;
+    }
+```
+
+
+
+#### 9.2.3 `Mapper` 接口
+
+```java
+    /**
+     * 获取课程统计数据
+     *
+     * @param courseId  课程 id
+     * @param startDate 开始日期
+     * @param endDate   结束日期
+     * @return {@link List}<{@link VideoVisitorCountVo}>
+     */
+    List<VideoVisitorCountVo> findCount(
+            @Param("courseId") Long courseId,
+            @Param("startDate") String startDate,
+            @Param("endDate") String endDate);
+```
+
+
+
+#### 9.2.4 `Mapper.xml`
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.ggkt.vod.mapper.VideoVisitorMapper">
+
+    <select id="findCount" resultType="com.atguigu.ggkt.vo.vod.VideoVisitorCountVo">
+        SELECT
+        DATE(join_time) AS joinTime,
+        COUNT(*) AS userCount
+        FROM video_visitor
+        <where>
+            <if test="startDate != null and startDate != ''">
+                AND DATE(join_time) >= #{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND DATE(join_time) &lt;= #{endDate}
+            </if>
+            and course_id=#{courseId}
+        </where>
+        GROUP BY DATE(join_time)
+        ORDER BY DATE(join_time)
+    </select>
+
+</mapper>
+```
+
+
+
+### 9.3 前端
+
+#### 9.3.1 安装 `echarts` 插件
+
+- 官网: `https://echarts.apache.org/handbook/zh/basics/import`
+
+```bash
+npm install --save echarts@4.1.0
+```
+
+
+
+#### 9.3.2 `API`
+
+- 新建 `videoVisitor.js`
+
+```javascript
+import request from '@/utils/request'
+
+const api_name = '/admin/vod/videoVisitor'
+
+export default {
+  // 查询课程统计数据
+  findCount(courseId, startDate, endDate) {
+    return request({
+      url: `${api_name}/findCount/${courseId}/${startDate}/${endDate}`,
+      method: 'get'
+    })
+  }
+}
+```
+
+
+
+#### 9.3.3 `Chart.vue`
+
+```vue
+<template>
+  <div class="app-container">
+    <!--表单-->
+    <el-form :inline="true" class="demo-form-inline">
+      <el-form-item>
+        <el-date-picker
+          v-model="startDate"
+          type="date"
+          placeholder="选择开始日期"
+          value-format="yyyy-MM-dd"/>
+      </el-form-item>
+      <el-form-item>
+        <el-date-picker
+          v-model="endDate"
+          type="date"
+          placeholder="选择截止日期"
+          value-format="yyyy-MM-dd"/>
+      </el-form-item>
+      <el-button
+        :disabled="btnDisabled"
+        type="primary"
+        icon="el-icon-search"
+        @click="showChart()">查询
+      </el-button>
+    </el-form>
+    <div id="chart" class="chart" style="height:500px;"/>
+  </div>
+</template>
+<script>
+import echarts from 'echarts'
+import api from '@/api/vod/videoVisitor'
+
+export default {
+  data() {
+    return {
+      courseId: '',
+      startDate: '',
+      endDate: '',
+      btnDisabled: false
+    }
+  },
+  created() {
+    this.courseId = this.$route.params.id
+    // 初始化最近十天数据
+    let currentDate = new Date();
+    this.startDate = this.dateFormat(new Date(currentDate.getTime() - 7 * 24 * 3600 * 1000))
+    this.endDate = this.dateFormat(currentDate)
+    this.showChart()
+  },
+  methods: {
+    showChart() {
+      api.findCount(this.courseId, this.startDate, this.endDate).then(response => {
+        this.setChartData(response.data)
+      })
+    },
+    setChartData(data) {
+      // 基于准备好的dom，初始化echarts实例
+      var myChart = echarts.init(document.getElementById('chart'))
+      // 指定图表的配置项和数据
+      var option = {
+        title: {
+          text: '观看课程人数统计'
+        },
+        xAxis: {
+          data: data.xData
+        },
+        yAxis: {
+          minInterval: 1
+        },
+        series: [{
+          type: 'line',
+          data: data.yData
+        }]
+      }
+      // 使用刚指定的配置项和数据显示图表。
+      myChart.setOption(option)
+    },
+    dateFormat(date) {
+      let fmt = 'YYYY-mm-dd'
+      let ret;
+      const opt = {
+        "Y+": date.getFullYear().toString(),        // 年
+        "m+": (date.getMonth() + 1).toString(),     // 月
+        "d+": date.getDate().toString(),            // 日
+        "H+": date.getHours().toString(),           // 时
+        "M+": date.getMinutes().toString(),         // 分
+        "S+": date.getSeconds().toString()          // 秒
+        // 有其他格式化字符需求可以继续添加，必须转化成字符串
+      }
+      
+      for (let k in opt) {
+        ret = new RegExp("(" + k + ")").exec(fmt);
+        if (ret) {
+          fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+        }
+      }
+      
+      return fmt;
+    }
+  }
+}
+</script>
+```
