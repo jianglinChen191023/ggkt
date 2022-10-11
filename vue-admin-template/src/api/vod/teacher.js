@@ -46,5 +46,12 @@ export default {
       method: 'delete',
       data
     })
+  },
+  // 获取所有讲师
+  getAllTeacher() {
+    return request({
+      url: `${api_name}/findAll`,
+      method: 'get'
+    })
   }
 }

@@ -101,6 +101,55 @@ export const constantRoutes = [
     ]
   },
 
+  // 课程管理
+  {
+    path: '/vod/course',
+    component: Layout,
+    redirect: '/vod/course/list',
+    name: 'Course',
+    meta: {
+      title: '点播管理',
+      icon: 'el-icon-bank-card'
+    },
+    alwaysShow: true,
+    children: [
+      {
+        path: 'list',
+        name: 'CourseList',
+        component: () => import('@/views/vod/course/List'),
+        meta: {title: '课程列表', icon: 'table'}
+      },
+      {
+        path: 'info',
+        name: 'CourseInfo',
+        component: () => import('@/views/vod/course/Form'),
+        meta: {title: '发布课程'},
+        hidden: true
+      },
+      {
+        path: 'info/:id',
+        name: 'CourseInfoEdit',
+        component: () => import('@/views/vod/course/Form'),
+        meta: {title: '编辑课程'},
+        hidden: true
+      },
+      {
+        path: 'chapter/:id',
+        name: 'CourseChapterEdit',
+        component: () => import('@/views/vod/course/Form'),
+        meta: {title: '编辑大纲'},
+        hidden: true
+      },
+      {
+        path: 'chart/:id',
+        name: 'CourseChart',
+        component: () => import('@/views/vod/course/Chart'),
+        meta: {title: '课程统计'},
+        hidden: true
+      }
+    ]
+  },
+
   // 404 page must be placed at the end !!!
   {path: '*', redirect: '/404', hidden: true}
 ]
