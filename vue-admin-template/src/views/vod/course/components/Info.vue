@@ -17,6 +17,7 @@
             :value="teacher.id"/>
         </el-select>
       </el-form-item>
+
       <!-- 所属分类：级联下拉列表 -->
       <el-form-item label="课程类别">
         <!-- 一级分类 -->
@@ -102,12 +103,61 @@ export default {
     }
   },
   created() {
-    // 初始化分类列表
-    this.initSubjectList()
+    if (this.$parent.courseId) {
+      // 修改, 数据回显
+      this.fetchCourseInfoById(this.$parent.courseId);
+    } else {
+      // 新增
+      // 初始化分类列表
+      this.initSubjectList()
+    }
+
     // 获取讲师列表
     this.initTeacherList()
   },
   methods: {
+    // 保存并下一步
+    saveAndNext() {
+      this.saveBtnDisabled = true
+      if (!this.$parent.courseId) {
+        this.saveData()
+      } else {
+        this.updateData()
+      }
+    },
+    // 修改
+    updateData() {
+      courseApi.updateCourseInfoById(this.courseInfo).then(response => {
+        this.$message.success(response.message)
+        // 获取courseId
+        this.$parent.courseId = response.data
+        // 下一步
+        this.$parent.active = 1
+      })
+    },
+    // 获取课程信息
+    fetchCourseInfoById(id) {
+      courseApi.getCourseInfoById(id)
+        .then(response => {
+          this.courseInfo = response.data
+          // 初始化分类列表
+          subjectApi.getList(0)
+            .then(response => {
+              this.subjectList = response.data
+              // 填充二级菜单: 遍历一级菜单列表
+              this.subjectList.forEach(subject => {
+                // 找到和 courseInfo.subjectParentId 一致的父类记录
+                if (subject.id === this.courseInfo.subjectParentId) {
+                  // 拿到当前类别下的字类别列表
+                  subjectApi.getList(subject.id)
+                    .then(response => {
+                      this.subjectLevelTwoList = response.data
+                    })
+                }
+              })
+            })
+        })
+    },
     // 获取讲师列表
     initTeacherList() {
       teacherApi.getAllTeacher().then(response => {
@@ -154,16 +204,6 @@ export default {
       this.$message.error('上传失败2')
     },
 
-    // 保存并下一步
-    saveAndNext() {
-      this.saveBtnDisabled = true
-      if (!this.$parent.courseId) {
-        this.saveData()
-      } else {
-        //this.updateData()
-      }
-    },
-
     // 保存
     saveData() {
       courseApi.saveCourseInfo(this.courseInfo).then(response => {
@@ -171,7 +211,8 @@ export default {
         this.$parent.courseId = response.data // 获取courseId
         this.$parent.active = 1 // 下一步
       })
-    }
+    },
+
   }
 }
 </script>
