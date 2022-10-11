@@ -129,8 +129,6 @@ export default {
     updateData() {
       courseApi.updateCourseInfoById(this.courseInfo).then(response => {
         this.$message.success(response.message)
-        // 获取courseId
-        this.$parent.courseId = response.data
         // 下一步
         this.$parent.active = 1
       })

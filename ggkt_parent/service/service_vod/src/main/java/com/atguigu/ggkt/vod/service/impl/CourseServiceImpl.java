@@ -125,4 +125,38 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         return course.getId();
     }
 
+    @Override
+    public CourseFormVo getCourseInfoById(Long id) {
+        // 查询课程信息
+        Course course = baseMapper.selectById(id);
+
+        // 查询课程描述信息
+        CourseDescription courseDescription = courseDescriptionService.getById(id);
+
+        // 封装数据
+        CourseFormVo courseFormVo = new CourseFormVo();
+        if (course != null) {
+            BeanUtils.copyProperties(course, courseFormVo);
+        }
+
+        if (courseDescription != null) {
+            courseFormVo.setDescription(courseDescription.getDescription());
+        }
+
+        return courseFormVo;
+    }
+
+    @Override
+    public void updateCourseId(CourseFormVo courseFormVo) {
+        // 修改课程基本信息
+        Course course = new Course();
+        BeanUtils.copyProperties(courseFormVo, course);
+        baseMapper.updateById(course);
+
+        // 修改课程的描述信息
+        CourseDescription description = new CourseDescription();
+        description.setDescription(courseFormVo.getDescription());
+        courseDescriptionService.updateById(description);
+    }
+
 }

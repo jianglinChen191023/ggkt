@@ -45,5 +45,19 @@ public class CourseController {
         return Result.ok(courseId);
     }
 
+    @ApiOperation("根据 id 获取课程信息")
+    @GetMapping("/get/{id}")
+    public Result<CourseFormVo> get(@PathVariable Long id) {
+        CourseFormVo courseFormVo = courseService.getCourseInfoById(id);
+        return Result.ok(courseFormVo);
+    }
+
+    @ApiOperation("修改课程信息")
+    @PutMapping("/update")
+    public Result get(@RequestBody CourseFormVo courseFormVo) {
+        courseService.updateCourseId(courseFormVo);
+        return Result.ok();
+    }
+
 }
 

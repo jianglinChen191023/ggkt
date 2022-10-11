@@ -34,4 +34,19 @@ public interface CourseService extends IService<Course> {
      * @return {@link Long}
      */
     Long saveCourseInfo(CourseFormVo courseFormVo);
+
+    /**
+     * 通过 id 获取课程信息
+     *
+     * @param id id
+     * @return {@link CourseFormVo}
+     */
+    CourseFormVo getCourseInfoById(Long id);
+
+    /**
+     * 更新课程信息
+     *
+     * @param courseFormVo
+     */
+    void updateCourseId(CourseFormVo courseFormVo);
 }
