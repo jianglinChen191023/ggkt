@@ -363,6 +363,55 @@
       - [4.2.2 服务实现](#422-服务实现)
       - [4.2.3 `VideoServiceImpl`](#423-videoserviceimpl)
 
+- [九 整合注册中心和网关](#九-整合注册中心和网关)
+    - [1 `Spring Cloud` 相关概念](#1-spring-cloud-相关概念)
+        - [1.1、什么是 `Spring Cloud`](#11什么是-spring-cloud)
+        - [1.2 `Spring Cloud` 和 `Spring Boot` 关系](#12-spring-cloud-和-spring-boot-关系)
+        - [1.3 `Spring Cloud` 相关基础服务组件](#13-spring-cloud-相关基础服务组件)
+    - [2 搭建 `Nacos` 服务](#2-搭建-nacos-服务)
+        - [2.1 `Nacos` 概述](#21-nacos-概述)
+            - [2.1.1 基本概念](#211-基本概念)
+            - [2.1.2 常见的注册中心](#212-常见的注册中心)
+            - [2.1.3`Nacos` 结构图](#213nacos-结构图)
+        - [2.2 `Nacos`下载和安装](#22-nacos下载和安装)
+            - [2.2.1 下载地址和版本](#221-下载地址和版本)
+            - [2.2.2 启动 `Nacos` 服务](#222-启动-nacos-服务)
+            - [`**Linux**`/`**Unix**`/`**Mac**`](#linuxunixmac)
+        - [2.3 `Nocas` 服务注册](#23-nocas-服务注册)
+            - [2.3.1 追加依赖 `service`](#231-追加依赖-service)
+            - [2.3.2 配置 `service_vod`](#232-配置-service_vod)
+            - [2.3.3 开启 `Nacos`](#233-开启-nacos)
+    - [3 整合 `Spring Cloud GateWay` 网关](#3-整合-spring-cloud-gateway-网关)
+        - [3.1 网关基本概念](#31-网关基本概念)
+            - [3.1.1 `Gateway` 概述](#311-gateway-概述)
+            - [3.1.2 `Gateway` 核心概念](#312-gateway-核心概念)
+        - [3.2 使用网关 `gateway`](#32-使用网关-gateway)
+            - [3.2.1 在 `ggkt_parent` 下创建子模块 `service_gateway`](#321-在-ggkt_parent-下创建子模块-service_gateway)
+            - [3.2.2 依赖](#322-依赖)
+            - [3.2.3 创建启动类](#323-创建启动类)
+            - [3.2.4 配置文件 `application.yml`](#324-配置文件-applicationyml)
+            - [3.2.5 创建测试类](#325-创建测试类)
+        - [3.3 网关解决跨域问题](#33-网关解决跨域问题)
+            - [3.3.1 跨域概述](#331-跨域概述)
+            - [3.3.2 创建配置类 `CorsConfig`](#332-创建配置类-corsconfig)
+        - [3.4 修改前端接口](#34-修改前端接口)
+            - [2.3.2 配置 `service_vod`](#232-配置-service_vod-1)
+            - [2.3.3 开启 `Nacos`](#233-开启-nacos-1)
+    - [3 整合 `Spring Cloud GateWay` 网关](#3-整合-spring-cloud-gateway-网关-1)
+        - [3.1 网关基本概念](#31-网关基本概念-1)
+            - [3.1.1 `Gateway` 概述](#311-gateway-概述-1)
+            - [3.1.2 `Gateway` 核心概念](#312-gateway-核心概念-1)
+        - [3.2 使用网关 `gateway`](#32-使用网关-gateway-1)
+            - [3.2.1 在 `ggkt_parent` 下创建子模块 `service_gateway`](#321-在-ggkt_parent-下创建子模块-service_gateway-1)
+            - [3.2.2 依赖](#322-依赖-1)
+            - [3.2.3 创建启动类](#323-创建启动类-1)
+            - [3.2.4 配置文件 `application.yml`](#324-配置文件-applicationyml-1)
+            - [3.2.5 创建测试类](#325-创建测试类-1)
+        - [3.3 网关解决跨域问题](#33-网关解决跨域问题-1)
+            - [3.3.1 跨域概述](#331-跨域概述-1)
+            - [3.3.2 创建配置类 `CorsConfig`](#332-创建配置类-corsconfig-1)
+        - [3.4 修改前端接口](#34-修改前端接口-1)
+
 # 一 硅谷课堂
 
 ## 项目概述
@@ -11418,3 +11467,802 @@ public void removeVideoByChapterId(Long id) {
 }
 ```
 
+# 九 整合注册中心和网关
+
+```
+git checkout -b 9.0.0_nacos_gateway
+```
+
+## 1 `Spring Cloud` 相关概念
+
+### 1.1、什么是 `Spring Cloud`
+
+- `Spring Cloud `是一系列框架的集合。它利用 `Spring Boot` 的开发便利性简化了分布式系统基础设施的开发，如服务发现、服务注册、配置中心、消息总线、负载均衡、 熔断器、数据监控等，都可以用`Spring Boot` 的开发风格做到一键启动和部署。`Spring` 并没有重复制造轮子，它只是将目前各家公司开发的比较成熟、经得起实际考验的服务框架组合起来，通过 `SpringBoot` 风格进行再封装屏蔽掉了复杂的配置和实现原理，最终给开发者留出了一套简单易懂、易部署和易维护的分布式系统开发工具包
+
+
+
+### 1.2 `Spring Cloud` 和 `Spring Boot` 关系
+
+- `Spring Boot` 是 `Spring` 的一套快速配置脚手架，可以基于 `Spring Boot` 快速开发单个微服务，`Spring Cloud `是一个基于 `Spring Boot` 实现的开发工具；`Spring Boot` 专注于快速、方便集成的单个微服务个体，`Spring Cloud `关注全局的服务治理框架； `Spring Boot` 使用了默认大于配置的理念，很多集成方案已经帮你选择好了，能不配置就不配置，`Spring Cloud` 很大的一部分是基于 `Spring Boot` 来实现，必须基于 `Spring Boot` 开发。可以单独使用 `Spring Boot` 开发项目，但是 `Spring Cloud` 离不开 `Spring Boot`
+
+
+
+### 1.3 `Spring Cloud` 相关基础服务组件
+
+- 服务发现——`Netflix Eureka` （`Nacos`）
+- 服务调用——`Netflix Feign`
+- 熔断器——`Netflix Hystrix`
+- 服务网关——`Spring Cloud GateWay`
+- 分布式配置——`Spring Cloud Config `（`Nacos`）
+- 消息总线 —— `Spring Cloud Bus` （`Nacos`）
+
+
+
+## 2 搭建 `Nacos` 服务
+
+### 2.1 `Nacos` 概述
+
+#### 2.1.1 基本概念
+
+- `Nacos` 是阿里巴巴推出来的一个新开源项目，是一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
+- `Nacos` 致力于帮助您发现、配置和管理微服务。
+- `Nacos` 提供了一组简单易用的特性集，帮助您快速实现动态服务发现、服务配置、服务元数据及流量管理。
+- `Nacos` 帮助您更敏捷和容易地构建、交付和管理微服务平台。
+- `Nacos` 是构建以“服务”为中心的现代应用架构 (例如微服务范式、云原生范式) 的服务基础设施。
+
+
+
+#### 2.1.2 常见的注册中心
+
+1. `Eureka`（原生，2.0 遇到性能瓶颈，停止维护）
+2. `Zookeeper`（支持，专业的独立产品。例如：`dubbo`）
+3. `Consul`（原生，`GO` 语言开发）
+4.  `Nacos`
+
+
+
+- 相对于 `Spring Cloud Eureka` 来说，`Nacos` 更强大。
+- `Nacos` = `Spring Cloud Eureka `+ `Spring Cloud Config`
+- `Nacos` 可以与 `Spring, Spring Boot`, `Spring Cloud` 集成，并能代替 `Spring Cloud Eureka`, `Spring Cloud Config`
+- 通过 `Nacos Server` 和 `spring-cloud-starter-alibaba-nacos-discovery` 实现服务的注册与发现
+
+
+
+#### 2.1.3`Nacos` 结构图
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665477111286-e5868ef4-7fdc-4f91-9c74-1ceb09bf67fb.png)
+
+### 2.2 `Nacos`下载和安装
+
+#### 2.2.1 下载地址和版本
+
+- 下载地址：https://github.com/alibaba/nacos/releases
+- 下载版本：`nacos-server-1.1.4.tar.gz` 或 `nacos-server-1.1.4.zip`，解压任意目录即可
+
+
+
+#### 2.2.2 启动 `Nacos` 服务
+
+#### `**Linux**`/`**Unix**`/`**Mac**`
+
+启动命令(`standalone` 代表着单机模式运行，非集群模式)
+
+启动命令：`sh startup.sh -m standalone`
+
+
+
+- 内存问题报错
+- 修改 `startup.sh`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665590476274-83a71699-a8e1-4707-a910-92fd38b6370a.png)
+
+`Xms` 是指设定程序启动时占用内存大小
+
+`Xmx` 是指设定程序运行期间最大可占用的内存大小
+
+`Xmn` 新生代的大小
+
+
+
+```
+**Windows**
+```
+
+启动方式，`cmd` 打开，执行命令： `startup.cmd -m standalone`
+
+访问：`http://localhost:8848/nacos`
+
+用户名密码：`nacos`/`nacos`
+
+
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665477494594-47515dfd-1a14-4517-b3ed-a394b453d0c5.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665477504819-8739d94f-5c52-4be1-a362-8075662dbf52.png)
+
+
+
+### 2.3 `Nocas` 服务注册
+
+#### 2.3.1 追加依赖 `service`
+
+```xml
+<!-- 服务注册 -->
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+</dependency>
+
+<!-- 服务调用 feign -->
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-openfeign</artifactId>
+</dependency>
+```
+
+
+
+#### 2.3.2 配置 `service_vod`
+
+```yaml
+# nacos 服务地址
+spring:
+	cloud:
+  	nacos:
+    	discovery:
+      	server-addr: 127.0.0.1:8848
+```
+
+
+
+#### 2.3.3 开启 `Nacos`
+
+- 启动类添加注解 `@EnableDiscoveryClient`
+
+```java
+package com.atguigu.ggkt;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.annotation.ComponentScan;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/2 06:27
+ */
+@SpringBootApplication
+@ComponentScan(basePackages = "com.atguigu")
+@EnableDiscoveryClient
+public class ServiceVodApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ServiceVodApplication.class, args);
+    }
+
+}
+```
+
+
+
+## 3 整合 `Spring Cloud GateWay` 网关
+
+### 3.1 网关基本概念
+
+#### 3.1.1 `Gateway` 概述
+
+- `Spring cloud gateway` 是 `spring` 官方基于 `Spring 5.0`、`Spring Boot 2.0` 和 `Project Reactor` 等技术开发的网关，`Spring Cloud Gateway` 旨在为微服务架构提供简单、有效和统一的 `API` 路由管理方式，`Spring Cloud Gateway` 作为 `Spring Cloud` 生态系统中的网关，目标是替代 `Netflix Zuul`, 其不仅提供统一的路由方式，并且还基于 `Filter` 链的方式提供了网关基本的功能，例如：安全、监控/埋点、限流等
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665583715788-0b62f968-2c41-4931-8107-992282bf8916.png)
+
+#### 3.1.2 `Gateway` 核心概念
+
+- 网关提供 `API` 全托管服务，丰富的 `API` 管理功能，辅助企业管理大规模的 `API`, 以降低管理成本和安全风险，包括协议适配、协议转发、安全策略、防刷、流量、监控日志等贡呢。
+- 一般来说网关对外暴露的URL或者接口信息, 我们统称为路由信息。如果研发过网关中间件或者使用过 `Zuul` 的人，会知道网关的核心是 `Filter` 以及 `Filter Chain`（`Filter` 责任链）
+- `Sprig Cloud Gateway` 也具有路由和 `Filter` 的概念。
+
+
+
+下面介绍一下 `Spring Cloud Gateway` 中几个重要的概念
+
+1. 路由
+
+1. 1. 路由是网关最基础的部分，路由信息有一个ID、一个目的URL、一组断言和一组 `Filter` 组成。如果断言路由为真，则说明请求的 `URL` 和配置匹配
+
+1. 断言
+
+1. 1. `Java8` 中的断言函数。`Spring Cloud Gateway` 中的断言函数输入类型是 `Spring5.0` 框架中的 `ServerWebExchange`
+2. `Spring Cloud Gateway` 中的断言函数允许开发者去定义匹配来自于 `http request`中的任何信息，比如请求头和参数等。
+
+1. 过滤器
+
+1. 1. 一个标准的 `Spring webFilter`
+2. `Spring cloud gateway` 中的 `filter` 分为两种类型的 `Filter`，分别是 `Gateway Filter` 和 `Global Filter`
+3. 过滤器 `Filter` 将会对请求和响应进行修改处理
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665583697696-62adc1ff-ad54-425d-b028-fc7bb7a7682c.png)
+
+
+
+- 如图所示，`Spring cloud Gateway` 发出请求。
+- 然后再由 `Gateway Handler Mapping` 中找到与请求相匹配的路由，将其发送到 `Gateway web handler`。
+- `Handler`再通过指定的过滤器链将请求发送到实际的服务执行业务逻辑，然后返回
+
+
+
+### 3.2 使用网关 `gateway`
+
+#### 3.2.1 在 `ggkt_parent` 下创建子模块 `service_gateway`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665586377854-1bcda766-2dc1-49d3-b928-03e1145ac01b.png)
+
+#### 3.2.2 依赖
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>com.atguigu</groupId>
+        <artifactId>service_utils</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+
+    <!-- 网关 -->
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-gateway</artifactId>
+    </dependency>
+
+    <!-- 服务注册 -->
+    <dependency>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+    </dependency>
+</dependencies>
+```
+
+
+
+#### 3.2.3 创建启动类
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665586720767-889f7322-1aac-443e-9a6b-8098ddde3023.png)
+
+```java
+package com.atguigu.ggkt.gateway;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/12 22:53
+ */
+@SpringBootApplication
+@EnableDiscoveryClient
+public class ApiGateWayApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ApiGateWayApplication.class, args);
+    }
+    
+}
+```
+
+
+
+#### 3.2.4 配置文件 `application.yml`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665586735396-e4f6839a-602f-454e-bb75-f8e82c3ef384.png)
+
+```yaml
+# 服务端口
+server:
+	port: 8333
+
+spring:
+	# 服务名
+	application:
+		name: service-gateway
+	# nacos服务地址
+	cloud:
+		nacos:
+			discovery:
+				server-addr: 127.0.0.1:8848
+		# 使用服务发现路由
+		gateway:
+			discovery:
+				locator:
+					enabled: true
+			# service-vod 模块配置
+			# 设置路由id
+			routes[0]:
+				id: service-vod
+				# 设置路由的uri
+				uri: lb://service-vod
+				# 设置路由断言,代理 servicerId 为 auth-service 的 /auth/ 路径
+				predicates: Path=/*/vod/**
+```
+
+
+
+#### 3.2.5 创建测试类
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665586556369-c888face-8b27-409a-9399-1cc1a5000b1c.png)
+
+```java
+package com.atguigu.ggkt.gateway;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/12 22:55
+ */
+public class ApiGateWayApplicationTest {
+}
+```
+
+
+
+
+
+### 3.3 网关解决跨域问题
+
+#### 3.3.1 跨域概述
+
+- 跨域本质是浏览器对于 `ajax` 请求的一种安全限制：一个页面发起的 `ajax` 请求，只能是与当前页域名相同的路径，这能有效的阻止跨站攻击。
+
+    - 因此：跨域问题 是针对 `ajax` 的一种限制。但是这却给我们的开发带来了不便，而且在实际生产环境中，肯定会有很多台服务器之间交互，地址和端口都可能不同。
+
+- 之前我们通过服务器添加注解实现，现在我们跨域通过网关来解决跨域问题
+
+
+
+#### 3.3.2 创建配置类 `CorsConfig`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665586764267-1e61de40-c2b1-43c9-b1a6-4104955a9d0b.png)
+
+```java
+package com.atguigu.ggkt.gateway.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsWebFilter;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.util.pattern.PathPatternParser;
+
+/**
+ * 跨域配置类
+ *
+ * @author 陈江林
+ * @date 2022/10/12 22:59
+ */
+@Configuration
+public class CorsConfig {
+
+    /**
+     * 处理跨域
+     *
+     * @return {@link CorsWebFilter}
+     */
+    @Bean
+    public CorsWebFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedMethod("*");
+        config.addAllowedOrigin("*");
+        config.addAllowedHeader("*");
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(new PathPatternParser());
+        source.registerCorsConfiguration("/**", config);
+        return new CorsWebFilter(source);
+    }
+    
+}
+```
+
+- 删除所有注解 `@CrossOrigin`
+
+
+
+### 3.4 修改前端接口
+
+```latex
+VUE_APP_BASE_API = 'http://localhost:8333'
+```# 九 整合注册中心和网关
+
+```
+git checkout -b 9.0.0_nacos_gateway
+```
+
+## 1 `Spring Cloud` 相关概念
+
+### 1.1、什么是 `Spring Cloud`
+
+- `Spring Cloud `是一系列框架的集合。它利用 `Spring Boot` 的开发便利性简化了分布式系统基础设施的开发，如服务发现、服务注册、配置中心、消息总线、负载均衡、 熔断器、数据监控等，都可以用`Spring Boot` 的开发风格做到一键启动和部署。`Spring` 并没有重复制造轮子，它只是将目前各家公司开发的比较成熟、经得起实际考验的服务框架组合起来，通过 `SpringBoot` 风格进行再封装屏蔽掉了复杂的配置和实现原理，最终给开发者留出了一套简单易懂、易部署和易维护的分布式系统开发工具包
+
+
+
+### 1.2 `Spring Cloud` 和 `Spring Boot` 关系
+
+- `Spring Boot` 是 `Spring` 的一套快速配置脚手架，可以基于 `Spring Boot` 快速开发单个微服务，`Spring Cloud `是一个基于 `Spring Boot` 实现的开发工具；`Spring Boot` 专注于快速、方便集成的单个微服务个体，`Spring Cloud `关注全局的服务治理框架； `Spring Boot` 使用了默认大于配置的理念，很多集成方案已经帮你选择好了，能不配置就不配置，`Spring Cloud` 很大的一部分是基于 `Spring Boot` 来实现，必须基于 `Spring Boot` 开发。可以单独使用 `Spring Boot` 开发项目，但是 `Spring Cloud` 离不开 `Spring Boot`
+
+
+
+### 1.3 `Spring Cloud` 相关基础服务组件
+
+- 服务发现——`Netflix Eureka` （`Nacos`）
+- 服务调用——`Netflix Feign`
+- 熔断器——`Netflix Hystrix`
+- 服务网关——`Spring Cloud GateWay`
+- 分布式配置——`Spring Cloud Config `（`Nacos`）
+- 消息总线 —— `Spring Cloud Bus` （`Nacos`）
+
+
+
+## 2 搭建 `Nacos` 服务
+
+### 2.1 `Nacos` 概述
+
+#### 2.1.1 基本概念
+
+- `Nacos` 是阿里巴巴推出来的一个新开源项目，是一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
+- `Nacos` 致力于帮助您发现、配置和管理微服务。
+- `Nacos` 提供了一组简单易用的特性集，帮助您快速实现动态服务发现、服务配置、服务元数据及流量管理。
+- `Nacos` 帮助您更敏捷和容易地构建、交付和管理微服务平台。 
+- `Nacos` 是构建以“服务”为中心的现代应用架构 (例如微服务范式、云原生范式) 的服务基础设施。
+
+
+
+#### 2.1.2 常见的注册中心
+
+1. `Eureka`（原生，2.0 遇到性能瓶颈，停止维护）
+2. `Zookeeper`（支持，专业的独立产品。例如：`dubbo`）
+3. `Consul`（原生，`GO` 语言开发）
+4.  `Nacos`
+
+
+
+- 相对于 `Spring Cloud Eureka` 来说，`Nacos` 更强大。
+- `Nacos` = `Spring Cloud Eureka `+ `Spring Cloud Config`
+- `Nacos` 可以与 `Spring, Spring Boot`, `Spring Cloud` 集成，并能代替 `Spring Cloud Eureka`, `Spring Cloud Config`
+- 通过 `Nacos Server` 和 `spring-cloud-starter-alibaba-nacos-discovery` 实现服务的注册与发现
+
+
+
+#### 2.1.3`Nacos` 结构图
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665477111286-e5868ef4-7fdc-4f91-9c74-1ceb09bf67fb.png)
+
+### 2.2 `Nacos`下载和安装
+
+#### 2.2.1 下载地址和版本
+
+- 下载地址：https://github.com/alibaba/nacos/releases
+- 下载版本：`nacos-server-1.1.4.tar.gz` 或 `nacos-server-1.1.4.zip`，解压任意目录即可
+
+
+
+#### 2.2.2 启动 `Nacos` 服务
+
+#### `**Linux**`/`**Unix**`/`**Mac**`
+
+启动命令(`standalone` 代表着单机模式运行，非集群模式)
+
+启动命令：`sh startup.sh -m standalone`
+
+
+
+- 内存问题报错
+- 修改 `startup.sh`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665590476274-83a71699-a8e1-4707-a910-92fd38b6370a.png)
+
+`Xms` 是指设定程序启动时占用内存大小
+
+`Xmx` 是指设定程序运行期间最大可占用的内存大小
+
+`Xmn` 新生代的大小
+
+
+
+```
+**Windows**
+```
+
+启动方式，`cmd` 打开，执行命令： `startup.cmd -m standalone`
+
+访问：`http://localhost:8848/nacos`
+
+用户名密码：`nacos`/`nacos`
+
+
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665477494594-47515dfd-1a14-4517-b3ed-a394b453d0c5.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665477504819-8739d94f-5c52-4be1-a362-8075662dbf52.png)
+
+
+
+### 2.3 `Nocas` 服务注册 
+
+#### 2.3.1 追加依赖 `service`
+
+```xml
+<!-- 服务注册 -->
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+</dependency>
+
+<!-- 服务调用 feign -->
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-openfeign</artifactId>
+</dependency>
+```
+
+
+
+#### 2.3.2 配置 `service_vod`
+
+```yaml
+# nacos 服务地址
+spring:
+	cloud:
+  	nacos:
+    	discovery:
+      	server-addr: 127.0.0.1:8848
+```
+
+
+
+#### 2.3.3 开启 `Nacos`
+
+- 启动类添加注解 `@EnableDiscoveryClient`
+
+```java
+package com.atguigu.ggkt;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.annotation.ComponentScan;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/2 06:27
+ */
+@SpringBootApplication
+@ComponentScan(basePackages = "com.atguigu")
+@EnableDiscoveryClient
+public class ServiceVodApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ServiceVodApplication.class, args);
+    }
+
+}
+```
+
+
+
+## 3 整合 `Spring Cloud GateWay` 网关
+
+### 3.1 网关基本概念
+
+#### 3.1.1 `Gateway` 概述
+
+- `Spring cloud gateway` 是 `spring` 官方基于 `Spring 5.0`、`Spring Boot 2.0` 和 `Project Reactor` 等技术开发的网关，`Spring Cloud Gateway` 旨在为微服务架构提供简单、有效和统一的 `API` 路由管理方式，`Spring Cloud Gateway` 作为 `Spring Cloud` 生态系统中的网关，目标是替代 `Netflix Zuul`, 其不仅提供统一的路由方式，并且还基于 `Filter` 链的方式提供了网关基本的功能，例如：安全、监控/埋点、限流等
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665583715788-0b62f968-2c41-4931-8107-992282bf8916.png)
+
+#### 3.1.2 `Gateway` 核心概念
+
+- 网关提供 `API` 全托管服务，丰富的 `API` 管理功能，辅助企业管理大规模的 `API`, 以降低管理成本和安全风险，包括协议适配、协议转发、安全策略、防刷、流量、监控日志等贡呢。
+- 一般来说网关对外暴露的URL或者接口信息, 我们统称为路由信息。如果研发过网关中间件或者使用过 `Zuul` 的人，会知道网关的核心是 `Filter` 以及 `Filter Chain`（`Filter` 责任链）
+- `Sprig Cloud Gateway` 也具有路由和 `Filter` 的概念。
+
+
+
+下面介绍一下 `Spring Cloud Gateway` 中几个重要的概念
+
+1. 路由
+
+1. 1. 路由是网关最基础的部分，路由信息有一个ID、一个目的URL、一组断言和一组 `Filter` 组成。如果断言路由为真，则说明请求的 `URL` 和配置匹配
+
+1. 断言
+
+1. 1. `Java8` 中的断言函数。`Spring Cloud Gateway` 中的断言函数输入类型是 `Spring5.0` 框架中的 `ServerWebExchange`
+2. `Spring Cloud Gateway` 中的断言函数允许开发者去定义匹配来自于 `http request`中的任何信息，比如请求头和参数等。
+
+1. 过滤器
+
+1. 1. 一个标准的 `Spring webFilter`
+2. `Spring cloud gateway` 中的 `filter` 分为两种类型的 `Filter`，分别是 `Gateway Filter` 和 `Global Filter`
+3. 过滤器 `Filter` 将会对请求和响应进行修改处理
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665583697696-62adc1ff-ad54-425d-b028-fc7bb7a7682c.png)
+
+
+
+- 如图所示，`Spring cloud Gateway` 发出请求。
+- 然后再由 `Gateway Handler Mapping` 中找到与请求相匹配的路由，将其发送到 `Gateway web handler`。
+- `Handler`再通过指定的过滤器链将请求发送到实际的服务执行业务逻辑，然后返回
+
+
+
+### 3.2 使用网关 `gateway`
+
+#### 3.2.1 在 `ggkt_parent` 下创建子模块 `service_gateway`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665586377854-1bcda766-2dc1-49d3-b928-03e1145ac01b.png)
+
+#### 3.2.2 依赖
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>com.atguigu</groupId>
+        <artifactId>service_utils</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+
+    <!-- 网关 -->
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-gateway</artifactId>
+    </dependency>
+
+    <!-- 服务注册 -->
+    <dependency>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+    </dependency>
+</dependencies>
+```
+
+
+
+#### 3.2.3 创建启动类
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665586720767-889f7322-1aac-443e-9a6b-8098ddde3023.png)
+
+```java
+package com.atguigu.ggkt.gateway;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/12 22:53
+ */
+@SpringBootApplication
+@EnableDiscoveryClient
+public class ApiGateWayApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ApiGateWayApplication.class, args);
+    }
+    
+}
+```
+
+
+
+#### 3.2.4 配置文件 `application.yml`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665586735396-e4f6839a-602f-454e-bb75-f8e82c3ef384.png)
+
+```yaml
+# 服务端口
+server:
+	port: 8333
+
+spring:
+	# 服务名
+	application:
+		name: service-gateway
+	# nacos服务地址
+	cloud:
+		nacos:
+			discovery:
+				server-addr: 127.0.0.1:8848
+		# 使用服务发现路由
+		gateway:
+			discovery:
+				locator:
+					enabled: true
+			# service-vod 模块配置
+			# 设置路由id
+			routes[0]:
+				id: service-vod
+				# 设置路由的uri
+				uri: lb://service-vod
+				# 设置路由断言,代理 servicerId 为 auth-service 的 /auth/ 路径
+				predicates: Path=/*/vod/**
+```
+
+
+
+#### 3.2.5 创建测试类
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665586556369-c888face-8b27-409a-9399-1cc1a5000b1c.png)
+
+```java
+package com.atguigu.ggkt.gateway;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/12 22:55
+ */
+public class ApiGateWayApplicationTest {
+}
+```
+
+
+
+
+
+### 3.3 网关解决跨域问题
+
+#### 3.3.1 跨域概述
+
+- 跨域本质是浏览器对于 `ajax` 请求的一种安全限制：一个页面发起的 `ajax` 请求，只能是与当前页域名相同的路径，这能有效的阻止跨站攻击。
+
+    - 因此：跨域问题 是针对 `ajax` 的一种限制。但是这却给我们的开发带来了不便，而且在实际生产环境中，肯定会有很多台服务器之间交互，地址和端口都可能不同。
+
+- 之前我们通过服务器添加注解实现，现在我们跨域通过网关来解决跨域问题
+
+
+
+#### 3.3.2 创建配置类 `CorsConfig`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665586764267-1e61de40-c2b1-43c9-b1a6-4104955a9d0b.png)
+
+```java
+package com.atguigu.ggkt.gateway.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsWebFilter;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.util.pattern.PathPatternParser;
+
+/**
+ * 跨域配置类
+ *
+ * @author 陈江林
+ * @date 2022/10/12 22:59
+ */
+@Configuration
+public class CorsConfig {
+
+    /**
+     * 处理跨域
+     *
+     * @return {@link CorsWebFilter}
+     */
+    @Bean
+    public CorsWebFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedMethod("*");
+        config.addAllowedOrigin("*");
+        config.addAllowedHeader("*");
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(new PathPatternParser());
+        source.registerCorsConfiguration("/**", config);
+        return new CorsWebFilter(source);
+    }
+    
+}
+```
+
+- 删除所有注解 `@CrossOrigin`
+
+
+
+### 3.4 修改前端接口
+
+```latex
+VUE_APP_BASE_API = 'http://localhost:8333'
+```
