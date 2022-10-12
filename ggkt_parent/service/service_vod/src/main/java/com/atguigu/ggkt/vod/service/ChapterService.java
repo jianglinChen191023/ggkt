@@ -31,4 +31,10 @@ public interface ChapterService extends IService<Chapter> {
      */
     void removeChapterByCourseId(Long id);
 
+    /**
+     * 根据 id 删除章节并删除对应小节及视频
+     *
+     * @param id id
+     */
+    void removeChapterById(Long id);
 }

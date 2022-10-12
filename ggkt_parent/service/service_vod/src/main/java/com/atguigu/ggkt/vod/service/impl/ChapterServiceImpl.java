@@ -82,6 +82,14 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
     }
 
     @Override
+    public void removeChapterById(Long id) {
+        // 根据 id 删除章节
+        baseMapper.deleteById(id);
+        // 根据章节 id 删除对应的小节及视频
+        videoService.removeVideoByChapterId(id);
+    }
+
+    @Override
     public void removeChapterByCourseId(Long id) {
         // 创建条件对象
         LambdaQueryWrapper<Chapter> wrapper = new LambdaQueryWrapper<>();

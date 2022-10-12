@@ -16,8 +16,21 @@ public interface VideoService extends IService<Video> {
     /**
      * 根据课程 id 删除小节
      *
-     * @param id id
+     * @param id 课程 id
      */
     void removeVideoByCourseId(Long id);
 
+    /**
+     * 通过 id 删除小节、视频
+     *
+     * @param id 小节 id
+     */
+    void removeVideoById(Long id);
+
+    /**
+     * 根据章节 id 删除对应的小节及视频
+     *
+     * @param id id
+     */
+    void removeVideoByChapterId(Long id);
 }

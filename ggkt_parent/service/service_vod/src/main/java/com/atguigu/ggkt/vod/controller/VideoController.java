@@ -37,21 +37,21 @@ public class VideoController {
     @PostMapping("/save")
     public Result save(@RequestBody Video video) {
         videoService.save(video);
-        return Result.ok(null);
+        return Result.ok();
     }
 
     @ApiOperation(value = "修改")
     @PutMapping("/update")
     public Result updateById(@RequestBody Video video) {
         videoService.updateById(video);
-        return Result.ok(null);
+        return Result.ok();
     }
 
     @ApiOperation(value = "删除")
     @DeleteMapping("/remove/{id}")
     public Result remove(@PathVariable Long id) {
-        videoService.removeById(id);
-        return Result.ok(null);
+        videoService.removeVideoById(id);
+        return Result.ok();
     }
 
 }
