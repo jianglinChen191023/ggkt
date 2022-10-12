@@ -48,6 +48,7 @@
 
 <script>
 import videoApi from '@/api/vod/video'
+import vodApi from '@/api/vod/vod'
 
 export default {
   name: "VideoForm",
@@ -157,6 +158,13 @@ export default {
       if (!this.video.videoSourceId) {
         return
       }
+
+      vodApi.removeByFileId(this.video.videoSourceId).then(response => {
+        this.video.videoSourceId = ''
+        this.video.videoOriginalName = ''
+        videoApi.updateById(this.video)
+        this.$message.success(response.message)
+      })
     }
   }
 }
