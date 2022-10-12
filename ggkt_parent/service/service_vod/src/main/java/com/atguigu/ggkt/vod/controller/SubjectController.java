@@ -24,7 +24,6 @@ import java.util.List;
 @Api(tags = "课程分类")
 @RestController
 @RequestMapping("/admin/vod/subject")
-@CrossOrigin
 public class SubjectController {
 
     @Autowired

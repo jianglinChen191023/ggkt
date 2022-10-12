@@ -1,0 +1,26 @@
+# 服务端口
+server:
+  port: 8333
+
+spring:
+  # 服务名
+  application:
+    name: service-gateway
+  # nacos服务地址
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    # 使用服务发现路由
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      # service-vod 模块配置
+      # 设置路由id
+      routes[0]:
+        id: service-vod
+        # 设置路由的uri
+        uri: lb://service-vod
+        # 设置路由断言,代理 servicerId 为 auth-service 的 /auth/ 路径
+        predicates: Path=/*/vod/**

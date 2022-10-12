@@ -21,7 +21,6 @@ import java.util.Map;
 @Api(tags = "课程统计")
 @RestController
 @RequestMapping("/admin/vod/videoVisitor")
-@CrossOrigin
 public class VideoVisitorController {
 
     @Autowired
