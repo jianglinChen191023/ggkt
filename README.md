@@ -333,6 +333,36 @@
       - [9.3.2 `API`](#932-api)
       - [9.3.3 `Chart.vue`](#933-chartvue)
 
+- [八-1 腾讯云视频点播](#八-1-腾讯云视频点播)
+  - [1 腾讯云点播介绍](#1-腾讯云点播介绍)
+    - [1.1 开通`云点播`服务](#11-开通云点播服务)
+    - [1.2 管理控制台](#12-管理控制台)
+    - [1.3 上传视频](#13-上传视频)
+  - [2 使用`云点播`](#2-使用云点播)
+    - [2.1 `Java SDK`](#21-java-sdk)
+    - [2.2 示例 - 上传视频, 指定任务流](#22-示例---上传视频-指定任务流)
+    - [2.3 示例 - 删除视频](#23-示例---删除视频)
+    - [2.4 客户端上传](#24-客户端上传)
+      - [2.4.1 `Java` 签名示例](#241-java-签名示例)
+    - [2.5 `Web` 端上传示例](#25-web-端上传示例)
+  - [3 `service_vod` 工程使用`云点播`上传、删除视频](#3-service_vod-工程使用云点播上传删除视频)
+    - [3.1 引入依赖](#31-引入依赖)
+    - [3.2 接口](#32-接口)
+      - [3.2.1 工具类](#321-工具类)
+      - [3.2.2 控制类](#322-控制类)
+      - [3.2.3 服务实现类](#323-服务实现类)
+    - [3.3 前端](#33-前端)
+      - [3.3.1 `API`](#331-api)
+      - [3.3.2 修改 `Form.vue`](#332-修改-formvue)
+  - [4 删除课程、章节、小节](#4-删除课程章节小节)
+    - [4.1删除课程和删除小节](#41删除课程和删除小节)
+      - [4.1.1 控制类 `VideoController`](#411-控制类-videocontroller)
+      - [4.1.2 服务实现](#412-服务实现)
+    - [4.2 删除章节](#42-删除章节)
+      - [4.2.1 控制类 `ChapterController`](#421-控制类-chaptercontroller)
+      - [4.2.2 服务实现](#422-服务实现)
+      - [4.2.3 `VideoServiceImpl`](#423-videoserviceimpl)
+
 # 一 硅谷课堂
 
 ## 项目概述
@@ -10489,3 +10519,902 @@ export default {
 }
 </script>
 ```
+
+# 八-1 腾讯云视频点播
+
+```
+git checkout -b 8.0.0_vod_api
+```
+
+
+
+## 1 腾讯云点播介绍
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665490381025-f5c17fb4-7243-42a8-a567-28549834a22c.png)
+
+- 文档: https://cloud.tencent.com/document/product/266/8757
+
+### 1.1 开通`云点播`服务
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665490629964-84ef90d4-c078-4f2c-b88f-835e2b489512.png)
+
+
+
+### 1.2 管理控制台
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665491155641-502a9046-82b6-46ee-88a7-6d5d189d167c.png)
+
+
+
+### 1.3 上传视频
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665491248954-642097d0-51ec-4140-b8d4-92fe3eee8b72.png)
+
+
+
+## 2 使用`云点播`
+
+### 2.1 `Java SDK`
+
+```xml
+<!-- 腾讯云 VOD 云点播 -->
+<dependency>
+    <groupId>com.qcloud</groupId>
+    <artifactId>vod_api</artifactId>
+    <version>2.1.4</version>
+</dependency>
+```
+
+
+
+### 2.2 示例 - 上传视频, 指定任务流
+
+- 只支持本地视频上传
+
+```java
+VodUploadClient client = new VodUploadClient("your secretId", "your secretKey");
+VodUploadRequest request = new VodUploadRequest();
+request.setMediaFilePath("/data/videos/Wildlife.wmv");
+request.setProcedure("Your Procedure Name");
+try {
+    VodUploadResponse response = client.upload("ap-guangzhou", request);
+    logger.info("Upload FileId = {}", response.getFileId());
+} catch (Exception e) {
+    // 业务方进行异常处理
+    logger.error("Upload Err", e);
+}
+```
+
+
+
+### 2.3 示例 - 删除视频
+
+文档: `https://console.cloud.tencent.com/api/explorer?Product=vod&Version=2018-07-17&Action=DeleteMedia`
+
+```java
+import com.tencentcloudapi.common.Credential;
+import com.tencentcloudapi.common.profile.ClientProfile;
+import com.tencentcloudapi.common.profile.HttpProfile;
+import com.tencentcloudapi.common.exception.TencentCloudSDKException;
+import com.tencentcloudapi.vod.v20180717.VodClient;
+import com.tencentcloudapi.vod.v20180717.models.*;
+
+public class DeleteMedia
+{
+    public static void main(String [] args) {
+        try{
+            // 实例化一个认证对象，入参需要传入腾讯云账户secretId，secretKey,此处还需注意密钥对的保密
+            // 密钥可前往https://console.cloud.tencent.com/cam/capi网站进行获取
+            Credential cred = new Credential("SecretId", "SecretKey");
+            // 实例化一个http选项，可选的，没有特殊需求可以跳过
+            HttpProfile httpProfile = new HttpProfile();
+            httpProfile.setEndpoint("vod.tencentcloudapi.com");
+            // 实例化一个client选项，可选的，没有特殊需求可以跳过
+            ClientProfile clientProfile = new ClientProfile();
+            clientProfile.setHttpProfile(httpProfile);
+            // 实例化要请求产品的client对象,clientProfile是可选的
+            VodClient client = new VodClient(cred, "", clientProfile);
+            // 实例化一个请求对象,每个接口都会对应一个request对象
+            DeleteMediaRequest req = new DeleteMediaRequest();
+            req.setFileId("123");
+            // 返回的resp是一个DeleteMediaResponse的实例，与请求对象对应
+            DeleteMediaResponse resp = client.DeleteMedia(req);
+            // 输出json格式的字符串回包
+            System.out.println(DeleteMediaResponse.toJsonString(resp));
+        } catch (TencentCloudSDKException e) {
+            System.out.println(e.toString());
+        }
+    }
+}
+```
+
+
+
+### 2.4 客户端上传
+
+#### 2.4.1 `Java` 签名示例
+
+```java
+import java.util.Random;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import sun.misc.BASE64Encoder;
+// 签名工具类
+class Signature {
+   private String secretId;
+   private String secretKey;
+   private long currentTime;
+   private int random;
+   private int signValidDuration;
+    private static final String HMAC_ALGORITHM = "HmacSHA1"; //签名算法
+   private static final String CONTENT_CHARSET = "UTF-8";
+    public static byte[] byteMerger(byte[] byte1, byte[] byte2) {
+       byte[] byte3 = new byte[byte1.length + byte2.length];
+       System.arraycopy(byte1, 0, byte3, 0, byte1.length);
+       System.arraycopy(byte2, 0, byte3, byte1.length, byte2.length);
+       return byte3;
+   }
+    // 获取签名
+   public String getUploadSignature() throws Exception {
+       String strSign = "";
+       String contextStr = "";
+        // 生成原始参数字符串
+       long endTime = (currentTime + signValidDuration);
+       contextStr += "secretId=" + java.net.URLEncoder.encode(secretId, "utf8");
+       contextStr += "&currentTimeStamp=" + currentTime;
+       contextStr += "&expireTime=" + endTime;
+       contextStr += "&random=" + random;
+        try {
+           Mac mac = Mac.getInstance(HMAC_ALGORITHM);
+           SecretKeySpec secretKey = new SecretKeySpec(this.secretKey.getBytes(CONTENT_CHARSET), mac.getAlgorithm());
+           mac.init(secretKey);
+            byte[] hash = mac.doFinal(contextStr.getBytes(CONTENT_CHARSET));
+           byte[] sigBuf = byteMerger(hash, contextStr.getBytes("utf8"));
+           strSign = base64Encode(sigBuf);
+           strSign = strSign.replace(" ", "").replace("\n", "").replace("\r", "");
+       } catch (Exception e) {
+           throw e;
+       }
+       return strSign;
+   }
+    private String base64Encode(byte[] buffer) {
+       BASE64Encoder encoder = new BASE64Encoder();
+       return encoder.encode(buffer);
+   }
+    public void setSecretId(String secretId) {
+       this.secretId = secretId;
+   }
+    public void setSecretKey(String secretKey) {
+       this.secretKey = secretKey;
+   }
+    public void setCurrentTime(long currentTime) {
+       this.currentTime = currentTime;
+   }
+    public void setRandom(int random) {
+       this.random = random;
+   }
+    public void setSignValidDuration(int signValidDuration) {
+       this.signValidDuration = signValidDuration;
+   }
+}
+public class Test {
+   public static void main(String[] args) {
+       Signature sign = new Signature();
+       // 设置 App 的云 API 密钥
+       sign.setSecretId("个人 API 密钥中的 Secret Id");
+       sign.setSecretKey("个人 API 密钥中的 Secret Key");
+       sign.setCurrentTime(System.currentTimeMillis() / 1000);
+       sign.setRandom(new Random().nextInt(java.lang.Integer.MAX_VALUE));
+       sign.setSignValidDuration(3600 * 24 * 2); // 签名有效期：2天
+        try {
+           String signature = sign.getUploadSignature();
+           System.out.println("signature : " + signature);
+       } catch (Exception e) {
+           System.out.print("获取签名失败");
+           e.printStackTrace();
+       }
+   }
+}
+```
+
+
+
+### 2.5 `Web` 端上传示例
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QCloud VIDEO UGC UPLOAD SDK</title>
+  <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+  <style type="text/css">
+    .text-danger {
+      color: red;
+    }
+
+    .control-label {
+      text-align: left !important;
+    }
+
+    #resultBox {
+      width: 100%;
+      height: 300px;
+      border: 1px solid #888;
+      padding: 5px;
+      overflow: auto;
+      margin-bottom: 20px;
+    }
+
+    .uploaderMsgBox {
+      width: 100%;
+      border-bottom: 1px solid #888;
+    }
+
+    .cancel-upload {
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="content">
+    <div class="container">
+      <h1>UGC-Uploader</h1>
+    </div>
+  </div>
+  <div class="container" id="main-area">
+    <div class="row" style="padding:10px;">
+      <p>
+        示例1点击“直接上传视频”按钮即可上传视频。<br>。
+      </p>
+    </div>
+    <form ref="vExample">
+      <input type="file" style="display:none;" ref="vExampleFile" @change="vExampleUpload" />
+    </form>
+    <div class="row" style="padding:10px;">
+      <h4>示例1：直接上传视频</h4>
+      <a href="javascript:void(0);" class="btn btn-default" @click="vExampleAdd">直接上传视频</a>
+    </div>
+      <!-- 上传信息组件	 -->
+      <div class="uploaderMsgBox" v-for="uploaderInfo in uploaderInfos">
+        <div v-if="uploaderInfo.videoInfo">
+          视频名称：{{uploaderInfo.videoInfo.name + '.' + uploaderInfo.videoInfo.type}}；
+          上传进度：{{Math.floor(uploaderInfo.progress * 100) + '%'}}；
+          fileId：{{uploaderInfo.fileId}}；
+          上传结果：{{uploaderInfo.isVideoUploadCancel ? '已取消' : uploaderInfo.isVideoUploadSuccess ? '上传成功' : '上传中'}}；
+          <br>
+          地址：{{uploaderInfo.videoUrl}}；
+          <a href="javascript:void(0);" class="cancel-upload" v-if="!uploaderInfo.isVideoUploadSuccess && !uploaderInfo.isVideoUploadCancel" @click="uploaderInfo.cancel()">取消上传</a><br>
+        </div>
+        <div v-if="uploaderInfo.coverInfo">
+          封面名称：{{uploaderInfo.coverInfo.name}}；
+          上传进度：{{Math.floor(uploaderInfo.coverProgress * 100) + '%'}}；
+          上传结果：{{uploaderInfo.isCoverUploadSuccess ? '上传成功' : '上传中'}}；
+          <br>
+          地址：{{uploaderInfo.coverUrl}}；
+          <br>
+        </div>
+      </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.5.21/vue.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+  <script src="https://cdn-go.cn/cdn/vod-js-sdk-v6/latest/vod-js-sdk-v6.js"></script>
+
+  <script type="text/javascript">
+
+    ;(function () {
+
+      /**
+       * 计算签名。调用签名接口获取
+      **/
+      function getSignature() {
+        return axios.get("http://localhost:8301/admin/vod/user/sign").then(response =>{
+          return response.data.data
+        })
+      };
+      var app = new Vue({
+        el: '#main-area',
+        data: {
+          uploaderInfos: [],
+
+          vcExampleVideoName: '',
+          vcExampleCoverName: '',
+
+          cExampleFileId: '',
+        },
+        created: function () {
+          this.tcVod = new TcVod.default({
+            getSignature: getSignature
+          })
+        },
+        methods: {
+          /**
+           * vExample示例。添加视频
+          **/
+          vExampleAdd: function () {
+            this.$refs.vExampleFile.click()
+          },
+          /**
+           * vExample示例。上传视频过程。
+          **/
+          vExampleUpload: function () {
+            var self = this;
+            var mediaFile = this.$refs.vExampleFile.files[0]
+
+            var uploader = this.tcVod.upload({
+              mediaFile: mediaFile,
+            })
+            uploader.on('media_progress', function (info) {
+              uploaderInfo.progress = info.percent;
+            })
+            uploader.on('media_upload', function (info) {
+              uploaderInfo.isVideoUploadSuccess = true;
+            })
+
+            console.log(uploader, 'uploader')
+
+            var uploaderInfo = {
+              videoInfo: uploader.videoInfo,
+              isVideoUploadSuccess: false,
+              isVideoUploadCancel: false,
+              progress: 0,
+              fileId: '',
+              videoUrl: '',
+              cancel: function() {
+                uploaderInfo.isVideoUploadCancel = true;
+                uploader.cancel()
+              },
+            }
+
+            this.uploaderInfos.push(uploaderInfo)
+            uploader.done().then(function(doneResult) {
+              console.log('doneResult', doneResult)
+              uploaderInfo.fileId = doneResult.fileId;
+              return doneResult.video.url;
+            }).then(function (videoUrl) {
+              uploaderInfo.videoUrl = videoUrl
+              self.$refs.vExample.reset();
+            })
+          },
+          // cExample 上传过程
+          cExampleUpload: function() {
+            var self = this;
+            var coverFile = this.$refs.cExampleCover.files[0];
+
+            var uploader = this.tcVod.upload({
+              fileId: this.cExampleFileId,
+              coverFile: coverFile,
+            })
+            uploader.on('cover_progress', function(info) {
+              uploaderInfo.coverProgress = info.percent;
+            })
+            uploader.on('cover_upload', function(info) {
+              uploaderInfo.isCoverUploadSuccess = true;
+            })
+            console.log(uploader, 'uploader')
+
+            var uploaderInfo = {
+              coverInfo: uploader.coverInfo,
+              isCoverUploadSuccess: false,
+              coverProgress: 0,
+              coverUrl: '',
+              cancel: function () {
+                uploader.cancel()
+              },
+            }
+
+            this.uploaderInfos.push(uploaderInfo)
+
+            uploader.done().then(function (doneResult) {
+              console.log('doneResult', doneResult)
+              uploaderInfo.coverUrl = doneResult.cover.url;
+              self.$refs.cExample.reset();
+            })
+          },
+        },
+      })
+    })();
+
+  </script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-26476625-7"></script>
+  <script>
+    // add by alsotang@gmail.com
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-26476625-7');
+  </script>
+</body>
+</html>
+```
+
+
+
+## 3 `service_vod` 工程使用`云点播`上传、删除视频
+
+### 3.1 引入依赖
+
+```xml
+<!-- 腾讯云 VOD 云点播 -->
+<dependency>
+    <groupId>com.qcloud</groupId>
+    <artifactId>vod_api</artifactId>
+    <version>2.1.4</version>
+    <exclusions>
+        <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+```
+
+
+
+### 3.2 接口
+
+#### 3.2.1 工具类
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665498473937-da22dd02-592e-49cc-b767-efc2a2c68c62.png)
+
+```java
+package com.atguigu.ggkt.util;
+
+import sun.misc.BASE64Encoder;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+/**
+ * 签名工具类
+ *
+ * @author 陈江林
+ * @date 2022/10/11 22:17
+ */
+public class Signature {
+
+    private String secretId;
+    private String secretKey;
+    private long currentTime;
+    private int random;
+    private int signValidDuration;
+
+    //签名算法
+    private static final String HMAC_ALGORITHM = "HmacSHA1";
+    private static final String CONTENT_CHARSET = "UTF-8";
+
+    public static byte[] byteMerger(byte[] byte1, byte[] byte2) {
+        byte[] byte3 = new byte[byte1.length + byte2.length];
+        System.arraycopy(byte1, 0, byte3, 0, byte1.length);
+        System.arraycopy(byte2, 0, byte3, byte1.length, byte2.length);
+        return byte3;
+    }
+
+    // 获取签名
+    public String getUploadSignature() throws Exception {
+        String strSign = "";
+        String contextStr = "";
+        // 生成原始参数字符串
+        long endTime = (currentTime + signValidDuration);
+        contextStr += "secretId=" + java.net.URLEncoder.encode(secretId, "utf8");
+        contextStr += "&currentTimeStamp=" + currentTime;
+        contextStr += "&expireTime=" + endTime;
+        contextStr += "&random=" + random;
+        // 设置任务流
+        contextStr += "&procedure=LongVideoPreset";
+
+        try {
+            Mac mac = Mac.getInstance(HMAC_ALGORITHM);
+            SecretKeySpec secretKey = new SecretKeySpec(this.secretKey.getBytes(CONTENT_CHARSET), mac.getAlgorithm());
+            mac.init(secretKey);
+            byte[] hash = mac.doFinal(contextStr.getBytes(CONTENT_CHARSET));
+            byte[] sigBuf = byteMerger(hash, contextStr.getBytes("utf8"));
+            strSign = base64Encode(sigBuf);
+            strSign = strSign.replace(" ", "").replace("\n", "").replace("\r", "");
+        } catch (Exception e) {
+            throw e;
+        }
+        return strSign;
+    }
+
+    private String base64Encode(byte[] buffer) {
+        BASE64Encoder encoder = new BASE64Encoder();
+        return encoder.encode(buffer);
+    }
+
+    public void setSecretId(String secretId) {
+        this.secretId = secretId;
+    }
+
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
+    }
+
+    public void setCurrentTime(long currentTime) {
+        this.currentTime = currentTime;
+    }
+
+    public void setRandom(int random) {
+        this.random = random;
+    }
+
+    public void setSignValidDuration(int signValidDuration) {
+        this.signValidDuration = signValidDuration;
+    }
+}
+```
+
+
+
+#### 3.2.2 控制类
+
+```java
+package com.atguigu.ggkt.vod.controller;
+
+import com.atguigu.ggkt.exception.GgktException;
+import com.atguigu.ggkt.result.Result;
+import com.atguigu.ggkt.util.Signature;
+import com.atguigu.ggkt.vod.config.CosProperties;
+import com.atguigu.ggkt.vod.service.VodService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Random;
+
+/**
+ * 腾讯云点播 控制类
+ *
+ * @author 陈江林
+ * @date 2022/10/11 21:25
+ */
+@Api(tags = "腾讯云点播")
+@RestController
+@RequestMapping("/admin/vod")
+@CrossOrigin
+public class VodController {
+
+    @Autowired
+    private VodService vodService;
+
+    @Autowired
+    private CosProperties cosProperties;
+
+    @ApiOperation("客户端上传视频签名")
+    @GetMapping("/getSign")
+    public Result getSign() {
+        Signature sign = new Signature();
+        // 设置 App 的云 API 密钥
+        sign.setSecretId(cosProperties.getSecretId());
+        sign.setSecretKey(cosProperties.getSecretKey());
+        sign.setCurrentTime(System.currentTimeMillis() / 1000);
+        sign.setRandom(new Random().nextInt(java.lang.Integer.MAX_VALUE));
+        // 签名有效期：2天
+        sign.setSignValidDuration(3600 * 24 * 2);
+
+        try {
+            String signature = sign.getUploadSignature();
+            return Result.ok(signature);
+        } catch (Exception e) {
+            throw new GgktException(20001, "获取签名失败");
+        }
+    }
+
+    @ApiOperation("上传视频")
+    @PostMapping("/upload")
+    public Result<String> upload() {
+        String fileId = vodService.uploadVideo();
+        return Result.ok(fileId);
+    }
+
+    @ApiOperation("删除视频")
+    @DeleteMapping("/remove/{fileId}")
+    public Result remove(@PathVariable String fileId) {
+        vodService.removeByFileId(fileId);
+        return Result.ok();
+    }
+
+}
+```
+
+
+
+#### 3.2.3 服务实现类
+
+```java
+package com.atguigu.ggkt.vod.service.impl;
+
+import com.atguigu.ggkt.exception.GgktException;
+import com.atguigu.ggkt.vod.config.CosProperties;
+import com.atguigu.ggkt.vod.service.VodService;
+import com.qcloud.vod.VodUploadClient;
+import com.qcloud.vod.model.VodUploadRequest;
+import com.qcloud.vod.model.VodUploadResponse;
+import com.tencentcloudapi.common.Credential;
+import com.tencentcloudapi.common.exception.TencentCloudSDKException;
+import com.tencentcloudapi.common.profile.ClientProfile;
+import com.tencentcloudapi.common.profile.HttpProfile;
+import com.tencentcloudapi.vod.v20180717.VodClient;
+import com.tencentcloudapi.vod.v20180717.models.DeleteMediaRequest;
+import com.tencentcloudapi.vod.v20180717.models.DeleteMediaResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+/**
+ * 腾讯云点播 服务实现类
+ *
+ * @author 陈江林
+ * @date 2022/10/11 21:34
+ */
+@Service
+public class VodServiceImpl implements VodService {
+
+    @Autowired
+    private CosProperties cosProperties;
+
+    @Override
+    public String uploadVideo() {
+        VodUploadClient client = new VodUploadClient(cosProperties.getSecretId(), cosProperties.getSecretKey());
+        VodUploadRequest request = new VodUploadRequest();
+        request.setMediaFilePath("/opt/video/test.mov");
+        request.setProcedure("LongVideoPreset");
+        try {
+            VodUploadResponse response = client.upload("ap-guangzhou", request);
+            // 返回上传后的视频 id
+            return response.getFileId();
+        } catch (Exception e) {
+            throw new GgktException(20001, "视频上传失败");
+        }
+    }
+
+    @Override
+    public void removeByFileId(String fileId) {
+        try {
+            // 实例化一个认证对象，入参需要传入腾讯云账户secretId，secretKey,此处还需注意密钥对的保密
+            // 密钥可前往https://console.cloud.tencent.com/cam/capi网站进行获取
+            Credential cred = new Credential(cosProperties.getSecretId(), cosProperties.getSecretKey());
+            // 实例化一个http选项，可选的，没有特殊需求可以跳过
+            HttpProfile httpProfile = new HttpProfile();
+            httpProfile.setEndpoint("vod.tencentcloudapi.com");
+            // 实例化一个client选项，可选的，没有特殊需求可以跳过
+            ClientProfile clientProfile = new ClientProfile();
+            clientProfile.setHttpProfile(httpProfile);
+            // 实例化要请求产品的client对象,clientProfile是可选的
+            VodClient client = new VodClient(cred, "", clientProfile);
+            // 实例化一个请求对象,每个接口都会对应一个request对象
+            DeleteMediaRequest req = new DeleteMediaRequest();
+            req.setFileId(fileId);
+            // 返回的resp是一个DeleteMediaResponse的实例，与请求对象对应
+            DeleteMediaResponse resp = client.DeleteMedia(req);
+            // 输出json格式的字符串回包
+            System.out.println(DeleteMediaResponse.toJsonString(resp));
+        } catch (TencentCloudSDKException e) {
+            throw new GgktException(20001, "删除上传失败");
+        }
+    }
+
+}
+```
+
+
+
+### 3.3 前端
+
+#### 3.3.1 `API`
+
+- 新建 `vod.js`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665496405219-76d4d6f6-e76a-4983-8cdc-279b39caf61d.png)
+
+```javascript
+import request from '@/utils/request'
+
+const api_name = '/admin/vod'
+
+export default {
+  // 根据文件 id 删除
+  removeByFileId(fileId) {
+    return request({
+      url: `${api_name}/remove/${fileId}`,
+      method: 'delete'
+    })
+  }
+}
+```
+
+
+
+#### 3.3.2 修改 `Form.vue`
+
+- 导入 `API`
+
+```javascript
+import vodApi from '@/api/vod/vod'
+```
+
+- 删除方法
+
+```vue
+// 执行视频文件的删除
+handleOnRemove(file, fileList) {
+  if (!this.video.videoSourceId) {
+    return
+  }
+  
+  vodApi.removeByFileId(this.video.videoSourceId).then(response => {
+    this.video.videoSourceId = ''
+    this.video.videoOriginalName = ''
+    videoApi.updateById(this.video)
+    this.$message.success(response.message)
+  })
+}
+```
+
+
+
+## 4 删除课程、章节、小节
+
+- 删除章节并删除对应的所有小节和视频
+- 删除小节并删除对应视频
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665566281919-2780e1a2-e8f5-4c0b-bfe3-014660d1b2f4.png)
+
+
+
+- 删除课程并删除对应的章节、小节、视频
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665566746891-b08cf637-d7bd-4091-976c-2d5983b6d1ec.png)
+
+
+
+### 4.1删除课程和删除小节
+
+#### 4.1.1 控制类 `VideoController`
+
+```java
+    @ApiOperation(value = "删除")
+    @DeleteMapping("/remove/{id}")
+    public Result remove(@PathVariable Long id) {
+        videoService.removeVideoById(id);
+        return Result.ok();
+    }
+```
+
+
+
+#### 4.1.2 服务实现
+
+```java
+package com.atguigu.ggkt.vod.service.impl;
+
+import com.atguigu.ggkt.model.vod.Video;
+import com.atguigu.ggkt.vod.mapper.VideoMapper;
+import com.atguigu.ggkt.vod.service.VideoService;
+import com.atguigu.ggkt.vod.service.VodService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.List;
+
+/**
+ * <p>
+ * 课程视频 服务实现类
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-10-11
+ */
+@Service
+public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements VideoService {
+
+    @Autowired
+    private VodService vodService;
+
+    @Override
+    public void removeVideoByCourseId(Long id) {
+        // 创建条件对象
+        LambdaQueryWrapper<Video> wrapper = new LambdaQueryWrapper<>();
+        // eq(=)
+        wrapper.eq(Video::getCourseId, id);
+
+        // 根据课程 id 查询所有小节
+        List<Video> videos = baseMapper.selectList(wrapper);
+        // 遍历所有小节 - 删除视频
+        videos.forEach(video -> {
+            // 获取视频 id
+            String videoSourceId = video.getVideoSourceId();
+            // 如果视频 id 不为空
+            if (!StringUtils.isEmpty(video)) {
+                // 删除腾讯云视频
+                vodService.removeByFileId(videoSourceId);
+            }
+        });
+
+        // 根据课程 id 删除所有小节
+        baseMapper.delete(wrapper);
+    }
+
+    @Override
+    public void removeVideoById(Long id) {
+        // id 查询小节信息
+        Video video = baseMapper.selectById(id);
+        // 获取 video 中视频 id
+        String videoSourceId = video.getVideoSourceId();
+        // 判断视频 id 是否为空
+        if (!StringUtils.isEmpty(videoSourceId)) {
+            // 视频 id 不为空, 调用方法删除腾讯云中的视频
+            vodService.removeByFileId(videoSourceId);
+        }
+
+        // 根据 id 删除小节
+        baseMapper.deleteById(id);
+    }
+
+}
+```
+
+
+
+### 4.2 删除章节
+
+#### 4.2.1 控制类 `ChapterController`
+
+```java
+    @ApiOperation("删除章节")
+    @DeleteMapping("/remove/{id}")
+    public Result remove(@PathVariable Long id) {
+        chapterService.removeChapterById(id);
+        return Result.ok();
+    }
+```
+
+#### 4.2.2 服务实现
+
+```java
+    @Override
+    public void removeChapterById(Long id) {
+        // 根据 id 删除章节
+        baseMapper.deleteById(id);
+        // 根据章节 id 删除对应的小节及视频
+        videoService.removeVideoByChapterId(id);
+    }
+```
+
+
+
+#### 4.2.3 `VideoServiceImpl`
+
+```java
+@Override
+public void removeVideoByChapterId(Long id) {
+    // 创建条件对象
+    LambdaQueryWrapper<Video> wrapper = new LambdaQueryWrapper<>();
+    // 章节 id
+    wrapper.eq(Video::getChapterId, id);
+    // 查询该章节所有小节
+    List<Video> videos = baseMapper.selectList(wrapper);
+    // 循环删除视频
+    videos.forEach(video -> {
+        // 获取 video 中视频 id
+        String videoSourceId = video.getVideoSourceId();
+        // 判断视频 id 是否为空
+        if (!StringUtils.isEmpty(videoSourceId)) {
+            // 视频 id 不为空, 调用方法删除腾讯云中的视频
+            vodService.removeByFileId(videoSourceId);
+        }
+    });
+    // 根据章节 id 删除所有小节
+    baseMapper.delete(wrapper);
+}
+```
+
