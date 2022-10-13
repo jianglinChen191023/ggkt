@@ -150,6 +150,23 @@ export const constantRoutes = [
     ]
   },
 
+  {
+    path: '/order/orderinfo',
+    component: Layout,
+    redirect: '/order/orderinfo/List',
+    name: 'Order',
+    meta: { title: '订单管理', icon: 'el-icon-truck' },
+    alwaysShow: true,
+    children: [
+      {
+        path: 'List',
+        name: 'OrderInfoList',
+        component: () => import('@/views/order/orderinfo/List'),
+        meta: { title: '订单列表' }
+      }
+    ]
+  },
+
   // 404 page must be placed at the end !!!
   {path: '*', redirect: '/404', hidden: true}
 ]
