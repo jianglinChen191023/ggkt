@@ -430,6 +430,48 @@
     - [4.2 路由](#42-路由)
     - [4.3 创建对应页面](#43-创建对应页面)
 
+- [十一 营销管理模块](#十一-营销管理模块)
+  - [1 环境准备](#1-环境准备)
+    - [1.1 数据库](#11-数据库)
+    - [](#)
+    - [1.2 创建工程模块 `service_activity`](#12-创建工程模块-service_activity)
+    - [1.3 生成代码](#13-生成代码)
+    - [1.4 新建启动类 `ServiceActivityApplication`](#14-新建启动类-serviceactivityapplication)
+    - [1.5 新建配置文件 `application.yml`](#15-新建配置文件-applicationyml)
+    - [1.6 新建测试文件 `ServiceActivityApplicationTest`](#16-新建测试文件-serviceactivityapplicationtest)
+    - [1.7 新建 `MP` 配置文件](#17-新建-mp-配置文件)
+    - [1.8 配置网关](#18-配置网关)
+  - [2 优惠券接口](#2-优惠券接口)
+    - [2.1 控制类](#21-控制类)
+    - [2.2 服务实现类](#22-服务实现类)
+  - [3 获取用户信息接口](#3-获取用户信息接口)
+    - [3.1 环境准备](#31-环境准备)
+      - [3.1.1 数据库](#311-数据库)
+      - [3.1.2 创建工程模块 `service_user`](#312-创建工程模块-service_user)
+      - [3.1.3 生成代码](#313-生成代码)
+      - [3.1.4 新建启动类 `ServiceUserApplication`](#314-新建启动类-serviceuserapplication)
+      - [3.1.5 新建配置文件 `application.yml`](#315-新建配置文件-applicationyml)
+      - [3.1.6 新建测试文件 `ServiceActivityApplicationTest`](#316-新建测试文件-serviceactivityapplicationtest)
+      - [3.1.7 新建 `MP` 配置文件](#317-新建-mp-配置文件)
+      - [3.1.8 配置网关](#318-配置网关)
+    - [3.2 接口](#32-接口)
+      - [3.2.1 控制类](#321-控制类)
+  - [4 创建模块定义远程接口](#4-创建模块定义远程接口)
+    - [4.1 创建模块](#41-创建模块)
+    - [4.2 `service_client` 依赖](#42-service_client-依赖)
+    - [4.3 定义远程调用接口](#43-定义远程调用接口)
+  - [5 `service_activity` 工程](#5-service_activity-工程)
+    - [5.1 引入依赖](#51-引入依赖)
+    - [5.2 启动类添加注解](#52-启动类添加注解)
+    - [5.3 服务实现](#53-服务实现)
+  - [6 优惠券前端](#6-优惠券前端)
+    - [6.1 `API`](#61-api)
+    - [6.2 路由](#62-路由)
+    - [6.3 页面](#63-页面)
+      - [6.3.1 List](#631-list)
+      - [6.3.2 `Form.vue`](#632-formvue)
+      - [6.3.3 `Show.vue`](#633-showvue)
+
 # 一 硅谷课堂
 
 ## 项目概述
@@ -12921,5 +12963,1542 @@ export default {
 
 <style scoped>
 
+</style>
+```
+
+# 十一 营销管理模块
+
+```
+git checkout -b 11.0.0_activity
+```
+
+## 1 环境准备
+
+### 1.1 数据库
+
+```plsql
+/*
+SQLyog Ultimate - MySQL GUI v8.2 
+MySQL - 5.7.29-32-log : Database - glkt_activity
+*********************************************************************
+*/
+
+
+/*!40101 SET NAMES utf8 */;
+
+/*!40101 SET SQL_MODE=''*/;
+
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+DROP DATABASE IF EXISTS `glkt_activity`;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`glkt_activity` /*!40100 DEFAULT CHARACTER SET utf8 */;
+
+USE `glkt_activity`;
+
+/*Table structure for table `coupon_info` */
+
+DROP TABLE IF EXISTS `coupon_info`;
+
+CREATE TABLE `coupon_info` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `coupon_type` tinyint(3) NOT NULL DEFAULT '1' COMMENT '购物券类型 1 注册卷 2：推荐赠送卷',
+  `coupon_name` varchar(100) DEFAULT NULL COMMENT '优惠卷名字',
+  `amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '金额',
+  `condition_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '使用门槛 0->没门槛',
+  `start_time` date DEFAULT NULL COMMENT '可以领取的开始日期',
+  `end_time` date DEFAULT NULL COMMENT '可以领取的结束日期',
+  `range_type` tinyint(3) NOT NULL DEFAULT '1' COMMENT '使用范围[1->全场通用]',
+  `rule_desc` varchar(200) DEFAULT NULL COMMENT '规则描述',
+  `publish_count` int(11) NOT NULL DEFAULT '1' COMMENT '发行数量',
+  `per_limit` int(11) NOT NULL DEFAULT '1' COMMENT '每人限领张数',
+  `use_count` int(11) NOT NULL DEFAULT '0' COMMENT '已使用数量',
+  `receive_count` int(11) NOT NULL DEFAULT '0' COMMENT '领取数量',
+  `expire_time` datetime DEFAULT NULL COMMENT '过期时间',
+  `publish_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '发布状态[0-未发布，1-已发布]',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_deleted` tinyint(3) NOT NULL DEFAULT '0' COMMENT '删除标记（0:不可用 1:可用）',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='优惠券信息';
+
+/*Data for the table `coupon_info` */
+
+insert  into `coupon_info`(`id`,`coupon_type`,`coupon_name`,`amount`,`condition_amount`,`start_time`,`end_time`,`range_type`,`rule_desc`,`publish_count`,`per_limit`,`use_count`,`receive_count`,`expire_time`,`publish_status`,`create_time`,`update_time`,`is_deleted`) values (1,1,'双十一新用户注册赠送100元卷','100.00','0.00','2021-06-03','2022-07-10',2,'双十一新用户注册赠送100元卷，全程通用，没有限制',100,1,0,3,'2021-07-02 00:00:00',1,'2021-06-06 18:29:14','2021-11-12 08:30:39',0),(2,1,'双十一推荐课程并购买600福利卷','600.00','0.00','2021-08-04','2022-10-06',2,'双十一推荐课程，新用户购买并支付，赠送推荐人600福利卷，全程通用，没有限制',100,1,0,4,'2022-08-26 00:00:00',1,'2021-08-17 11:35:56','2021-11-12 08:31:37',0),(3,2,'国庆新用户注册赠送100元卷','100.00','0.00','2021-09-05','2022-10-06',1,'国庆新用户注册赠送100元卷，全程通用，没有限制',100,1,0,4,'2021-10-07 00:00:00',1,'2021-09-28 06:14:38','2021-11-12 08:31:10',0),(4,1,'国庆推荐课程并购买500福利卷','500.00','0.00','2021-09-27','2022-09-23',1,'双十一推荐课程，新用户购买并支付，赠送推荐人500福利卷，全程通用，没有限制',100,1,0,25,'2022-09-30 00:00:00',1,'2021-09-28 06:50:17','2021-11-12 08:31:16',0);
+
+/*Table structure for table `coupon_use` */
+
+DROP TABLE IF EXISTS `coupon_use`;
+
+CREATE TABLE `coupon_use` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '编号',
+  `coupon_id` bigint(20) DEFAULT NULL COMMENT '购物券ID',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '用户ID',
+  `order_id` bigint(20) DEFAULT NULL COMMENT '订单ID',
+  `coupon_status` varchar(10) DEFAULT NULL COMMENT '购物券状态（1：未使用 2：已使用）',
+  `get_time` datetime DEFAULT NULL COMMENT '获取时间',
+  `using_time` datetime DEFAULT NULL COMMENT '使用时间',
+  `used_time` datetime DEFAULT NULL COMMENT '支付时间',
+  `expire_time` datetime DEFAULT NULL COMMENT '过期时间',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_deleted` tinyint(3) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8 COMMENT='优惠券领用表';
+
+/*Data for the table `coupon_use` */
+
+insert  into `coupon_use`(`id`,`coupon_id`,`user_id`,`order_id`,`coupon_status`,`get_time`,`using_time`,`used_time`,`expire_time`,`create_time`,`update_time`,`is_deleted`) values (1,1,1,NULL,'0','2021-11-10 09:02:23',NULL,NULL,'2021-07-02 00:00:00','2021-11-10 09:02:23','2021-11-22 07:59:00',0),(2,1,1,NULL,'0','2021-11-10 09:02:23',NULL,NULL,'2022-07-02 00:00:00','2021-11-10 09:02:28','2021-11-22 07:59:02',0),(5,4,1,4,'1','2021-11-12 16:37:00','2021-11-23 18:57:27',NULL,'2022-09-30 00:00:00','2021-11-12 08:36:58','2021-11-23 10:57:27',0),(9,4,1,1,'1','2021-11-22 14:50:05','2021-11-22 21:38:48','2021-11-22 21:39:12','2022-09-30 00:00:00','2021-11-22 14:50:05','2021-11-22 13:39:12',0),(27,4,24,NULL,'0','2021-11-23 18:14:01',NULL,NULL,'2022-09-30 00:00:00','2021-11-23 10:14:01','2021-11-23 10:14:01',0),(28,4,25,NULL,'0','2021-11-23 18:49:01',NULL,NULL,'2022-09-30 00:00:00','2021-11-23 10:49:00','2021-11-23 10:49:00',0),(29,4,26,NULL,'0','2021-11-23 18:49:03',NULL,NULL,'2022-09-30 00:00:00','2021-11-23 10:49:03','2021-11-23 10:49:03',0),(30,4,27,5,'1','2021-11-23 18:50:03','2021-11-23 18:57:52',NULL,'2022-09-30 00:00:00','2021-11-23 10:50:02','2021-11-23 10:57:52',0),(31,4,28,NULL,'0','2021-11-23 18:52:49',NULL,NULL,'2022-09-30 00:00:00','2021-11-23 10:52:49','2021-11-23 10:52:49',0),(32,4,29,NULL,'0','2021-11-26 08:57:40',NULL,NULL,'2022-09-30 00:00:00','2021-11-26 00:57:39','2021-11-26 00:57:39',0),(33,4,29,NULL,'0','2021-11-26 18:33:04',NULL,NULL,'2022-09-30 00:00:00','2021-11-26 10:33:03','2021-11-26 10:33:03',0),(34,4,30,NULL,'0','2021-11-26 18:34:12',NULL,NULL,'2022-09-30 00:00:00','2021-11-26 10:34:11','2021-11-26 10:34:11',0),(35,4,31,NULL,'0','2021-11-28 16:46:53',NULL,NULL,'2022-09-30 00:00:00','2021-11-28 08:46:53','2021-11-28 08:46:53',0),(36,4,32,NULL,'0','2021-12-28 12:29:18',NULL,NULL,'2022-09-30 00:00:00','2021-12-28 12:29:17','2021-12-28 12:29:17',0),(37,4,33,NULL,'0','2022-01-05 14:35:16',NULL,NULL,'2022-09-30 00:00:00','2022-01-05 14:35:15','2022-01-05 14:35:15',0);
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+```
+
+###  
+
+### 1.2 创建工程模块 `service_activity`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665640096641-3ab6407d-baae-4dbd-8f53-c8b72772256a.png)
+
+
+
+### 1.3 生成代码
+
+- 工程路径
+- 数据库名称
+- 表名 `strategy.setInclude("coupon_info", "coupon_use");`
+
+1. 删除 `entity`
+2. 删除 `CouponUseController`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665640376776-814aa924-c197-4beb-a465-b009dee1923f.png)
+
+
+
+### 1.4 新建启动类 `ServiceActivityApplication`
+
+```java
+package com.atguigu.ggkt.activity;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/13 13:54
+ */
+@SpringBootApplication
+@EnableDiscoveryClient
+public class ServiceActivityApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ServiceActivityApplication.class, args);
+    }
+    
+}
+```
+
+
+
+### 1.5 新建配置文件 `application.yml`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665640589613-83f7b885-4c0f-49ea-9f7b-b0a67643a377.png)
+
+```yaml
+# 服务端口
+server:
+  port: 8303
+
+spring:
+  application:
+    name: service_activity
+  # 环境设置：dev、test、prod
+  profiles:
+    active:
+      dev
+  # mysql数据库连接
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/glkt_activity?characterEncoding=utf-8&useSSL=false
+    username: root
+    password: 12345678
+  #返回json的全局时间格式
+  jackson:
+    date-format=yyyy-MM-dd HH:mm:ss
+    time-zone=GMT+8
+  # nacos 地址
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+  #mybatis日志
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:com/atguigu/ggkt/activity/mapper/xml/*.xml
+```
+
+
+
+### 1.6 新建测试文件 `ServiceActivityApplicationTest`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665640608820-b89cc5f0-6ae4-48df-a262-3e51eea3b75a.png)
+
+```java
+package com.atguigu.ggkt.activity;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/13 13:56
+ */
+public class ServiceActivityApplicationTest {
+}
+```
+
+
+
+### 1.7 新建 `MP` 配置文件
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665640692789-3b578780-de1c-4321-ab92-25a0dc8cd24c.png)
+
+```java
+package com.atguigu.ggkt.activity.config;
+
+import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * MybatisPlus 配置类
+ * 
+ * @author 陈江林
+ * @date 2022/10/13 13:57
+ */
+@Configuration
+@MapperScan("com.atguigu.ggkt.activity.mapper")
+public class MybatisPlusConfig {
+
+    /**
+     * 版本要求：3.4.0 版本以上
+     * 新的分页插件,一缓和二缓遵循 mybatis 的规则, 需要设置 MybatisConfiguration#useDeprecatedExecutor = false 避免缓存出现问题(该属性会在旧插件移除后一同移除)
+     */
+    @Bean
+    public MybatisPlusInterceptor mybatisPlusInterceptor() {
+        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.H2));
+        return interceptor;
+    }
+
+    @Bean
+    public ConfigurationCustomizer configurationCustomizer() {
+        return configuration -> configuration.setUseDeprecatedExecutor(false);
+    }
+
+}
+```
+
+
+
+### 1.8 配置网关
+
+```yaml
+routes[2]:
+  id: service-activity
+  uri: lb://service-activity
+  predicates: Path=/admin/activity/**
+```
+
+
+
+## 2 优惠券接口
+
+### 2.1 控制类
+
+```java
+package com.atguigu.ggkt.activity.controller;
+
+
+import com.atguigu.ggkt.activity.service.CouponInfoService;
+import com.atguigu.ggkt.model.activity.CouponInfo;
+import com.atguigu.ggkt.model.activity.CouponUse;
+import com.atguigu.ggkt.result.Result;
+import com.atguigu.ggkt.vo.activity.CouponUseQueryVo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * <p>
+ * 优惠券信息 前端控制器
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-10-13
+ */
+@Api(tags = "优惠券")
+@RestController
+@RequestMapping("/admin/activity/couponInfo")
+public class CouponInfoController {
+
+    @Autowired
+    private CouponInfoService couponInfoService;
+
+    @ApiOperation(value = "获取分页列表")
+    @GetMapping("/{page}/{limit}")
+    public Result index(
+            @ApiParam(name = "page", value = "当前页码", required = true)
+            @PathVariable Long page,
+            @ApiParam(name = "limit", value = "每页记录数", required = true)
+            @PathVariable Long limit) {
+        Page<CouponInfo> pageParam = new Page<>(page, limit);
+        IPage<CouponInfo> pageModel = couponInfoService.page(pageParam);
+        return Result.ok(pageModel);
+    }
+
+    @ApiOperation(value = "获取优惠券")
+    @GetMapping("/get/{id}")
+    public Result get(@PathVariable String id) {
+        CouponInfo couponInfo = couponInfoService.getById(id);
+        return Result.ok(couponInfo);
+    }
+
+    @ApiOperation(value = "新增优惠券")
+    @PostMapping("/save")
+    public Result save(@RequestBody CouponInfo couponInfo) {
+        couponInfoService.save(couponInfo);
+        return Result.ok();
+    }
+
+    @ApiOperation(value = "修改优惠券")
+    @PutMapping("/update")
+    public Result updateById(@RequestBody CouponInfo couponInfo) {
+        couponInfoService.updateById(couponInfo);
+        return Result.ok();
+    }
+
+    @ApiOperation(value = "删除优惠券")
+    @DeleteMapping("/remove/{id}")
+    public Result remove(@PathVariable String id) {
+        couponInfoService.removeById(id);
+        return Result.ok();
+    }
+
+    @ApiOperation(value = "根据id列表删除优惠券")
+    @DeleteMapping("/batchRemove")
+    public Result batchRemove(@RequestBody List<String> idList) {
+        couponInfoService.removeByIds(idList);
+        return Result.ok();
+    }
+
+    @ApiOperation(value = "获取分页列表")
+    @GetMapping("/couponUse/{page}/{limit}")
+    public Result index(
+            @ApiParam(name = "page", value = "当前页码", required = true)
+            @PathVariable Long page,
+
+            @ApiParam(name = "limit", value = "每页记录数", required = true)
+            @PathVariable Long limit,
+            @ApiParam(name = "couponUseVo", value = "查询对象", required = false)
+                    CouponUseQueryVo couponUseQueryVo) {
+        Page<CouponUse> pageParam = new Page<>(page, limit);
+        IPage<CouponUse> pageModel = couponInfoService.selectCouponUsePage(pageParam, couponUseQueryVo);
+        return Result.ok(pageModel);
+    }
+}
+```
+
+
+
+### 2.2 服务实现类
+
+
+
+
+
+## 3 获取用户信息接口
+
+### 3.1 环境准备
+
+#### 3.1.1 数据库
+
+```plsql
+/*
+SQLyog Ultimate - MySQL GUI v8.2 
+MySQL - 5.7.29-32-log : Database - glkt_user
+*********************************************************************
+*/
+
+
+/*!40101 SET NAMES utf8 */;
+
+/*!40101 SET SQL_MODE=''*/;
+
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+DROP DATABASE IF EXISTS `glkt_user`;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`glkt_user` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+
+USE `glkt_user`;
+
+/*Table structure for table `user_info` */
+
+DROP TABLE IF EXISTS `user_info`;
+
+CREATE TABLE `user_info` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '编号',
+  `phone` varchar(200) DEFAULT NULL COMMENT '手机号',
+  `password` varchar(200) DEFAULT NULL COMMENT '用户密码',
+  `name` varchar(200) DEFAULT NULL COMMENT '用户姓名',
+  `nick_name` varchar(100) DEFAULT NULL COMMENT '昵称',
+  `sex` tinyint(3) DEFAULT NULL COMMENT '性别',
+  `avatar` varchar(200) DEFAULT NULL COMMENT '头像',
+  `province` varchar(30) DEFAULT NULL,
+  `subscribe` tinyint(3) NOT NULL DEFAULT '0' COMMENT '0：未订阅 1：已订阅',
+  `open_id` varchar(45) DEFAULT NULL COMMENT '小程序open id',
+  `union_id` varchar(45) DEFAULT NULL COMMENT '微信开放平台unionID',
+  `recommend_id` bigint(20) DEFAULT NULL COMMENT '推荐人用户id',
+  `status` tinyint(3) DEFAULT NULL,
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_deleted` tinyint(3) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
+
+/*Data for the table `user_info` */
+
+insert  into `user_info`(`id`,`phone`,`password`,`name`,`nick_name`,`sex`,`avatar`,`province`,`subscribe`,`open_id`,`union_id`,`recommend_id`,`status`,`create_time`,`update_time`,`is_deleted`) values (1,'15611248741',NULL,NULL,'晴天',1,'https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIB1WtJibSTqXvnJccFhOR1cSpVpdQ3BP5eTPCUO9CyI1feDefMoUFyA4E2C1oe2j8VMLrtAyBricvA/132','成都',0,'oQTXC56A4KDJuNRgj7hSoOqbxtDw',NULL,NULL,NULL,'2021-10-21 07:19:29','2021-11-23 11:32:44',0),(24,'13562359685',NULL,NULL,'简',0,'https://thirdwx.qlogo.cn/mmopen/vi_32/2GVkdw3J3kLruw37EYdW6RsFNUEL5mX5K3tgDolibM8hYICibPXpFIneMzyQpkFI0TsnE8R5ryUMvriaBmBNmNOsQ/132','',0,'oQTXC51A-QwGey9bsMH0rwP6pj0g0',NULL,1,NULL,'2021-11-23 10:14:00','2021-11-26 10:31:55',0),(25,'13810168266',NULL,NULL,'晨',0,'https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIB1WtJibSTqXsnvhFoEV7vpEMZkCfT0E9ib1TnUFHUYSppWy575onuuEDH8NRwU4aDj8PwXjQjY9OA/132','',0,'oQTXC5zyE9p-gp7T_qUnFlv8VbB0',NULL,1,NULL,'2021-11-23 10:49:00','2021-11-26 08:45:40',0),(26,'13716962779',NULL,NULL,'张晓飞',0,'https://thirdwx.qlogo.cn/mmopen/vi_32/vByI6bJx9js2GLBicLYGXJKy5cnRq9ojCBNmk3Zesakia8eShdfwV6JLfIumJyEPtLerUlQDwcF6ng8OuugaKEjg/132','',0,'oQTXC5xUafs2LDYATkXsXigZkE98',NULL,1,NULL,'2021-11-23 10:49:03','2021-11-26 08:45:40',0),(27,'17512080612',NULL,NULL,'我是',0,'https://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqhPquGcKzauUrwFxf82UfZVGbXApUU2vXhnQ7ZmSyHkGnPpUibahRs49vJcibTp1Co8iawppr0McL2A/132','',0,'oQTXC5znK6fxptadSmzTwjNIPbKo',NULL,1,NULL,'2021-11-23 10:50:02','2021-11-26 08:45:41',0),(28,'15901520518',NULL,NULL,'婷儿姐',0,'https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIVXAe2FkRhjYicibOVzMZrsEaObjmNMes9ru9ZNjx6WXt6aQSQsiccw25r2FzeGIqlUcYson4uQ8Bcw/132','',0,'oQTXC51Qq1bxuVcpivsiW3xeC6Us',NULL,1,NULL,'2021-11-23 10:52:48','2021-11-26 08:45:42',0),(29,'13500009888',NULL,NULL,'吧',0,'https://thirdwx.qlogo.cn/mmopen/vi_32/2GVkdw3J3kLruw37EYdW6RsFNUEL5mX5K3tgDolibM8hYICibPXpFIneMzyQpkFI0TsnE8R5ryUMvriaBmBNmNOsQ/132','',0,'oQTXC51A-QwGey9bsMH0rwP6pj0g',NULL,NULL,NULL,'2021-11-26 10:33:03','2021-11-26 10:39:46',0),(30,'13766816630',NULL,NULL,'环',0,'https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTInJ6LZx4So2d41ZWmv0z9hmM4yaE2dn2gvBeiasssw66NQCibuou4icHyMhjdu9ZQR6xiav2qswyNylA/132','',0,'oQTXC5x67M6p0kvuP8aDUrz3WZPg',NULL,NULL,NULL,'2021-11-26 10:34:11','2021-11-26 10:39:52',0),(31,NULL,NULL,NULL,'ya',0,'https://thirdwx.qlogo.cn/mmopen/vi_32/fw0kHmJ1rqCwcibxTYUTBZ3KltT74MG7hnhCRd5EAazTDibckZ4gKR11iaVa1dM8BiccZXpnXv2rVnJLDltB7mCnrA/132','',0,'oQTXC51_nDWnWRosSd-LxCfq_5l0',NULL,NULL,NULL,'2021-11-28 08:46:52','2021-11-28 08:46:52',0),(32,'15611248741',NULL,NULL,'',0,'','',1,'oQTXC56lAy3xMOCkKCImHtHoLLN4',NULL,NULL,NULL,'2021-12-28 12:29:17','2021-12-28 12:29:17',0),(33,'13521096172',NULL,NULL,'testatguigu',0,'','',0,'oQTXC52GRKUUFk6WVH4yF22R3NlM',NULL,NULL,NULL,'2022-01-05 14:35:15','2022-01-05 14:35:15',0);
+
+/*Table structure for table `user_login_log` */
+
+DROP TABLE IF EXISTS `user_login_log`;
+
+CREATE TABLE `user_login_log` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '用户id',
+  `ip` varchar(64) DEFAULT NULL COMMENT '登录ip',
+  `city` varchar(64) DEFAULT NULL COMMENT '登录城市',
+  `type` tinyint(1) DEFAULT NULL COMMENT '登录类型【0-web，1-移动】',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_deleted` tinyint(3) NOT NULL DEFAULT '0' COMMENT '删除标记（0:不可用 1:可用）',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户登陆记录表';
+
+/*Data for the table `user_login_log` */
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+```
+
+
+
+#### 3.1.2 创建工程模块 `service_user`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665641605224-06103bf5-a90d-4cf8-bdfb-d3fa353fd70c.png)
+
+
+
+#### 3.1.3 生成代码
+
+- 工程路径
+- 数据库名称
+- 表名 `strategy.setInclude("user_info");`
+
+1. 删除 `entity`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665641749528-8e7c9dd5-5628-4633-a514-1f8b370d4269.png)
+
+
+
+#### 3.1.4 新建启动类 `ServiceUserApplication`
+
+```java
+package com.atguigu.ggkt.user;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/13 14:16
+ */
+@SpringBootApplication
+@EnableDiscoveryClient
+public class ServiceUserApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ServiceUserApplication.class, args);
+    }
+
+}
+```
+
+
+
+#### 3.1.5 新建配置文件 `application.yml`
+
+```yaml
+# 服务端口
+server:
+  port: 8304
+
+spring:
+  application:
+    name: service_user
+  # 环境设置：dev、test、prod
+  profiles:
+    active:
+      dev
+  # mysql数据库连接
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/glkt_user?characterEncoding=utf-8&useSSL=false
+    username: root
+    password: 12345678
+  #返回json的全局时间格式
+  jackson:
+    date-format=yyyy-MM-dd HH:mm:ss
+    time-zone=GMT+8
+  # nacos 地址
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+  #mybatis日志
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:com/atguigu/ggkt/user/mapper/xml/*.xml
+```
+
+
+
+#### 3.1.6 新建测试文件 `ServiceActivityApplicationTest`
+
+```java
+package com.atguigu.ggkt.user;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/13 14:17
+ */
+public class ServiceUserApplicationTest {
+}
+```
+
+
+
+#### 3.1.7 新建 `MP` 配置文件
+
+```java
+package com.atguigu.ggkt.user.config;
+
+import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * MybatisPlus 配置类
+ * 
+ * @author 陈江林
+ * @date 2022/10/13 14:18
+ */
+@Configuration
+@MapperScan("com.atguigu.ggkt.user.mapper")
+public class MybatisPlusConfig {
+
+    /**
+     * 版本要求：3.4.0 版本以上
+     * 新的分页插件,一缓和二缓遵循 mybatis 的规则, 需要设置 MybatisConfiguration#useDeprecatedExecutor = false 避免缓存出现问题(该属性会在旧插件移除后一同移除)
+     */
+    @Bean
+    public MybatisPlusInterceptor mybatisPlusInterceptor() {
+        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.H2));
+        return interceptor;
+    }
+
+    @Bean
+    public ConfigurationCustomizer configurationCustomizer() {
+        return configuration -> configuration.setUseDeprecatedExecutor(false);
+    }
+
+}
+```
+
+
+
+#### 3.1.8 配置网关
+
+```yaml
+routes[3]:
+  id: service-user
+  uri: lb://service-user
+  predicates: Path=/admin/user/**
+```
+
+
+
+### 3.2 接口
+
+#### 3.2.1 控制类
+
+```java
+package com.atguigu.ggkt.user.controller;
+
+
+import com.atguigu.ggkt.model.user.UserInfo;
+import com.atguigu.ggkt.result.Result;
+import com.atguigu.ggkt.user.service.UserInfoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * <p>
+ * 用户表 前端控制器
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-10-13
+ */
+@Api(tags = "用户信息")
+@RestController
+@RequestMapping("/admin/user/userInfo")
+public class UserInfoController {
+
+    @Autowired
+    private UserInfoService userInfoService;
+
+    @ApiOperation("获取用户")
+    @GetMapping("/inner/getById/{id}")
+    public Result<UserInfo> getById(@PathVariable Long id) {
+        UserInfo userInfo = userInfoService.getById(id);
+        return Result.ok(userInfo);
+    }
+
+}
+```
+
+
+
+## 4 创建模块定义远程接口
+
+### 4.1 创建模块
+
+- `ggkt_parent` -> `service_client` -> `service_user_client`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665642931814-b19f9656-1857-45e0-b1ec-01bcb0487396.png)
+
+- 删除 `src`, 再创建子模块
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665643001407-b5ed97ac-7aba-43d6-9939-62c51c533857.png)
+
+- 创建空配置文件 `application.yml`
+- 创建测试文件
+
+```java
+package com.atguigu.ggkt.client.user;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/13 14:58
+ */
+public class ClientTest {
+}
+```
+
+### 4.2 `service_client` 依赖
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>com.atguigu</groupId>
+        <artifactId>service_utils</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <scope>provided </scope>
+    </dependency>
+
+    <dependency>
+        <groupId>com.atguigu</groupId>
+        <artifactId>model</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+        <scope>provided </scope>
+    </dependency>
+
+    <!-- 服务调用feign -->
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-openfeign</artifactId>
+        <scope>provided </scope>
+    </dependency>
+</dependencies>
+
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+                <!-- 取消查找本项目下的Main方法：为了解决Unable to find main class的问题 -->
+                <mainClass>none</mainClass>
+                <!-- 为了解决依赖模块找不到此模块中的类或属性 -->
+                <classifier>execute</classifier>
+            </configuration>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>repackage</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```
+
+
+
+### 4.3 定义远程调用接口
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665643069535-ff8b4144-447a-4ee7-811e-647c49b23349.png)
+
+```java
+package com.atguigu.ggkt.client.user;
+
+import com.atguigu.ggkt.model.user.UserInfo;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+/**
+ * 远程调用接口
+ *
+ * @author 陈江林
+ * @date 2022/10/13 14:37
+ */
+@FeignClient(value = "service-user")
+public interface UserInfoFeignClient {
+
+    /**
+     * 根据 id 查询用户数据
+     *
+     * @param id id
+     * @return {@link UserInfo}
+     */
+    @GetMapping("/admin/user/userInfo/inner/getById/{id}")
+    UserInfo getById(@PathVariable Long id);
+
+}
+```
+
+
+
+## 5 `service_activity` 工程
+
+### 5.1 引入依赖
+
+```xml
+<dependencies>
+    <!-- 远程调用 -->
+    <dependency>
+        <groupId>com.atguigu</groupId>
+        <artifactId>service_user_client</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+</dependencies>
+```
+
+
+
+### 5.2 启动类添加注解
+
+```java
+package com.atguigu.ggkt.activity;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.ComponentScan;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/13 13:54
+ */
+@SpringBootApplication
+@EnableDiscoveryClient
+@EnableFeignClients(basePackages = "com.atguigu")
+@ComponentScan(basePackages = "com.atguigu")
+public class ServiceActivityApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ServiceActivityApplication.class, args);
+    }
+
+}
+```
+
+
+
+### 5.3 服务实现
+
+```java
+package com.atguigu.ggkt.activity.service.impl;
+
+import com.atguigu.ggkt.activity.mapper.CouponInfoMapper;
+import com.atguigu.ggkt.activity.service.CouponInfoService;
+import com.atguigu.ggkt.activity.service.CouponUseService;
+import com.atguigu.ggkt.client.user.UserInfoFeignClient;
+import com.atguigu.ggkt.model.activity.CouponInfo;
+import com.atguigu.ggkt.model.activity.CouponUse;
+import com.atguigu.ggkt.model.user.UserInfo;
+import com.atguigu.ggkt.vo.activity.CouponUseQueryVo;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.List;
+
+/**
+ * <p>
+ * 优惠券信息 服务实现类
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-10-13
+ */
+@Service
+public class CouponInfoServiceImpl extends ServiceImpl<CouponInfoMapper, CouponInfo> implements CouponInfoService {
+    @Autowired
+    private CouponUseService couponUseService;
+
+    @Autowired
+    private UserInfoFeignClient userInfoFeignClient;
+
+    @Override
+    public IPage<CouponUse> selectCouponUsePage(Page<CouponUse> pageParam1, CouponUseQueryVo couponUseQueryVo) {
+        // 创建条件对象
+        LambdaQueryWrapper<CouponUse> wrapper = new LambdaQueryWrapper<>();
+        IPage<CouponUse> pageParam = new Page<>(1, 2);
+        if (couponUseQueryVo != null) {
+            // 获取条件
+            Long couponId = couponUseQueryVo.getCouponId();
+            String couponStatus = couponUseQueryVo.getCouponStatus();
+            String getTimeBegin = couponUseQueryVo.getGetTimeBegin();
+            String getTimeEnd = couponUseQueryVo.getGetTimeEnd();
+
+            if (!StringUtils.isEmpty(couponId)) {
+                wrapper.eq(CouponUse::getCouponId, couponId);
+            }
+
+            if (!StringUtils.isEmpty(couponStatus)) {
+                wrapper.eq(CouponUse::getCouponStatus, couponStatus);
+            }
+
+            if (!StringUtils.isEmpty(getTimeBegin)) {
+                wrapper.ge(CouponUse::getGetTime, getTimeBegin);
+            }
+
+            if (!StringUtils.isEmpty(getTimeEnd)) {
+                wrapper.le(CouponUse::getGetTime, getTimeEnd);
+            }
+        }
+
+        // 调用方法查询
+        IPage<CouponUse> page = couponUseService.page(pageParam, wrapper);
+        // 封装用户昵称和手机号
+        List<CouponUse> couponUseList = page.getRecords();
+        // 遍历
+        couponUseList.forEach(couponUse -> {
+            // 获取用户 id
+            Long userId = couponUse.getUserId();
+            if (!StringUtils.isEmpty(userId)) {
+                // 调用远程接口获取用户信息
+                UserInfo userInfo = userInfoFeignClient.getById(userId);
+                if (userInfo != null) {
+                    couponUse.getParam().put("nickName", userInfo.getNickName());
+                    couponUse.getParam().put("phone", userInfo.getPhone());
+                }
+            }
+        });
+
+        return page;
+    }
+}
+```
+
+
+
+## 6 优惠券前端
+
+### 6.1 `API`
+
+- `api` -> `activity` -> `couponInfo.js`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665644604255-3023e66e-1ac0-4853-8a45-f382872c7f8a.png)
+
+```javascript
+import request from '@/utils/request'
+
+const api_name = '/admin/activity/couponInfo'
+
+export default {
+
+  getPageList(page, limit) {
+    return request({
+      url: `${api_name}/${page}/${limit}`,
+      method: 'get'
+    })
+  },
+  getById(id) {
+    return request({
+      url: `${api_name}/get/${id}`,
+      method: 'get'
+    })
+  },
+
+  save(data) {
+    return request({
+      url: `${api_name}/save`,
+      method: 'post',
+      data
+    })
+  },
+
+  updateById(role) {
+    return request({
+      url: `${api_name}/update`,
+      method: 'put',
+      data: role
+    })
+  },
+  removeById(id) {
+    return request({
+      url: `${api_name}/remove/${id}`,
+      method: 'delete'
+    })
+  },
+  removeRows(data) {
+    return request({
+      url: `${api_name}/batchRemove`,
+      method: 'delete',
+      data
+    })
+  },
+
+  getPageCouponUseList(page, limit, params) {
+    return request({
+      url: `${api_name}/couponUse/${page}/${limit}`,
+      method: 'get',
+      params
+    })
+  }
+}
+```
+
+
+
+### 6.2 路由
+
+```javascript
+{
+    path: '/activity/couponinfo',
+    component: Layout,
+    redirect: '/couponinfo/List',
+    name: 'Activity',
+    meta: { title: '营销活动管理', icon: 'el-icon-football' },
+    alwaysShow: true,
+    children: [
+      {
+        path: 'List',
+        name: 'CouponInfo',
+        component: () => import('@/views/activity/couponinfo/List'),
+        meta: { title: '优惠券列表' }
+      },
+      {
+        path: 'add',
+        name: 'CouponInfoAdd',
+        component: () => import('@/views/activity/couponinfo/Form'),
+        meta: { title: '添加' },
+        hidden: true
+      },
+      {
+        path: 'edit/:id',
+        name: 'CouponInfoEdit',
+        component: () => import('@/views/activity/couponinfo/Form'),
+        meta: { title: '编辑', noCache: true },
+        hidden: true
+      },
+      {
+        path: 'show/:id',
+        name: 'CouponInfoShow',
+        component: () => import('@/views/activity/couponinfo/Show'),
+        meta: { title: '详情', noCache: true },
+        hidden: true
+      }
+    ]
+  },
+```
+
+
+
+### 6.3 页面
+
+#### 6.3.1 List
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665644863964-b7469ede-a69a-4500-9dd2-11726c69f9e7.png)
+
+```vue
+<template>
+  <div class="app-container">
+
+    <!-- 工具条 -->
+    <el-card class="operate-container" shadow="never">
+      <i class="el-icon-tickets" style="margin-top: 5px"></i>
+      <span style="margin-top: 5px">数据列表</span>
+      <el-button class="btn-add" size="mini" @click="add()">添加</el-button>
+    </el-card>
+
+    <!-- banner列表 -->
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      element-loading-text="数据正在加载......"
+      border
+      fit
+      highlight-current-row>
+
+      <el-table-column
+        label="序号"
+        width="70"
+        align="center">
+        <template slot-scope="scope">
+          {{ (page - 1) * limit + scope.$index + 1 }}
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="couponName" label="购物券名称"/>
+      <el-table-column prop="couponType" label="购物券类型">
+        <template slot-scope="scope">
+          {{ scope.row.couponType == 'REGISTER' ? '注册卷' : '推荐赠送卷' }}
+        </template>
+      </el-table-column>
+      <el-table-column label="规则">
+        <template slot-scope="scope">
+          {{ '现金卷：' + scope.row.amount + '元' }}
+        </template>
+      </el-table-column>
+      <el-table-column label="使用范围 ">
+        所有商品
+      </el-table-column>
+      <el-table-column prop="publishCount" label="发行数量"/>
+      <el-table-column prop="expireTime" label="过期时间"/>
+      <el-table-column prop="createTime" label="创建时间"/>
+      <el-table-column label="操作" width="150" align="center">
+        <template slot-scope="scope">
+          <router-link :to="'/activity/couponInfo/edit/'+scope.row.id">
+            <el-button size="mini" type="text">修改</el-button>
+          </router-link>
+          <el-button size="mini" type="text" @click="removeDataById(scope.row.id)">删除</el-button>
+          <router-link :to="'/activity/couponInfo/show/'+scope.row.id">
+            <el-button size="mini" type="text">详情</el-button>
+          </router-link>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <!-- 分页组件 -->
+    <el-pagination
+      :current-page="page"
+      :total="total"
+      :page-size="limit"
+      :page-sizes="[5, 10, 20, 30, 40, 50, 100]"
+      style="padding: 30px 0; text-align: center;"
+      layout="sizes, prev, pager, next, jumper, ->, total, slot"
+      @current-change="fetchData"
+      @size-change="changeSize"
+    />
+  </div>
+</template>
+
+<script>
+import api from '@/api/activity/couponInfo'
+
+export default {
+  data() {
+    return {
+      listLoading: true, // 数据是否正在加载
+      list: null, // banner列表
+      total: 0, // 数据库中的总记录数
+      page: 1, // 默认页码
+      limit: 10, // 每页记录数
+      searchObj: {}, // 查询表单对象
+      multipleSelection: [] // 批量选择中选择的记录列表
+    }
+  },
+
+  // 生命周期函数：内存准备完毕，页面尚未渲染
+  created() {
+    console.log('list created......')
+    this.fetchData()
+  },
+
+  // 生命周期函数：内存准备完毕，页面渲染成功
+  mounted() {
+    console.log('list mounted......')
+  },
+
+  methods: {
+    // 当页码发生改变的时候
+    changeSize(size) {
+      console.log(size)
+      this.limit = size
+      this.fetchData(1)
+    },
+
+    add() {
+      this.$router.push({path: '/activity/couponInfo/add'})
+    },
+
+    // 加载banner列表数据
+    fetchData(page = 1) {
+      console.log('翻页。。。' + page)
+      // 异步获取远程数据（ajax）
+      this.page = page
+
+      api.getPageList(this.page, this.limit, this.searchObj).then(
+        response => {
+          this.list = response.data.records
+          this.total = response.data.total
+
+          // 数据加载并绑定成功
+          this.listLoading = false
+        }
+      )
+    },
+
+    // 重置查询表单
+    resetData() {
+      console.log('重置查询表单')
+      this.searchObj = {}
+      this.fetchData()
+    },
+
+    // 根据id删除数据
+    removeDataById(id) {
+      // debugger
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => { // promise
+        // 点击确定，远程调用ajax
+        return api.removeById(id)
+      }).then((response) => {
+        this.fetchData(this.page)
+        if (response.code) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    }
+  }
+}
+</script>
+```
+
+
+
+#### 6.3.2 `Form.vue`
+
+```vue
+<template>
+  <div class="app-container">
+    <el-form label-width="120px">
+
+      <el-form-item label="优惠券名称">
+        <el-input v-model="couponInfo.couponName"/>
+      </el-form-item>
+      <el-form-item label="优惠券类型">
+        <el-radio-group v-model="couponInfo.couponType">
+          <el-radio label="1">注册卷</el-radio>
+          <el-radio label="2">推荐购买卷</el-radio>
+        </el-radio-group>
+      </el-form-item>
+
+      <el-form-item label="发行数量">
+        <el-input v-model="couponInfo.publishCount"/>
+      </el-form-item>
+      <el-form-item label="领取时间">
+        <el-date-picker
+          v-model="couponInfo.startTime"
+          type="date"
+          placeholder="选择开始日期"
+          value-format="yyyy-MM-dd"/>
+        至
+        <el-date-picker
+          v-model="couponInfo.endTime"
+          type="date"
+          placeholder="选择开始日期"
+          value-format="yyyy-MM-dd"/>
+      </el-form-item>
+      <el-form-item label="过期时间">
+        <el-date-picker
+          v-model="couponInfo.expireTime"
+          type="datetime"
+          placeholder="选择开始日期"
+          value-format="yyyy-MM-dd HH:mm:ss"/>
+      </el-form-item>
+      <el-form-item label="直播详情">
+        <el-input v-model="couponInfo.ruleDesc" type="textarea" rows="5"/>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="saveOrUpdate">保存</el-button>
+        <el-button @click="back">返回</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+
+<script>
+import api from '@/api/activity/couponInfo'
+
+const defaultForm = {
+  id: '',
+  couponType: '1',
+  couponName: '',
+  amount: '0',
+  conditionAmount: '0',
+  startTime: '',
+  endTime: '',
+  rangeType: '1',
+  ruleDesc: '',
+  publishCount: '',
+  perLimit: '1',
+  useCount: '0',
+  receiveCount: '',
+  expireTime: '',
+  publishStatus: ''
+}
+
+export default {
+  data() {
+    return {
+      couponInfo: defaultForm,
+      saveBtnDisabled: false,
+
+      keyword: '',
+      skuInfoList: []
+    }
+  },
+
+  // 监听器
+  watch: {
+    $route(to, from) {
+      console.log('路由变化......')
+      console.log(to)
+      console.log(from)
+      this.init()
+    }
+  },
+
+  // 生命周期方法（在路由切换，组件不变的情况下不会被调用）
+  created() {
+    console.log('form created ......')
+    this.init()
+  },
+
+  methods: {
+
+    // 表单初始化
+    init() {
+      // debugger
+      if (this.$route.params && this.$route.params.id) {
+        const id = this.$route.params.id
+        this.fetchDataById(id)
+      } else {
+        // 对象拓展运算符：拷贝对象，而不是赋值对象的引用
+        this.couponInfo = {...defaultForm}
+      }
+    },
+
+    saveOrUpdate() {
+      this.saveBtnDisabled = true // 防止表单重复提交
+      if (!this.couponInfo.id) {
+        this.saveData()
+      } else {
+        this.updateData()
+      }
+    },
+
+    // 新增
+    saveData() {
+      api.save(this.couponInfo).then(response => {
+        // debugger
+        if (response.code) {
+          this.$message({
+            type: 'success',
+            message: response.message
+          })
+          this.$router.push({path: '/activity/couponInfo/list'})
+        }
+      })
+    },
+
+    // 根据id更新记录
+    updateData() {
+      api.updateById(this.couponInfo).then(response => {
+        debugger
+        if (response.code) {
+          this.$message({
+            type: 'success',
+            message: response.message
+          })
+          this.$router.push({path: '/activity/couponInfo/list'})
+        }
+      })
+    },
+
+    back() {
+      this.$router.push({path: '/activity/couponInfo/list'})
+    },
+
+    // 根据id查询记录
+    fetchDataById(id) {
+      api.getById(id).then(response => {
+        // debugger
+        this.couponInfo = response.data
+      })
+    }
+  }
+}
+</script>
+```
+
+
+
+#### 6.3.3 `Show.vue`
+
+```vue
+<template>
+  <div class="app-container">
+
+    <h4>优惠券信息</h4>
+    <table class="table table-striped table-condenseda table-bordered" width="100%">
+      <tbody>
+      <tr>
+        <th width="15%">优惠券名称</th>
+        <td width="35%"><b style="font-size: 14px">{{ couponInfo.couponName }}</b></td>
+        <th width="15%">优惠券类型</th>
+        <td width="35%">
+          {{ couponInfo.couponType == 'REGISTER' ? '注册卷' : '推荐赠送卷' }}
+        </td>
+      </tr>
+      <tr>
+        <th>发行数量</th>
+        <td>{{ couponInfo.publishCount }}</td>
+        <th>每人限领次数</th>
+        <td>{{ couponInfo.perLimit }}</td>
+      </tr>
+      <tr>
+        <th>领取数量</th>
+        <td>{{ couponInfo.receiveCount }}</td>
+        <th>使用数量</th>
+        <td>{{ couponInfo.useCount }}</td>
+      </tr>
+      <tr>
+        <th>领取时间</th>
+        <td>{{ couponInfo.startTime }}至{{ couponInfo.endTime }}</td>
+        <th>过期时间</th>
+        <td>{{ couponInfo.expireTime }}</td>
+      </tr>
+      <tr>
+        <th>规则描述</th>
+        <td colspan="3">{{ couponInfo.ruleDesc }}</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <h4>
+      优惠券发放列表&nbsp;&nbsp;&nbsp;
+    </h4>
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      stripe
+      border
+      style="width: 100%;margin-top: 10px;">
+
+      <el-table-column
+        label="序号"
+        width="70"
+        align="center">
+        <template slot-scope="scope">
+          {{ (page - 1) * limit + scope.$index + 1 }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="param.nickName" label="用户昵称"/>
+      <el-table-column prop="param.phone" label="手机号"/>
+      <el-table-column label="使用状态">
+        <template slot-scope="scope">
+          {{ scope.row.couponStatus == 'NOT_USED' ? '未使用' : '已使用' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="getTime" label="获取时间"/>
+      <el-table-column prop="usingTime" label="使用时间"/>
+      <el-table-column prop="usedTime" label="支付时间"/>
+      <el-table-column prop="expireTime" label="过期时间"/>
+    </el-table>
+    <!-- 分页组件 -->
+    <el-pagination
+      :current-page="page"
+      :total="total"
+      :page-size="limit"
+      :page-sizes="[5, 10, 20, 30, 40, 50, 100]"
+      style="padding: 30px 0; text-align: center;"
+      layout="sizes, prev, pager, next, jumper, ->, total, slot"
+      @current-change="fetchData"
+      @size-change="changeSize"
+    />
+
+    <div style="margin-top: 15px;">
+      <el-form label-width="0px">
+        <el-form-item>
+          <el-button @click="back">返回</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+  </div>
+</template>
+
+<script>
+import api from '@/api/activity/couponInfo'
+
+export default {
+  data() {
+    return {
+      listLoading: false, // 数据是否正在加载
+
+      couponId: null,
+      couponInfo: {},
+
+      list: null, // banner列表
+      total: 0, // 数据库中的总记录数
+      page: 1, // 默认页码
+      limit: 10, // 每页记录数
+      searchObj: {} // 查询表单对象
+    }
+  },
+
+  // 监听器
+  watch: {
+    $route(to, from) {
+      console.log('路由变化......')
+      console.log(to)
+      console.log(from)
+      this.init()
+    }
+  },
+
+  // 生命周期方法（在路由切换，组件不变的情况下不会被调用）
+  created() {
+    console.log('form created ......')
+    this.couponId = this.$route.params.id
+    // 获取优惠券信息
+    this.fetchDataById()
+    this.fetchData()
+  },
+
+  methods: {
+
+    // 根据id查询记录
+    fetchDataById() {
+      api.getById(this.couponId).then(response => {
+        //
+        this.couponInfo = response.data
+      })
+    },
+
+    // 当页码发生改变的时候
+    changeSize(size) {
+      console.log(size)
+      this.limit = size
+      this.fetchData(1)
+    },
+
+    // 加载banner列表数据
+    fetchData(page = 1) {
+      console.log('翻页。。。' + page)
+      // 异步获取远程数据（ajax）
+      this.page = page
+      this.searchObj.couponId = this.couponId
+      api.getPageCouponUseList(this.page, this.limit, this.searchObj).then(
+        response => {
+          this.list = response.data.records
+          this.total = response.data.total
+
+          // 数据加载并绑定成功
+          this.listLoading = false
+        }
+      )
+    },
+
+    back() {
+      this.$router.push({path: '/activity/couponInfo/list'})
+    }
+  }
+}
+</script>
+
+<style>
+.app-container h4 {
+  color: #606266;
+}
 </style>
 ```
