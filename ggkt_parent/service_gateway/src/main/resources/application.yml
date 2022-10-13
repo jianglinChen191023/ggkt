@@ -36,3 +36,7 @@ spring:
         id: service-user
         uri: lb://service-user
         predicates: Path=/admin/user/**
+      routes[4]:
+        id: service-wechat
+        uri: lb://service-wechat
+        predicates: Path=/admin/wechat/**
