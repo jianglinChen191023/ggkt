@@ -28,3 +28,11 @@ spring:
         id: service-order
         uri: lb://service-order
         predicates: Path=/admin/order/**
+      routes[2]:
+        id: service-activity
+        uri: lb://service-activity
+        predicates: Path=/admin/activity/**
+      routes[3]:
+        id: service-user
+        uri: lb://service-user
+        predicates: Path=/admin/user/**

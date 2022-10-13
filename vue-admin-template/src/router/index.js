@@ -167,6 +167,44 @@ export const constantRoutes = [
     ]
   },
 
+  {
+    path: '/activity/couponinfo',
+    component: Layout,
+    redirect: '/couponinfo/List',
+    name: 'Activity',
+    meta: { title: '营销活动管理', icon: 'el-icon-football' },
+    alwaysShow: true,
+    children: [
+      {
+        path: 'List',
+        name: 'CouponInfo',
+        component: () => import('@/views/activity/couponinfo/List'),
+        meta: { title: '优惠券列表' }
+      },
+      {
+        path: 'add',
+        name: 'CouponInfoAdd',
+        component: () => import('@/views/activity/couponinfo/Form'),
+        meta: { title: '添加' },
+        hidden: true
+      },
+      {
+        path: 'edit/:id',
+        name: 'CouponInfoEdit',
+        component: () => import('@/views/activity/couponinfo/Form'),
+        meta: { title: '编辑', noCache: true },
+        hidden: true
+      },
+      {
+        path: 'show/:id',
+        name: 'CouponInfoShow',
+        component: () => import('@/views/activity/couponinfo/Show'),
+        meta: { title: '详情', noCache: true },
+        hidden: true
+      }
+    ]
+  },
+
   // 404 page must be placed at the end !!!
   {path: '*', redirect: '/404', hidden: true}
 ]
