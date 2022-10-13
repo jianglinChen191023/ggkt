@@ -4,7 +4,7 @@ server:
 
 spring:
   application:
-    name: service_activity
+    name: service-activity
   # 环境设置：dev、test、prod
   profiles:
     active:

@@ -4,7 +4,7 @@ server:
 
 spring:
   application:
-    name: service_user
+    name: service-user
   # 环境设置：dev、test、prod
   profiles:
     active:
