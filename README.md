@@ -472,6 +472,43 @@
       - [6.3.2 `Form.vue`](#632-formvue)
       - [6.3.3 `Show.vue`](#633-showvue)
 
+- [十二 公众号菜单管理](#十二-公众号菜单管理)
+  - [1 申请测试公众号](#1-申请测试公众号)
+  - [2 需求分析](#2-需求分析)
+    - [2.1 微信自定义菜单说明](#21-微信自定义菜单说明)
+    - [2.2 硅谷课堂自定义菜单](#22-硅谷课堂自定义菜单)
+    - [2.3 数据格式](#23-数据格式)
+      - [2.3.1 数据库表](#231-数据库表)
+    - [2.4 管理页面](#24-管理页面)
+  - [3. 搭建菜单管理后端环境](#3-搭建菜单管理后端环境)
+    - [3.1 创建模块 `service_wechat`](#31-创建模块-service_wechat)
+    - [3.2 依赖](#32-依赖)
+    - [3.3 生成代码](#33-生成代码)
+    - [3.4 启动类](#34-启动类)
+    - [3.5 配置文件 `application.yml`](#35-配置文件-applicationyml)
+    - [3.6 测试类 `ServiceWechatApplicationTest`](#36-测试类-servicewechatapplicationtest)
+    - [3.7 配置网关](#37-配置网关)
+  - [4 菜单管理接口](#4-菜单管理接口)
+    - [4.1 控制类](#41-控制类)
+    - [4.2 服务实现类](#42-服务实现类)
+  - [5 同步菜单（获取 `access_token`）](#5-同步菜单获取-access_token)
+    - [5.1 接口调用请求说明](#51-接口调用请求说明)
+    - [5.2 `service_wechat` 添加配置](#52-service_wechat-添加配置)
+    - [5.3 添加依赖](#53-添加依赖)
+    - [5.4 新建属性文件 `WxMpProperties`](#54-新建属性文件-wxmpproperties)
+    - [5.5 新建微信配置类 `WxMpConfiguration`](#55-新建微信配置类-wxmpconfiguration)
+    - [5.6 控制类](#56-控制类)
+    - [5.7 服务实现类](#57-服务实现类)
+  - [6 公众号菜单删除](#6-公众号菜单删除)
+    - [6.1 控制类](#61-控制类)
+    - [6.2 服务实现类](#62-服务实现类)
+  - [7 前端代码](#7-前端代码)
+    - [7.1 `API`](#71-api)
+    - [7.2 路由](#72-路由)
+    - [7.3 `List.vue`](#73-listvue)
+  - [8 公众号同步菜单效果图](#8-公众号同步菜单效果图)
+
+
 # 一 硅谷课堂
 
 ## 项目概述
@@ -14502,3 +14539,1075 @@ export default {
 }
 </style>
 ```
+
+
+
+# 十二 公众号菜单管理
+
+```
+git checkout -b 12.0.0_wechat_menu
+```
+
+## 1 申请测试公众号
+
+地址: `https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login&token=399029368&lang=zh_CN`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665665862557-4724de8c-1330-4f37-8b50-a6ce3205efe7.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665719469246-fa0dde81-4437-4b6f-99f1-51b832d2938c.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665729221890-c2ab98dc-9c72-43ee-abd1-46e911c95b76.png)
+
+## 2 需求分析
+
+### 2.1 微信自定义菜单说明
+
+- 微信自定义菜单文档地址: `https://developers.weixin.qq.com/doc/offiaccount/Custom_Menus/Creating_Custom-Defined_Menu.html`
+- 微信自定义菜单注意事项
+
+1. 自定义菜单最多包括 `3` 个一级菜单，每个一级菜单最多包含 `5` 个二级菜单。
+2. 一级菜单最多 `4` 个汉字，二级菜单最多 `8` 个汉字，多出来的部分将会以“...”代替。
+3. 创建自定义菜单后，菜单的刷新策略是，在用户进入公众号会话页或公众号 `profile` 页时，如果发现上一次拉取菜单的请求在 `5` 分钟以前，就会拉取一下菜单，如果菜单有更新，就会刷新客户端的菜单。测试时可以尝试取消关注公众账号后再次关注，则可以看到创建后的效果。
+
+
+
+### 2.2 硅谷课堂自定义菜单
+
+1. 一级菜单: 直播、课程、我的
+2. 二级菜单: 根据一级菜单动态设置二级菜单, 直播（近期直播课程）, 课程（课程分类）， 我的（我的订单, 我的课程, 我的优惠券及关于我们）
+
+说明:
+
+1. 二级菜单可以是网页类型, 点击跳转 `H5` 页面
+2. 二级菜单可以是消息类型, 点击返回消息
+
+
+
+### 2.3 数据格式
+
+- 自定义菜单通过后台管理设置到数据库表, 数据配置好后, 通过微信接口推送菜单数据到微信平台
+
+#### 2.3.1 数据库表
+
+```plsql
+/*
+SQLyog Ultimate - MySQL GUI v8.2 
+MySQL - 5.7.29-32-log : Database - glkt_wechat
+*********************************************************************
+*/
+
+
+/*!40101 SET NAMES utf8 */;
+
+/*!40101 SET SQL_MODE=''*/;
+
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+DROP DATABASE IF EXISTS `glkt_wechat`;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`glkt_wechat` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+
+USE `glkt_wechat`;
+
+/*Table structure for table `menu` */
+
+DROP TABLE IF EXISTS `menu`;
+
+CREATE TABLE `menu` (
+                        `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '编号',
+                        `parent_id` bigint(20) DEFAULT NULL COMMENT '上级id',
+                        `name` varchar(50) DEFAULT NULL COMMENT '菜单名称',
+                        `type` varchar(10) DEFAULT NULL COMMENT '类型',
+                        `url` varchar(100) DEFAULT NULL COMMENT '网页 链接，用户点击菜单可打开链接',
+                        `meun_key` varchar(20) DEFAULT NULL COMMENT '菜单KEY值，用于消息接口推送',
+                        `sort` tinyint(3) DEFAULT NULL COMMENT '排序',
+                        `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                        `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                        `is_deleted` tinyint(3) NOT NULL DEFAULT '0',
+                        PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COMMENT='微信公众号菜单';
+
+/*Data for the table `menu` */
+
+insert  into `menu`(`id`,`parent_id`,`name`,`type`,`url`,`meun_key`,`sort`,`create_time`,`update_time`,`is_deleted`) values (1,0,'直播',NULL,NULL,NULL,1,'2021-11-24 08:41:53','2021-11-24 08:44:55',0),(2,0,'课程',NULL,NULL,NULL,2,'2021-11-24 08:41:57','2021-11-25 01:33:52',0),(3,0,'我的',NULL,NULL,NULL,3,'2021-11-24 08:42:00','2021-11-25 01:34:16',0),(4,3,'关于我们','click',NULL,'aboutUs',10,'2021-11-24 08:42:05','2021-11-24 08:45:00',0),(5,1,'微服务架构演进','view','/liveInfo/3','',2,'2021-11-24 10:29:12','2021-11-25 01:26:13',0),(6,1,'大数据Spark全面分析','view','/liveInfo/2','',4,'2021-11-24 10:29:24','2021-11-25 01:27:05',0),(7,2,'后端开发','view','/course/1','',1,'2021-11-24 10:31:48','2021-11-25 01:27:06',0),(8,2,'大数据','view','/course/14','',2,'2021-11-24 10:31:59','2021-11-25 01:27:07',0),(9,3,'我的订单','view','/order','',1,'2021-11-25 01:19:25','2021-11-25 01:27:07',0),(10,3,'我的课程','view','/myCourse','',2,'2021-11-25 01:26:51','2021-11-25 01:26:51',0),(11,1,'全部列表','view','/live','',6,'2021-11-25 01:41:47','2021-11-25 01:41:47',0),(12,3,'我的优惠券','view','/coupon',NULL,3,'2021-11-26 08:52:27','2021-11-26 08:52:40',0),(13,1,'11月26日晚8点电商分享','view','/liveInfo/8','',1,'2021-11-26 09:21:39','2021-11-26 09:21:39',0);
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+```
+
+
+
+### 2.4 管理页面
+
+1. 页面功能 `列表`、`添加`、`修改`、`删除`是对 `menu` 表的操作
+2. 页面功能 `同步菜单`、`删除菜单` 是对微信平台接口操作
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665666624771-8c606297-bba4-4ca4-b476-391802182bb4.png)
+
+
+
+
+
+## 3. 搭建菜单管理后端环境
+
+### 3.1 创建模块 `service_wechat`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665667550216-fb844cd8-5c50-4126-bb49-501782e86cb8.png)
+
+### 3.2 依赖
+
+```xml
+<dependencies>
+    <!-- 微信公众号 Java SDK -->
+    <dependency>
+        <groupId>com.github.binarywang</groupId>
+        <artifactId>weixin-java-mp</artifactId>
+        <version>4.1.0</version>
+    </dependency>
+</dependencies>
+```
+
+
+
+### 3.3 生成代码
+
+- 数据库 `glkt_wechat`
+- 数据库表 `strategy.setInclude("menu");`
+- 模块名称 `service_wechat`
+- 模块名`wechat`
+
+
+
+1. 删除 `entity`
+
+### 3.4 启动类
+
+```java
+package com.atguigu.ggkt.wechat;
+
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.ComponentScan;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/13 21:26
+ */
+@SpringBootApplication
+@EnableDiscoveryClient
+@EnableFeignClients(basePackages = "com.atguigu")
+@MapperScan("com.atguigu.ggkt.wechat.mapper")
+@ComponentScan(basePackages = "com.atguigu")
+public class ServiceWechatApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ServiceWechatApplication.class, args);
+    }
+    
+}
+```
+
+
+
+### 3.5 配置文件 `application.yml`
+
+```yaml
+# 服务端口
+server:
+  port: 8305
+
+spring:
+  application:
+    name: service-wechat
+  # 环境设置：dev、test、prod
+  profiles:
+    active:
+      dev
+  # mysql数据库连接
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/glkt_user?characterEncoding=utf-8&useSSL=false
+    username: root
+    password: 12345678
+  #返回json的全局时间格式
+  jackson:
+    date-format=yyyy-MM-dd HH:mm:ss
+    time-zone=GMT+8
+  # nacos 地址
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+  #mybatis日志
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:com/atguigu/ggkt/user/mapper/xml/*.xml
+```
+
+
+
+### 3.6 测试类 `ServiceWechatApplicationTest`
+
+```java
+package com.atguigu.ggkt.wechat;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/13 21:29
+ */
+public class ServiceWechatApplicationTest {
+}
+```
+
+
+
+### 3.7 配置网关
+
+```yaml
+routes[4]:
+	id: service-wechat
+	uri: lb://service-wechat
+	predicates: Path=/admin/wechat/**
+```
+
+
+
+## 4 菜单管理接口
+
+### 4.1 控制类
+
+```java
+package com.atguigu.ggkt.wechat.controller;
+
+import com.atguigu.ggkt.model.wechat.Menu;
+import com.atguigu.ggkt.result.Result;
+import com.atguigu.ggkt.vo.wechat.MenuVo;
+import com.atguigu.ggkt.wechat.service.MenuService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * <p>
+ * 微信公众号菜单 前端控制器
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-10-13
+ */
+@Api(tags = "微信公众号菜单")
+@RestController
+@RequestMapping("/admin/wechat/menu")
+public class MenuController {
+
+    @Autowired
+    private MenuService menuService;
+
+    @ApiOperation("获取所有菜单，按照一级和二级菜单封装")
+    @GetMapping("/findMenuInfo")
+    public Result<List<MenuVo>> findMenuInfo() {
+        List<MenuVo> list = menuService.findMenuInfo();
+        return Result.ok(list);
+    }
+
+    @ApiOperation("获取所有一级菜单")
+    @GetMapping("/findOneMenuInfo")
+    public Result<List<Menu>> findOneMenuInfo() {
+        List<Menu> list = menuService.findMenuOneInfo();
+        return Result.ok(list);
+    }
+
+    @ApiOperation(value = "获取")
+    @GetMapping("/get/{id}")
+    public Result<Menu> get(@PathVariable Long id) {
+        Menu menu = menuService.getById(id);
+        return Result.ok(menu);
+    }
+
+    @ApiOperation(value = "新增")
+    @PostMapping("/save")
+    public Result save(@RequestBody Menu menu) {
+        menuService.save(menu);
+        return Result.ok();
+    }
+
+    @ApiOperation(value = "修改")
+    @PutMapping("/update")
+    public Result updateById(@RequestBody Menu menu) {
+        menuService.updateById(menu);
+        return Result.ok();
+    }
+
+    @ApiOperation(value = "删除")
+    @DeleteMapping("/remove/{id}")
+    public Result remove(@PathVariable Long id) {
+        menuService.removeById(id);
+        return Result.ok();
+    }
+
+    @ApiOperation(value = "根据id列表删除")
+    @DeleteMapping("/batchRemove")
+    public Result batchRemove(@RequestBody List<Long> idList) {
+        menuService.removeByIds(idList);
+        return Result.ok();
+    }
+}
+```
+
+
+
+### 4.2 服务实现类
+
+```java
+package com.atguigu.ggkt.wechat.service.impl;
+
+import com.atguigu.ggkt.model.wechat.Menu;
+import com.atguigu.ggkt.vo.wechat.MenuVo;
+import com.atguigu.ggkt.wechat.mapper.MenuMapper;
+import com.atguigu.ggkt.wechat.service.MenuService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * <p>
+ * 微信公众号菜单 服务实现类
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-10-13
+ */
+@Service
+public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements MenuService {
+
+    @Override
+    public List<Menu> findMenuOneInfo() {
+        // 创建条件对象
+        LambdaQueryWrapper<Menu> wrapper = new LambdaQueryWrapper();
+        // eq(=)
+        wrapper.eq(Menu::getParentId, 0);
+        // 查询并返回
+        return baseMapper.selectList(wrapper);
+    }
+
+    @Override
+    public List<MenuVo> findMenuInfo() {
+        // 查询所有菜单数据（包含一级和二级）
+        List<MenuVo> menuVoList = baseMapper.selectList(Wrappers.emptyWrapper()).stream()
+                // 将对象转换成 MenuVo
+                .map(menu -> {
+                    MenuVo menuVo = new MenuVo();
+                    BeanUtils.copyProperties(menu, menuVo);
+                    return menuVo;
+                })
+                .collect(Collectors.toList());
+
+        // 取出二级菜单
+        List<MenuVo> menuVoTwoList = menuVoList.stream()
+                .filter(menu -> !menu.getParentId().equals(0L))
+                .collect(Collectors.toList());
+
+        // 取出一级菜单并遍历找到对应的二级菜单
+        return menuVoList.stream()
+                // 从所有菜单数据中取出一级菜单（parent_id = 0）
+                .filter(menu -> menu.getParentId().equals(0L))
+                // 遍历
+                .peek(menuVo -> {
+                    // 获取当前一级菜单的 id
+                    Long id = menuVo.getId();
+                    menuVoTwoList.stream()
+                            // 过滤出对应的二级菜单
+                            .filter(menuVoTwo -> menuVoTwo.getParentId().equals(id))
+                            // 将对应的二级菜单存储到一级菜单的子集合中
+                            .forEach(menuVoTwo -> {
+                                if (menuVo.getChildren() == null) {
+                                    menuVo.setChildren(new ArrayList<>());
+                                }
+
+                                menuVo.getChildren().add(menuVoTwo);
+                            });
+                })
+                .collect(Collectors.toList());
+    }
+
+}
+```
+
+
+
+
+
+## 5 同步菜单（获取 `access_token`）
+
+- 进行菜单同步的时候, 需要获取到公众号的 `access_token`, 通过 `access_token` 进行菜单同步
+- 接口文档: `https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_access_token.html`
+
+### 5.1 接口调用请求说明
+
+- `https` 请求方式: `GET` `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET`
+
+**参数说明**
+
+| **参数**   | **是否必须** | **说明**                              |
+| ---------- | ------------ | ------------------------------------- |
+| grant_type | 是           | 获取access_token填写client_credential |
+| appid      | 是           | 第三方用户唯一凭证                    |
+| secret     | 是           | 第三方用户唯一凭证密钥，即appsecret   |
+
+**返回说明**
+
+- 正常情况下，微信会返回下述 JSON 数据包给公众号：
+
+```json
+{"access_token":"ACCESS_TOKEN","expires_in":7200}
+```
+
+**参数说明**
+
+| **参数**     | **说明**               |
+| ------------ | ---------------------- |
+| access_token | 获取到的凭证           |
+| expires_in   | 凭证有效时间，单位：秒 |
+
+错误时微信会返回错误码等信息，JSON数据包示例如下（该示例为 AppID 无效错误）:
+
+```json
+{"errcode":40013,"errmsg":"invalid appid"} 
+```
+
+**返回码说明**
+
+| **返回码** | **说明**                                                     |
+| ---------- | ------------------------------------------------------------ |
+| -1         | 系统繁忙，此时请开发者稍候再试                               |
+| 0          | 请求成功                                                     |
+| 40001      | AppSecret错误或者 AppSecret 不属于这个公众号，请开发者确认 AppSecret 的正确性 |
+| 40002      | 请确保grant_type字段值为client_credential                    |
+| 40164      | 调用接口的 IP 地址不在白名单中，请在接口 IP 白名单中进行设置。 |
+| 89503      | 此 IP 调用需要管理员确认,请联系管理员                        |
+| 89501      | 此 IP 正在等待管理员确认,请联系管理员                        |
+| 89506      | 24小时内该 IP 被管理员拒绝调用两次，24小时内不可再使用该 IP 调用 |
+| 89507      | 1小时内该 IP 被管理员拒绝调用一次，1小时内不可再使用该 IP 调用 |
+
+
+
+### 5.2 `service_wechat` 添加配置
+
+```yaml
+wx:
+  mp:
+    # 公众号的 appid
+    app-id: wxc2d7509ddd5c9418
+    # 公众号的 appsecret
+    secret: 92197f5f41d968266f1ba20b12293574
+```
+
+
+
+### 5.3 添加依赖
+
+```xml
+<!-- 导入配置文件处理器, 配置文件进行绑定 -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-configuration-processor</artifactId>
+    <optional>true</optional>
+</dependency>
+```
+
+
+
+### 5.4 新建属性文件 `WxMpProperties`
+
+```java
+package com.atguigu.ggkt.wechat.config;
+
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+/**
+ * 微信公众号属性配置类
+ *
+ * @author 陈江林
+ * @date 2022/10/14 15:27
+ */
+@Data
+@Component
+@ConfigurationProperties("wx.mp")
+public class WxMpProperties {
+
+    /**
+     * 公众号的 appid
+     */
+    private String appId;
+
+    /**
+     * 公众号的 appsecret
+     */
+    private String secret;
+
+}
+```
+
+
+
+### 5.5 新建微信配置类 `WxMpConfiguration`
+
+```java
+package com.atguigu.ggkt.wechat.config;
+
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
+import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.function.Function;
+
+/**
+ * 微信配置类
+ *
+ * @author 陈江林
+ * @date 2022/10/14 15:27
+ */
+@Configuration
+public class WxMpConfiguration {
+
+    @Autowired
+    private WxMpProperties wxMpProperties;
+
+    @Bean
+    public WxMpService wxMpService() {
+        WxMpService service = new WxMpServiceImpl();
+        WxMpDefaultConfigImpl configStorage = new WxMpDefaultConfigImpl();
+        configStorage.setAppId(wxMpProperties.getAppId());
+        configStorage.setSecret(wxMpProperties.getSecret());
+        service.setWxMpConfigStorage(configStorage);
+
+        return service;
+    }
+
+}
+```
+
+
+
+### 5.6 控制类
+
+```java
+@ApiOperation("公众号菜单同步")
+@GetMapping("/syncMenu")
+public Result syncMenu() {
+    menuService.syncMenu();
+    return Result.ok();
+}
+```
+
+
+
+### 5.7 服务实现类
+
+```java
+@Override
+    public void syncMenu() {
+        // 获取所有菜单
+        List<MenuVo> menuVoList = this.findMenuInfo();
+        // 封装数据
+        // 创建 button 数组
+        JSONArray buttonList = new JSONArray();
+        menuVoList.stream()
+                .forEach(menuVo -> {
+                    // 一级菜单
+                    // 创建一级菜单对象
+                    JSONObject oneObject = new JSONObject();
+                    oneObject.put("name", menuVo.getName());
+                    // 二级菜单
+                    // 创建二级菜单数组
+                    JSONArray twoArray = new JSONArray();
+                    menuVo.getChildren().forEach(menuVoTwo -> {
+                        // 获取对象属性
+                        String name = menuVoTwo.getName();
+                        String type = menuVoTwo.getType();
+                        // 创建二级菜单对象
+                        JSONObject twoObject = new JSONObject();
+                        twoObject.put("type", type);
+                        twoObject.put("name", name);
+                        // 判断类型
+                        // view 表示网页类型，click 表示点击类型，miniprogram 表示小程序类型
+                        String view = "view";
+                        String click = "click";
+                        if (view.equals(type)) {
+                            twoObject.put("url", "http://ggkt2.vipgz1.91tunnel.com/#" + menuVoTwo.getUrl());
+                        } else if (click.equals(type)) {
+                            twoObject.put("key", menuVoTwo.getMeunKey());
+                        }
+
+                        twoArray.add(twoObject);
+                    });
+
+                    oneObject.put("sub_button", twoArray);
+                    buttonList.add(oneObject);
+                });
+
+        JSONObject button = new JSONObject();
+        button.put("button", buttonList);
+        try {
+            // 同步菜单
+            wxMpService.getMenuService().menuCreate(button.toJSONString());
+        } catch (WxErrorException e) {
+            throw new GgktException(20001, "公众号菜单同步失败");
+        }
+    }
+```
+
+
+
+##  6 公众号菜单删除
+
+### 6.1 控制类
+
+```java
+@ApiOperation("公众号菜单删除")
+@GetMapping("/removeMenu")
+public Result removeMenu() {
+    menuService.removeMenu();
+    return Result.ok();
+}
+```
+
+
+
+### 6.2 服务实现类
+
+```java
+@Override
+public void removeMenu() {
+    try {
+        wxMpService.getMenuService().menuDelete();
+    } catch (WxErrorException e) {
+        throw new GgktException(20001, "公众号菜单删除失败");
+    }
+}
+```
+
+
+
+## 7 前端代码
+
+### 7.1 `API`
+
+- 新建 `menu.js`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665745839842-c6dddb3f-ca34-4d08-b565-21be264b2337.png)
+
+```javascript
+import request from '@/utils/request'
+
+const api_name = '/admin/wechat/menu'
+
+export default {
+	// 查询所有菜单
+  findMenuInfo() {
+    return request({
+      url: `${api_name}/findMenuInfo`,
+      method: `get`
+    })
+  },
+	// 查询一级菜单
+  findOneMenuInfo() {
+    return request({
+      url: `${api_name}/findOneMenuInfo`,
+      method: `get`
+    })
+  },
+	
+  save(menu) {
+    return request({
+      url: `${api_name}/save`,
+      method: `post`,
+      data: menu
+    })
+  },
+
+  getById(id) {
+    return request({
+      url: `${api_name}/get/${id}`,
+      method: `get`
+    })
+  },
+
+  updateById(data) {
+    return request({
+      url: `${api_name}/update`,
+      method: `put`,
+      data
+    })
+  },
+	// 公众号菜单同步
+  syncMenu() {
+    return request({
+      url: `${api_name}/syncMenu`,
+      method: `get`
+    })
+  },
+
+  removeById(id) {
+    return request({
+      url: `${api_name}/remove/${id}`,
+      method: 'delete'
+    })
+  },
+	// 公众号菜单删除
+  removeMenu() {
+    return request({
+      url: `${api_name}/removeMenu`,
+      method: `delete`
+    })
+  }
+}
+```
+
+
+
+### 7.2 路由
+
+```javascript
+{
+    path: '/wechat/menu',
+    component: Layout,
+    redirect: '/wechat/menu/List',
+    name: 'Wechat',
+    meta: {
+      title: '菜单管理',
+      icon: 'el-icon-refrigerator'
+    },
+    alwaysShow: true,
+    children: [
+      {
+        path: 'List',
+        name: 'WechatMenuList',
+        component: () => import('@/views/wechat/menu/List'),
+        meta: { title: '菜单列表' }
+      }
+    ]
+},
+```
+
+
+
+### 7.3 `List.vue`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665745822340-553008b7-325c-4e85-8d3b-4b7cb4e83dae.png)
+
+```vue
+<template>
+  <div class="app-container">
+
+    <!-- 工具条 -->
+    <el-card class="operate-container" shadow="never">
+      <i class="el-icon-tickets" style="margin-top: 5px"></i>
+      <span style="margin-top: 5px">数据列表</span>
+      <el-button class="btn-add" size="mini" @click="remove" style="margin-left: 10px;">删除菜单</el-button>
+      <el-button class="btn-add" size="mini" @click="syncMenu">同步菜单</el-button>
+      <el-button class="btn-add" size="mini" @click="add">添 加</el-button>
+    </el-card>
+
+    <el-table
+      :data="list"
+      style="width: 100%;margin-bottom: 20px;"
+      row-key="id"
+      border
+      default-expand-all
+      :tree-props="{children: 'children'}">
+
+      <el-table-column label="名称" prop="name" width="350"></el-table-column>
+      <el-table-column label="类型" width="100">
+        <template slot-scope="scope">
+          {{ scope.row.type == 'view' ? '链接' : scope.row.type == 'click' ? '事件' : '' }}
+        </template>
+      </el-table-column>
+      <el-table-column label="菜单URL" prop="url"></el-table-column>
+      <el-table-column label="菜单KEY" prop="meunKey" width="130"></el-table-column>
+      <el-table-column label="排序号" prop="sort" width="70"></el-table-column>
+      <el-table-column label="操作" width="170" align="center">
+        <template slot-scope="scope">
+          <el-button v-if="scope.row.parentId > 0" type="text" size="mini" @click="edit(scope.row.id)">修改</el-button>
+          <el-button v-if="scope.row.parentId > 0" type="text" size="mini" @click="removeDataById(scope.row.id)">删除
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <el-dialog title="添加/修改" :visible.sync="dialogVisible" width="40%">
+      <el-form ref="flashPromotionForm" label-width="150px" size="small" style="padding-right: 40px;">
+
+        <el-form-item label="选择一级菜单">
+          <el-select
+            v-model="menu.parentId"
+            placeholder="请选择">
+            <el-option
+              v-for="item in list"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="menu.parentId == 1" label="菜单名称">
+          <el-select
+            v-model="menu.name"
+            placeholder="请选择"
+            @change="liveCourseChanged">
+            <el-option
+              v-for="item in liveCourseList"
+              :key="item.id"
+              :label="item.courseName"
+              :value="item"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="menu.parentId == 2" label="菜单名称">
+          <el-select
+            v-model="menu.name"
+            placeholder="请选择"
+            @change="subjectChanged">
+            <el-option
+              v-for="item in subjectList"
+              :key="item.id"
+              :label="item.title"
+              :value="item"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="menu.parentId == 3" label="菜单名称">
+          <el-input v-model="menu.name"/>
+        </el-form-item>
+        <el-form-item label="菜单类型">
+          <el-radio-group v-model="menu.type">
+            <el-radio label="view">链接</el-radio>
+            <el-radio label="click">事件</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item v-if="menu.type == 'view'" label="链接">
+          <el-input v-model="menu.url"/>
+        </el-form-item>
+        <el-form-item v-if="menu.type == 'click'" label="菜单KEY">
+          <el-input v-model="menu.meunKey"/>
+        </el-form-item>
+        <el-form-item label="排序">
+          <el-input v-model="menu.sort"/>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="saveOrUpdate()" size="small">确 定</el-button>
+      </span>
+    </el-dialog>
+  </div>
+</template>
+<script>
+import menuApi from '@/api/wechat/menu'
+//import liveCourseApi from '@/api/live/liveCourse'
+import subjectApi from '@/api/vod/subject'
+
+const defaultForm = {
+  id: null,
+  parentId: 1,
+  name: '',
+  nameId: null,
+  sort: 1,
+  type: 'view',
+  meunKey: '',
+  url: ''
+}
+export default {
+
+  // 定义数据
+  data() {
+    return {
+      list: [],
+
+      liveCourseList: [],
+      subjectList: [],
+
+      dialogVisible: false,
+      menu: defaultForm,
+      saveBtnDisabled: false
+    }
+  },
+
+  // 当页面加载时获取数据
+  created() {
+    this.fetchData()
+    // this.fetchLiveCourse()
+    this.fetchSubject()
+  },
+
+  methods: {
+    // 调用api层获取数据库中的数据
+    fetchData() {
+      console.log('加载列表')
+      menuApi.findMenuInfo().then(response => {
+        this.list = response.data
+        console.log(this.list)
+      })
+    },
+
+    // fetchLiveCourse() {
+    //   liveCourseApi.findLatelyList().then(response => {
+    //     this.liveCourseList = response.data
+    //     this.liveCourseList.push({'id': 0, 'courseName': '全部列表'})
+    //   })
+    // },
+
+    fetchSubject() {
+      console.log('加载列表')
+      subjectApi.getList(0).then(response => {
+        this.subjectList = response.data
+      })
+    },
+
+    syncMenu() {
+      this.$confirm('你确定上传菜单吗, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return menuApi.syncMenu();
+      }).then((response) => {
+        this.fetchData()
+        this.$message.success(response.message)
+      }).catch(error => {
+        console.log('error', error)
+        // 当取消时会进入catch语句:error = 'cancel'
+        // 当后端服务抛出异常时：error = 'error'
+        if (error === 'cancel') {
+          this.$message.info('取消上传')
+        }
+      })
+    },
+
+    // 根据id删除数据
+    removeDataById(id) {
+      // debugger
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => { // promise
+        // 点击确定，远程调用ajax
+        return menuApi.removeById(id)
+      }).then((response) => {
+        this.fetchData(this.page)
+        if (response.code) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+
+    // -------------
+    add() {
+      this.dialogVisible = true
+      this.menu = Object.assign({}, defaultForm)
+    },
+
+    edit(id) {
+      this.dialogVisible = true
+      this.fetchDataById(id)
+    },
+
+    saveOrUpdate() {
+      this.saveBtnDisabled = true // 防止表单重复提交
+
+      if (!this.menu.id) {
+        this.saveData()
+      } else {
+        this.updateData()
+      }
+    },
+
+    // 新增
+    saveData() {
+      menuApi.save(this.menu).then(response => {
+        if (response.code) {
+          this.$message({
+            type: 'success',
+            message: response.message
+          })
+          this.dialogVisible = false;
+          this.fetchData(this.page)
+        }
+      })
+    },
+
+    // 根据id更新记录
+    updateData() {
+      menuApi.updateById(this.menu).then(response => {
+        if (response.code) {
+          this.$message({
+            type: 'success',
+            message: response.message
+          })
+          this.dialogVisible = false;
+          this.fetchData(this.page)
+        }
+      })
+    },
+
+    // 根据id查询记录
+    fetchDataById(id) {
+      menuApi.getById(id).then(response => {
+        this.menu = response.data
+      })
+    },
+
+    subjectChanged(item) {
+      console.info(item)
+      this.menu.name = item.title
+      this.menu.url = '/course/' + item.id
+    },
+
+    liveCourseChanged(item) {
+      console.info(item)
+      this.menu.name = item.courseName
+      if (item.id == 0) {
+        this.menu.url = '/live'
+      } else {
+        this.menu.url = '/liveInfo/' + item.id
+      }
+
+    }
+  }
+}
+</script>
+```
+
+
+
+## 8 公众号同步菜单效果图
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665748105525-3c6d9053-36e5-4d0f-b9ed-981727df74d8.png)
