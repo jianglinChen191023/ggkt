@@ -30,4 +30,14 @@ public interface MenuService extends IService<Menu> {
      */
     List<MenuVo> findMenuInfo();
 
+    /**
+     * 公众号菜单同步
+     */
+    void syncMenu();
+
+    /**
+     * 公众号菜单删除
+     */
+    void removeMenu();
+
 }

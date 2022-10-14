@@ -27,6 +27,20 @@ public class MenuController {
     @Autowired
     private MenuService menuService;
 
+    @ApiOperation("公众号菜单同步")
+    @GetMapping("/syncMenu")
+    public Result syncMenu() {
+        menuService.syncMenu();
+        return Result.ok();
+    }
+
+    @ApiOperation("公众号菜单删除")
+    @GetMapping("/removeMenu")
+    public Result removeMenu() {
+        menuService.removeMenu();
+        return Result.ok();
+    }
+
     @ApiOperation("获取所有菜单，按照一级和二级菜单封装")
     @GetMapping("/findMenuInfo")
     public Result<List<MenuVo>> findMenuInfo() {

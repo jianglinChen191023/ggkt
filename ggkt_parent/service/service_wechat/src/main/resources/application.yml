@@ -12,9 +12,9 @@ spring:
   # mysql数据库连接
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/glkt_user?characterEncoding=utf-8&useSSL=false
+    url: jdbc:mysql://175.178.174.83:3306/glkt_wechat?characterEncoding=utf-8&useSSL=false
     username: root
-    password: 12345678
+    password: '@root1314'
   #返回json的全局时间格式
   jackson:
     date-format=yyyy-MM-dd HH:mm:ss
@@ -25,15 +25,15 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848
 
-  #mybatis日志
 mybatis-plus:
   configuration:
+    # mybatis日志
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  mapper-locations: classpath:com/atguigu/ggkt/user/mapper/xml/*.xml
+  mapper-locations: classpath:com/atguigu/ggkt/wechat/mapper/xml/*.xml
 
-# 公众号id和秘钥
-# 硅谷课堂微信公众平台appId
-wechat:
-  mp-app-id: wx09f201e9013e81d8
-  # 硅谷课堂微信公众平台api秘钥
-  mp-app-secret: 6c999765c12c51850d28055e8b6e2eda
+wx:
+  mp:
+    # 公众号的 appid
+    app-id: wxc2d7509ddd5c9418
+    # 公众号的 appsecret
+    secret: 92197f5f41d968266f1ba20b12293574

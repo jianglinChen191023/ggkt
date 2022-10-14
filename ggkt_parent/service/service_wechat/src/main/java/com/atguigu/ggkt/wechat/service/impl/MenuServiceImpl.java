@@ -1,5 +1,8 @@
 package com.atguigu.ggkt.wechat.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.atguigu.ggkt.exception.GgktException;
 import com.atguigu.ggkt.model.wechat.Menu;
 import com.atguigu.ggkt.vo.wechat.MenuVo;
 import com.atguigu.ggkt.wechat.mapper.MenuMapper;
@@ -7,9 +10,13 @@ import com.atguigu.ggkt.wechat.service.MenuService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.mp.api.WxMpService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +30,9 @@ import java.util.stream.Collectors;
  */
 @Service
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements MenuService {
+
+    @Autowired
+    private WxMpService wxMpService;
 
     @Override
     public List<Menu> findMenuOneInfo() {
@@ -64,10 +74,74 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
                             .filter(menuVoTwo -> menuVoTwo.getParentId().equals(id))
                             // 将对应的二级菜单存储到一级菜单的子集合中
                             .forEach(menuVoTwo -> {
+                                if (menuVo.getChildren() == null) {
+                                    menuVo.setChildren(new ArrayList<>());
+                                }
+
                                 menuVo.getChildren().add(menuVoTwo);
                             });
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void syncMenu() {
+        // 获取所有菜单
+        List<MenuVo> menuVoList = this.findMenuInfo();
+        // 封装数据
+        // 创建 button 数组
+        JSONArray buttonList = new JSONArray();
+        menuVoList.stream()
+                .forEach(menuVo -> {
+                    // 一级菜单
+                    // 创建一级菜单对象
+                    JSONObject oneObject = new JSONObject();
+                    oneObject.put("name", menuVo.getName());
+                    // 二级菜单
+                    // 创建二级菜单数组
+                    JSONArray twoArray = new JSONArray();
+                    menuVo.getChildren().forEach(menuVoTwo -> {
+                        // 获取对象属性
+                        String name = menuVoTwo.getName();
+                        String type = menuVoTwo.getType();
+                        // 创建二级菜单对象
+                        JSONObject twoObject = new JSONObject();
+                        twoObject.put("type", type);
+                        twoObject.put("name", name);
+                        // 判断类型
+                        // view 表示网页类型，click 表示点击类型，miniprogram 表示小程序类型
+                        String view = "view";
+                        String click = "click";
+                        if (view.equals(type)) {
+                            twoObject.put("url", "http://ggkt2.vipgz1.91tunnel.com/#" + menuVoTwo.getUrl());
+                        } else if (click.equals(type)) {
+                            twoObject.put("key", menuVoTwo.getMeunKey());
+                        }
+
+                        twoArray.add(twoObject);
+                    });
+
+                    oneObject.put("sub_button", twoArray);
+                    buttonList.add(oneObject);
+                });
+
+        JSONObject button = new JSONObject();
+        button.put("button", buttonList);
+        try {
+            // 同步菜单
+            wxMpService.getMenuService().menuCreate(button.toJSONString());
+        } catch (WxErrorException e) {
+            throw new GgktException(20001, "公众号菜单同步失败");
+        }
+    }
+
+    @Override
+    public void removeMenu() {
+        try {
+            wxMpService.getMenuService().menuDelete();
+        } catch (WxErrorException e) {
+            throw new GgktException(20001, "公众号菜单删除失败");
+        }
     }
 
 }
