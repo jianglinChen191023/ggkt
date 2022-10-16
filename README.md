@@ -508,6 +508,59 @@
     - [7.3 `List.vue`](#73-listvue)
   - [8 公众号同步菜单效果图](#8-公众号同步菜单效果图)
 
+- [十三 公众号消息](#十三-公众号消息)
+  - [1 公众号消息回复、自定义菜单回复、关注、取消关注](#1-公众号消息回复自定义菜单回复关注取消关注)
+  - [1 消息接入](#1-消息接入)
+    - [1.1 公众号服务器配置](#11-公众号服务器配置)
+    - [1.2 验证来自微信服务器消息](#12-验证来自微信服务器消息)
+      - [1.2.1 新建 `MessageController` <`service_wechat` 工程>](#121-新建-messagecontroller-service_wechat-工程)
+      - [1.2.2 修改路由](#122-修改路由)
+      - [1.2.3 `application.yml` 追加配置](#123-applicationyml-追加配置)
+      - [1.2.4 追加代码 `token` 属性](#124-追加代码-token-属性)
+      - [1.2.5 微信配置类中配置 `Token`](#125-微信配置类中配置-token)
+    - [1.3 测试公众号连接服务器](#13-测试公众号连接服务器)
+  - [2 回复图文消息（NEWS）和文本消息（TEXT）](#2-回复图文消息news和文本消息text)
+    - [2.1 微信配置类中配置 `WxMpMessageRouter`](#21-微信配置类中配置-wxmpmessagerouter)
+      - [2.1.1 新建日志类 `LogHandler`](#211-新建日志类-loghandler)
+      - [2.1.2 新建消息回复类 `MsgHandler`](#212-新建消息回复类-msghandler)
+      - [2.1.3 新建抽象类 `AbstractHandler`](#213-新建抽象类-abstracthandler)
+      - [2.1.4 新建工具类 `JsonUtils`](#214-新建工具类-jsonutils)
+      - [2.1.5 新建 `TextBuilder` 类](#215-新建-textbuilder-类)
+      - [2.1.6 新建 `AbstractBuilder` 类](#216-新建-abstractbuilder-类)
+    - [2.2 远程调用接口](#22-远程调用接口)
+      - [2.2.1 `service_wechat`消息类, 远程调用 `service_vod`中的接口获取数据](#221-service_wechat消息类-远程调用-service_vod中的接口获取数据)
+      - [2.2.2 查询课程回复信息 `MsgHandler`](#222-查询课程回复信息-msghandler)
+    - [2.3 测试回复](#23-测试回复)
+  - [3 接收事件推送](#3-接收事件推送)
+    - [3.1 关注/取消关注事件](#31-关注取消关注事件)
+      - [3.1.1 配置](#311-配置)
+      - [3.1.2 新建关注处理类](#312-新建关注处理类)
+      - [3.1.3 新建取消关注处理类](#313-新建取消关注处理类)
+      - [3.1.4 测试取消关注](#314-测试取消关注)
+      - [3.1.5 测试关注](#315-测试关注)
+    - [3.2 自定义菜单事件](#32-自定义菜单事件)
+      - [3.2.1 配置](#321-配置)
+      - [3.2.2 新建自定义菜单事件处理类](#322-新建自定义菜单事件处理类)
+      - [3.2.3 测试](#323-测试)
+  - [4 公众号模板消息](#4-公众号模板消息)
+    - [4.1 实现目标](#41-实现目标)
+    - [4.2 模板消息实现](#42-模板消息实现)
+    - [4.3 申请模板消息](#43-申请模板消息)
+    - [4.4、添加模板消息](#44添加模板消息)
+  - [5. 公众号测试号申请模板消息](#5-公众号测试号申请模板消息)
+    - [5.1 新增测试模板](#51-新增测试模板)
+    - [5.2 填写信息](#52-填写信息)
+      - [5.2.1 下载模板示例](#521-下载模板示例)
+      - [5.2.2 填写模板标题和模板内容](#522-填写模板标题和模板内容)
+  - [6 模板消息接口](#6-模板消息接口)
+    - [6.1 追加代码 `MessageController`](#61-追加代码-messagecontroller)
+    - [6.2 新建服务类](#62-新建服务类)
+    - [6.3 新建服务实现类](#63-新建服务实现类)
+    - [6.4 新建属性配置类](#64-新建属性配置类)
+    - [6.5 `application.yml` 配置](#65-applicationyml-配置)
+    - [6.6 测试](#66-测试)
+    - [6.7 公众号显示](#67-公众号显示)
+  
 
 # 一 硅谷课堂
 
@@ -15611,3 +15664,1281 @@ export default {
 ## 8 公众号同步菜单效果图
 
 ![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665748105525-3c6d9053-36e5-4d0f-b9ed-981727df74d8.png)
+
+
+# 十三 公众号消息
+
+```
+git checkout -b 13.0.0_wechat_message
+```
+
+## 1 公众号消息回复、自定义菜单回复、关注、取消关注
+
+## 1 消息接入
+
+参考文档: `https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Access_Overview.html`
+
+接入微信公众号平台开发, 开发者需要按照如下步骤完成
+
+1. 填入服务器配置
+2. 验证服务器地址的有效性
+3. 依据接口文档实现业务逻辑
+
+
+
+### 1.1 公众号服务器配置
+
+- 在**测试管理** -> **接口配置信息,** 点击**修改**按钮
+
+  - 填写服务器地址 `URL` 和 `Token`
+
+    - `URL`: 开发者用来接收微信消息和事件的接口
+    - `Token`: 由开发者任意填写, 用作生成签名
+
+  -   - 该 `Token` 会和接口 `URL` 中包含的 `Token` 进行对比, 从而验证安全性
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665750038600-b48640bb-9956-49bf-9c10-0a68511398e0.png)
+
+
+
+### 1.2 验证来自微信服务器消息
+
+1. 开发者提交`URL`、`Token` 信息后, 微信服务器将发生 `GET` 请求到填写的服务器地址 `URL` 上, `GET` 请求携带参数如下
+
+| **参数**    | **描述**                                                     |
+| ----------- | ------------------------------------------------------------ |
+| `signature` | 微信加密签名，`signature`结合了开发者填写的 `token` 参数和请求中的 `timestamp` 参数、`nonce`参数。 |
+| `timestamp` | 时间戳                                                       |
+| `nonce`     | 随机数                                                       |
+| `echostr`   | 随机字符串                                                   |
+
+- 开发者通过检验 `signature` 对请求进行校验（下面有校验方式）。
+- 若确认此次 `GET` 请求来自微信服务器，请原样返回 `**echostr**` 参数内容，则接入生效，成为开发者成功，否则接入失败。加密/校验流程如下：
+
+1. 将`token`、`timestamp`、`nonce`三个参数进行字典序排序
+2. 将三个参数字符串拼接成一个字符串进行`sha1`加密
+3. 开发者获得加密后的字符串可与 `signature` 对比，标识该请求来源于微信
+
+
+
+#### 1.2.1 新建 `MessageController` <`service_wechat` 工程>
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665813225663-17289d00-bee4-48c1-972d-558f04f0771b.png)
+
+```java
+package com.atguigu.ggkt.wechat.controller;
+
+import com.atguigu.ggkt.wechat.utils.SHA1;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+
+/**
+ * 微信公众号 URL
+ *
+ * @author 陈江林
+ * @date 2022/10/15 13:43
+ */
+@Slf4j
+@RestController
+@RequestMapping("/api/wechat/message")
+public class MessageController {
+
+    @Autowired
+    private WxMpService wxService;
+
+    @GetMapping(produces = "text/plain;charset=utf-8")
+    public String authGet(@RequestParam(name = "signature", required = false) String signature,
+                          @RequestParam(name = "timestamp", required = false) String timestamp,
+                          @RequestParam(name = "nonce", required = false) String nonce,
+                          @RequestParam(name = "echostr", required = false) String echostr) {
+
+        log.info("\n接收到来自微信服务器的认证消息：[{}, {}, {}, {}]", signature,
+                timestamp, nonce, echostr);
+        if (StringUtils.isAnyBlank(signature, timestamp, nonce, echostr)) {
+            throw new IllegalArgumentException("请求参数非法，请核实!");
+        }
+
+        // 需要配置 token
+        if (wxService.checkSignature(timestamp, nonce, signature)) {
+            return echostr;
+        }
+
+        return "非法请求";
+    }
+    
+}
+```
+
+#### 1.2.2 修改路由
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665817458051-64d6b0fe-86e7-4798-ad2e-706192d20d7a.png)
+
+```yaml
+# 路由配置
+routes: [
+  { id: service-vod, uri: lb://service-vod, predicates: Path=/**/vod/** },
+  { id: service-order, uri: lb://service-order, predicates: Path=/**/order/** },
+  { id: service-activity, uri: lb://service-activity, predicates: Path=/**/activity/** },
+  { id: service-user, uri: lb://service-user, predicates: Path=/**/user/** },
+  { id: service-wechat, uri: lb://service-wechat, predicates: Path=/**/wechat/** },
+]
+```
+
+#### 1.2.3 `application.yml` 追加配置
+
+```yaml
+wx:
+  mp:
+    # 公众号的 token
+    token: ggkt
+```
+
+#### 1.2.4 追加代码 `token` 属性
+
+```java
+package com.atguigu.ggkt.wechat.config;
+
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+/**
+ * 微信公众号属性配置类
+ *
+ * @author 陈江林
+ * @date 2022/10/14 15:27
+ */
+@Data
+@Component
+@ConfigurationProperties("wx.mp")
+public class WxMpProperties {
+
+    /**
+     * 公众号的 appid
+     */
+    private String appId;
+
+    /**
+     * 公众号的 appsecret
+     */
+    private String secret;
+
+    /**
+     * 公众号的 token
+     */
+    private String token;
+
+}
+```
+
+
+
+#### 1.2.5 微信配置类中配置 `Token`
+
+```java
+package com.atguigu.ggkt.wechat.config;
+
+import com.atguigu.ggkt.wechat.handler.*;
+import me.chanjar.weixin.mp.api.WxMpMessageRouter;
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
+import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import static me.chanjar.weixin.common.api.WxConsts.EventType;
+import static me.chanjar.weixin.common.api.WxConsts.EventType.SUBSCRIBE;
+import static me.chanjar.weixin.common.api.WxConsts.EventType.UNSUBSCRIBE;
+import static me.chanjar.weixin.common.api.WxConsts.XmlMsgType.EVENT;
+
+/**
+ * 微信配置类
+ *
+ * @author 陈江林
+ * @date 2022/10/14 15:27
+ */
+@Configuration
+public class WxMpConfiguration {
+
+    @Autowired
+    private WxMpProperties wxMpProperties;
+    
+    @Autowired
+    private LogHandler logHandler;
+    
+    @Autowired
+    private MsgHandler msgHandler;
+
+    @Bean
+    public WxMpService wxMpService() {
+        WxMpService service = new WxMpServiceImpl();
+        WxMpDefaultConfigImpl configStorage = new WxMpDefaultConfigImpl();
+        configStorage.setAppId(wxMpProperties.getAppId());
+        configStorage.setSecret(wxMpProperties.getSecret());
+        configStorage.setToken(wxMpProperties.getToken());
+//        configStorage.setAesKey(wxMpProperties.getAesKey());
+        service.setWxMpConfigStorage(configStorage);
+
+        return service;
+    }
+
+}
+```
+
+
+
+### 1.3 测试公众号连接服务器
+
+注意: 公众号先填写 `URL`, `Token`, 等下配置好服务器再提交
+
+- `URL`: `https://www.th668.top/api/wechat/message`
+- `Token`: `ggkt`
+- **配置**`**Nginx**`
+
+```nginx
+	# 配置 Https, 证书上传至 /usr/local/nginx/conf/ 文件夹下
+  server {
+    listen 443 ssl;
+    server_name localhost;
+    ssl_certificate      7984367_www.th668.top.pem;
+    ssl_certificate_key  7984367_www.th668.top.key;
+
+    #root /data/wwwroot/default;
+    root /usr/local/nginx/html;
+    index index.html index.htm index.php;
+    #error_page 404 /404.html;
+    #error_page 502 /502.html;
+    location /nginx_status {
+      stub_status on;
+      access_log off;
+      allow 127.0.0.1;
+      deny all;
+    }
+  
+    location ~ [^/]\.php(/|$) {
+      #fastcgi_pass remote_php_ip:9000;
+      fastcgi_pass unix:/dev/shm/php-cgi.sock;
+      fastcgi_index index.php;
+      include fastcgi.conf;
+    }
+  
+    location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|flv|mp4|ico)$ {
+      expires 30d;
+      access_log off;
+    }
+  
+    location ~ .*\.(js|css)?$ {
+      expires 7d;
+      access_log off;
+    }
+  
+    location ~ ^/(\.user.ini|\.ht|\.git|\.svn|\.project|LICENSE|README.md) {
+      deny all;
+    }
+  
+    location /.well-known {
+      allow all;
+    }
+
+    # 微信公众号 api
+    location /api/wechat/message {
+       proxy_pass http://127.0.0.1:8333$request_uri;
+    }
+}
+```
+
+- 重启 `Nginx`: `systemctl restart nginx`
+- 点击提交
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665817959596-5c2df0b1-b248-40b9-8d22-0fdef8d0910e.png)
+
+- 日志信息（成功）:
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665818267997-d01c806c-e610-4c15-b971-e097e7711309.png)
+
+- 配置成功
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665818476589-868e8fac-b060-4ea6-a311-8deb3864cfbf.png)
+
+
+
+## 2 回复图文消息（NEWS）和文本消息（TEXT）
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665839991086-e0a5464e-7120-44d5-b242-dc4e7f72fc6c.png)
+
+### 2.1 微信配置类中配置 `WxMpMessageRouter`
+
+```java
+package com.atguigu.ggkt.wechat.config;
+
+import com.atguigu.ggkt.wechat.handler.*;
+import me.chanjar.weixin.mp.api.WxMpMessageRouter;
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
+import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import static me.chanjar.weixin.common.api.WxConsts.EventType;
+import static me.chanjar.weixin.common.api.WxConsts.EventType.SUBSCRIBE;
+import static me.chanjar.weixin.common.api.WxConsts.EventType.UNSUBSCRIBE;
+import static me.chanjar.weixin.common.api.WxConsts.XmlMsgType.EVENT;
+
+/**
+ * 微信配置类
+ *
+ * @author 陈江林
+ * @date 2022/10/14 15:27
+ */
+@Configuration
+public class WxMpConfiguration {
+
+    @Autowired
+    private WxMpProperties wxMpProperties;
+    
+    @Autowired
+    private LogHandler logHandler;
+    
+    @Autowired
+    private MsgHandler msgHandler;
+
+    @Bean
+    public WxMpService wxMpService() {
+        WxMpService service = new WxMpServiceImpl();
+        WxMpDefaultConfigImpl configStorage = new WxMpDefaultConfigImpl();
+        configStorage.setAppId(wxMpProperties.getAppId());
+        configStorage.setSecret(wxMpProperties.getSecret());
+        configStorage.setToken(wxMpProperties.getToken());
+//        configStorage.setAesKey(wxMpProperties.getAesKey());
+        service.setWxMpConfigStorage(configStorage);
+
+        return service;
+    }
+
+    @Bean
+    public WxMpMessageRouter messageRouter(WxMpService wxMpService) {
+        final WxMpMessageRouter newRouter = new WxMpMessageRouter(wxMpService);
+
+        // 记录所有事件的日志 （异步执行）
+        newRouter.rule().handler(logHandler).next();
+
+        // 默认, 消息回复
+        newRouter.rule().async(false).handler(msgHandler).end();
+
+        return newRouter;
+    }
+
+}
+```
+
+
+
+#### 2.1.1 新建日志类 `LogHandler`
+
+```java
+package com.atguigu.ggkt.wechat.handler;
+
+import com.atguigu.ggkt.wechat.utils.JsonUtils;
+import me.chanjar.weixin.common.session.WxSessionManager;
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
+import org.springframework.stereotype.Component;
+
+import java.util.Map;
+
+/**
+ * @author <a href="https://github.com/binarywang">Binary Wang</a>
+ */
+@Component
+public class LogHandler extends AbstractHandler {
+    @Override
+    public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage,
+                                    Map<String, Object> context, WxMpService wxMpService,
+                                    WxSessionManager sessionManager) {
+        this.logger.info("\n接收到请求消息，内容：{}", JsonUtils.toJson(wxMessage));
+        return null;
+    }
+
+}
+```
+
+
+
+#### 2.1.2 新建消息回复类 `MsgHandler`
+
+```java
+package com.atguigu.ggkt.wechat.handler;
+
+import com.atguigu.ggkt.client.course.CourseFeignClient;
+import com.atguigu.ggkt.wechat.builder.TextBuilder;
+import com.atguigu.ggkt.wechat.utils.JsonUtils;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.common.session.WxSessionManager;
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.Map;
+
+import static me.chanjar.weixin.common.api.WxConsts.XmlMsgType;
+
+/**
+ * @author <a href="https://github.com/binarywang">Binary Wang</a>
+ */
+@Component
+public class MsgHandler extends AbstractHandler {
+
+    @Autowired
+    private CourseFeignClient courseFeignClient;
+
+    @Override
+    public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage,
+                                    Map<String, Object> context, WxMpService weixinService,
+                                    WxSessionManager sessionManager) {
+
+        if (!wxMessage.getMsgType().equals(XmlMsgType.EVENT)) {
+            //TODO 可以选择将消息保存到本地
+        }
+
+        //TODO 组装回复消息
+        String content = "收到信息内容：" + JsonUtils.toJson(wxMessage);
+
+        return new TextBuilder().build(content, wxMessage, weixinService);
+    }
+
+}
+```
+
+
+
+#### 2.1.3 新建抽象类 `AbstractHandler`
+
+```java
+package com.atguigu.ggkt.wechat.handler;
+
+import me.chanjar.weixin.mp.api.WxMpMessageHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * @author <a href="https://github.com/binarywang">Binary Wang</a>
+ */
+public abstract class AbstractHandler implements WxMpMessageHandler {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
+}
+```
+
+
+
+#### 2.1.4 新建工具类 `JsonUtils`
+
+```java
+package com.atguigu.ggkt.wechat.utils;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+/**
+ * @author <a href="https://github.com/binarywang">Binary Wang</a>
+ */
+public class JsonUtils {
+    public static String toJson(Object obj) {
+        Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .disableHtmlEscaping()
+            .create();
+        return gson.toJson(obj);
+    }
+}
+```
+
+
+
+#### 2.1.5 新建 `TextBuilder` 类
+
+```java
+package com.atguigu.ggkt.wechat.builder;
+
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlOutTextMessage;
+
+/**
+ * @author <a href="https://github.com/binarywang">Binary Wang</a>
+ */
+public class TextBuilder extends AbstractBuilder {
+
+    @Override
+    public WxMpXmlOutMessage build(String content, WxMpXmlMessage wxMessage,
+                                   WxMpService service) {
+        WxMpXmlOutTextMessage m = WxMpXmlOutMessage.TEXT().content(content)
+                .fromUser(wxMessage.getToUser()).toUser(wxMessage.getFromUser())
+                .build();
+        return m;
+    }
+
+}
+```
+
+#### 2.1.6 新建 `AbstractBuilder` 类
+
+```java
+package com.atguigu.ggkt.wechat.builder;
+
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * @author <a href="https://github.com/binarywang">Binary Wang</a>
+ */
+public abstract class AbstractBuilder {
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
+
+    public abstract WxMpXmlOutMessage build(String content,
+                                            WxMpXmlMessage wxMessage, WxMpService service);
+}
+```
+
+
+
+### 2.2 远程调用接口
+
+#### 2.2.1 `service_wechat`消息类, 远程调用 `service_vod`中的接口获取数据
+
+1. `service_vod` 新建控制类
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665836670931-72974ddc-bd5f-48b5-b50e-e16e1fb855e8.png)
+
+```java
+package com.atguigu.ggkt.vod.api;
+
+import com.atguigu.ggkt.model.vod.Course;
+import com.atguigu.ggkt.vod.service.CourseService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+/**
+ * 微信公众号接口 课程信息
+ *
+ * @author 陈江林
+ * @date 2022/10/15 14:00
+ */
+@Slf4j
+@Api(tags = "微信公众号接口 课程信息")
+@RestController
+@RequestMapping("/api/vod/course")
+public class CourseApiController {
+
+    @Autowired
+    private CourseService courseService;
+
+    @ApiOperation("根据关键字查询课程")
+    @GetMapping("/inner/findByKeyword/{keyword}")
+    public List<Course> findByKeyword(
+            @ApiParam(value = "关键字", required = true)
+            @PathVariable String keyword) {
+        log.info("根据关键字查询课程");
+        QueryWrapper<Course> queryWrapper = new QueryWrapper();
+        queryWrapper.like("title", keyword);
+        List<Course> list = courseService.list(queryWrapper);
+        return list;
+    }
+
+}
+```
+
+1. 创建模块 `service_course_client`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665836768715-d0f47fad-f648-423f-8cd7-9159423380bd.png)
+
+- `pom.xml`
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+                <!-- 取消查找本项目下的Main方法：为了解决Unable to find main class的问题 -->
+                <mainClass>none</mainClass>
+                <!-- 为了解决依赖模块找不到此模块中的类或属性 -->
+                <classifier>execute</classifier>
+            </configuration>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>repackage</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```
+
+
+
+1. 新建接口类
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665836947791-cf0ac8bb-c42b-4cb6-bafd-129712c3964d.png)
+
+```java
+package com.atguigu.ggkt.client.course;
+
+import com.atguigu.ggkt.model.vod.Course;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/15 14:05
+ */
+@FeignClient(value = "service-vod")
+public interface CourseFeignClient {
+
+    /**
+     * 根据关键字查询课程
+     *
+     * @param keyword 关键字
+     * @return {@link List}<{@link Course}>
+     */
+    @GetMapping("/api/vod/course/inner/findByKeyword/{keyword}")
+    List<Course> findByKeyword(@PathVariable String keyword);
+
+}
+```
+
+1. `service_wechat` 工程引入`service_course_client` 依赖
+
+```xml
+<!-- 远程接口 -->
+<dependency>
+    <groupId>com.atguigu</groupId>
+    <artifactId>service_course_client</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+</dependency>
+```
+
+
+
+#### 2.2.2 查询课程回复信息 `MsgHandler`
+
+```java
+package com.atguigu.ggkt.wechat.handler;
+
+import com.atguigu.ggkt.client.course.CourseFeignClient;
+import com.atguigu.ggkt.model.vod.Course;
+import com.atguigu.ggkt.wechat.builder.TextBuilder;
+import me.chanjar.weixin.common.session.WxSessionManager;
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlOutNewsMessage.Item;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static me.chanjar.weixin.common.api.WxConsts.XmlMsgType;
+
+/**
+ * @author <a href="https://github.com/binarywang">Binary Wang</a>
+ */
+@Component
+public class MsgHandler extends AbstractHandler {
+
+    @Autowired
+    private CourseFeignClient courseFeignClient;
+
+    @Override
+    public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage,
+                                    Map<String, Object> context, WxMpService weixinService,
+                                    WxSessionManager sessionManager) {
+
+        if (!wxMessage.getMsgType().equals(XmlMsgType.EVENT)) {
+            //TODO 可以选择将消息保存到本地
+        }
+
+        //TODO 组装回复消息
+        // String content = JsonUtils.toJson(wxMessage);
+
+        // 默认回复文本信息
+        String content = "请重新输入关键字，没有匹配到相关视频课程";
+
+        // 搜索课程信息
+        WxMpXmlOutMessage courseWxMpXmlOutMessage = course(wxMessage);
+        // 如果有则回复图文信息
+        if (courseWxMpXmlOutMessage != null) {
+            return courseWxMpXmlOutMessage;
+        }
+
+        return new TextBuilder().build(content, wxMessage, weixinService);
+    }
+
+    /**
+     * 搜索课程信息, 回复用户
+     * 图文消息个数；当用户发送文本、图片、语音、视频、图文、地理位置这六种消息时，开发者只能回复1条图文消息；
+     * 其余场景最多可回复8条图文消息
+     *
+     * @param wxMessage
+     * @return {@link WxMpXmlOutMessage}
+     */
+    public WxMpXmlOutMessage course(WxMpXmlMessage wxMessage) {
+        List<Course> courseList = courseFeignClient.findByKeyword(wxMessage.getContent());
+        if (CollectionUtils.isEmpty(courseList)) {
+            return null;
+        }
+
+        List<Item> itemList = new ArrayList<>();
+        courseList.forEach(course -> {
+            // 获取课程属性
+            String title = course.getTitle();
+            String cover = course.getCover();
+            String url = "http://glkt.atguigu.cn/#/liveInfo/" + course.getId();
+            // 创建对象
+            Item item = new Item();
+            item.setTitle(title);
+            item.setDescription(title);
+            item.setPicUrl(cover);
+            item.setUrl(url);
+
+            itemList.add(item);
+        });
+
+        return WxMpXmlOutMessage.NEWS().articles(itemList)
+                .fromUser(wxMessage.getToUser()).toUser(wxMessage.getFromUser())
+                .build();
+    }
+}
+```
+
+
+
+### 2.3 测试回复
+
+- 在公众号输入关键字，返回搜索的课程信息
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665843676564-4f0323f3-2984-4774-b583-a0c105b76641.png)
+
+## 3 接收事件推送
+
+### 3.1 关注/取消关注事件
+
+#### 3.1.1 配置
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665844586158-1e4971a1-34a7-4011-88d7-b50652bdab22.png)
+
+```java
+// 关注事件
+newRouter.rule().async(false).msgType(EVENT).event(SUBSCRIBE).handler(this.subscribeHandler).end();
+
+// 取消关注事件
+newRouter.rule().async(false).msgType(EVENT).event(UNSUBSCRIBE).handler(this.unsubscribeHandler).end();
+```
+
+
+
+#### 3.1.2 新建关注处理类
+
+```java
+package com.atguigu.ggkt.wechat.handler;
+
+import com.atguigu.ggkt.wechat.builder.TextBuilder;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.common.session.WxSessionManager;
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
+import me.chanjar.weixin.mp.bean.result.WxMpUser;
+import org.springframework.stereotype.Component;
+
+import java.util.Map;
+
+/**
+ * @author <a href="https://github.com/binarywang">Binary Wang</a>
+ */
+@Component
+public class SubscribeHandler extends AbstractHandler {
+
+    @Override
+    public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage,
+                                    Map<String, Object> context, WxMpService weixinService,
+                                    WxSessionManager sessionManager) throws WxErrorException {
+
+        this.logger.info("新关注用户 OPENID: " + wxMessage.getFromUser());
+
+        // 获取微信用户基本信息
+        try {
+            WxMpUser userWxInfo = weixinService.getUserService()
+                .userInfo(wxMessage.getFromUser(), null);
+            if (userWxInfo != null) {
+                // TODO 可以添加关注用户到本地数据库
+            }
+        } catch (WxErrorException e) {
+            if (e.getError().getErrorCode() == 48001) {
+                this.logger.info("该公众号没有获取用户信息权限！");
+            }
+        }
+
+
+        WxMpXmlOutMessage responseResult = null;
+        try {
+            responseResult = this.handleSpecial(wxMessage);
+        } catch (Exception e) {
+            this.logger.error(e.getMessage(), e);
+        }
+
+        if (responseResult != null) {
+            return responseResult;
+        }
+
+        try {
+            return new TextBuilder().build("感谢你关注“硅谷课堂”，可以根据关键字搜索您想看的视频教程，如：JAVA基础、Spring boot、大数据等", wxMessage, weixinService);
+        } catch (Exception e) {
+            this.logger.error(e.getMessage(), e);
+        }
+
+        return null;
+    }
+
+    /**
+     * 处理特殊请求，比如如果是扫码进来的，可以做相应处理
+     */
+    private WxMpXmlOutMessage handleSpecial(WxMpXmlMessage wxMessage)
+        throws Exception {
+        //TODO
+        return null;
+    }
+
+}
+```
+
+#### 3.1.3 新建取消关注处理类
+
+```java
+package com.atguigu.ggkt.wechat.handler;
+
+import me.chanjar.weixin.common.session.WxSessionManager;
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
+import org.springframework.stereotype.Component;
+
+import java.util.Map;
+
+/**
+ * @author <a href="https://github.com/binarywang">Binary Wang</a>
+ */
+@Component
+public class UnsubscribeHandler extends AbstractHandler {
+
+    @Override
+    public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage,
+                                    Map<String, Object> context, WxMpService wxMpService,
+                                    WxSessionManager sessionManager) {
+        String openId = wxMessage.getFromUser();
+        this.logger.info("取消关注用户 OPENID: " + openId);
+        // TODO 可以更新本地数据库为取消关注状态
+        return null;
+    }
+
+}
+```
+
+#### 3.1.4 测试取消关注
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665845490779-5f15121f-f4c2-425d-9675-764f7a350762.png)
+
+#### 3.1.5 测试关注
+
+```
+新关注用户 OPENID: oWyia6Mig1f8x9QOcJigHDNHVr-I
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665846716810-c78c6cfd-bc4b-46e8-984e-5428a62b735c.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665845518440-95506a59-82c6-4f4e-9495-eaab8a7f520f.png)
+
+
+
+### 3.2 自定义菜单事件
+
+#### 3.2.1 配置
+
+```java
+// 自定义菜单事件
+newRouter.rule().async(false).msgType(EVENT).event(EventType.CLICK).handler(this.menuHandler).end();
+```
+
+
+
+#### 3.2.2 新建自定义菜单事件处理类
+
+```java
+package com.atguigu.ggkt.wechat.handler;
+
+import me.chanjar.weixin.common.session.WxSessionManager;
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
+import org.springframework.stereotype.Component;
+
+import java.util.Map;
+
+import static me.chanjar.weixin.common.api.WxConsts.EventType;
+
+/**
+ * @author <a href="https://github.com/binarywang">Binary Wang</a>
+ */
+@Component
+public class MenuHandler extends AbstractHandler {
+
+    @Override
+    public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage,
+                                    Map<String, Object> context, WxMpService weixinService,
+                                    WxSessionManager sessionManager) {
+        String msg = String.format("type:%s, event:%s, key:%s",
+                wxMessage.getMsgType(), wxMessage.getEvent(),
+                wxMessage.getEventKey());
+
+        if (EventType.VIEW.equals(wxMessage.getEvent())) {
+            return null;
+        }
+
+        String eventKey = wxMessage.getEventKey();
+        if ("aboutUs".equals(eventKey)) {
+            msg = aboutUs();
+        }
+
+        return WxMpXmlOutMessage.TEXT().content(msg)
+                .fromUser(wxMessage.getToUser()).toUser(wxMessage.getFromUser())
+                .build();
+    }
+
+    /**
+     * 关于我们
+     *
+     * @return
+     */
+    private String aboutUs() {
+        return "硅谷课堂现开设Java、HTML5前端+全栈、大数据、全链路UI/UE设计、人工智能、大数据运维+Python自动化、Android+HTML5混合开发等多门课程；同时，通过视频分享、谷粒学苑在线课堂、大厂学苑直播课堂等多种方式，满足了全国编程爱好者对多样化学习场景的需求，已经为行业输送了大量IT技术人才。";
+    }
+
+}
+```
+
+#### 3.2.3 测试
+
+- 点击我的 -> 关于我们，返回关于我们的介绍
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665844813984-9d4d8892-0f07-4a8c-9919-dd0d4ceb856f.png)
+
+
+
+## 4 公众号模板消息
+
+### 4.1 实现目标
+
+- 购买课程支付成功微信推送消息
+
+### 4.2 模板消息实现
+
+- 接口文档：`https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Template_Message_Interface.html`
+
+### 4.3 申请模板消息
+
+- 首先我们需要知道，模板消息是需要申请的。
+- 但是我们在申请时还是有一些东西要注意，这个在官方的文档有非常详细的说明。
+
+```
+https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Template_Message_Operation_Specifications.html
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665844990348-40f5ebc3-c677-4f7f-8a0d-9d66a83b641b.png)
+
+- 这个大家好好看看。选择行业的时候可要谨慎些，因为这个一个月只可以修改一次。
+- 下面看看在哪里申请，硅谷课堂已经申请过，忽略
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665845008602-6dd0aeef-4849-447e-bb0c-fe919589fe90.png)
+
+- 申请之后就耐心等待，审核通过之后就会出现“广告与服务”模板消息的菜单。
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665845023840-07b77fbf-89ca-4269-b85c-172f11c7d601.png)
+
+
+
+### 4.4、添加模板消息
+
+- 审核通过之后，我们就可以添加模板消息，进行开发了。
+- 我们点击模板消息进入后，直接在模板库中选择你需要的消息模板添加就可以了，添加之后就会在我的模板中。会有一个模板id，这个模板id在我们发送消息的时候会用到。
+- 模板消息如下：
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665845039761-48956aed-5183-4450-a288-312afa20db55.png)
+
+- 我们需要模板消息：
+
+1. 订单支付成功通知；
+
+- 模板库中没有的模板，可以自定义模板，审核通过后可以使用。
+
+
+
+## 5. 公众号测试号申请模板消息
+
+### 5.1 新增测试模板
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665845848184-522b5cb8-9c7d-4227-bb3e-d592818127d0.png)
+
+### 5.2 填写信息
+
+#### 5.2.1 下载模板示例
+
+```
+https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Template_Message_Operation_Specifications.html
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665845258720-7aad86a1-1565-4542-8239-a2a30ff37b6f.png)
+
+- 模板示例
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665845566196-870745ba-ff5c-4149-a1df-fbdc88eeac41.png)
+
+#### 5.2.2 填写模板标题和模板内容
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665845368874-db801f66-fd84-4d0e-855b-8fff60d111c0.png)
+
+```latex
+{{first.DATA}}
+订单编号：{{keyword1.DATA}}
+订单名称：{{keyword2.DATA}}
+支付时间：{{keyword3.DATA}}
+支付金额：{{keyword4.DATA}}
+{{remark.DATA}}
+```
+
+
+
+## 6 模板消息接口
+
+### 6.1 追加代码 `MessageController`
+
+```java
+    @Autowired
+    private MessageService messageService;
+
+    @GetMapping("/pushPayMessage")
+    public Result pushPayMessage() throws WxErrorException {
+        messageService.pushPayMessage(1L);
+        return Result.ok();
+    }
+```
+
+### 6.2 新建服务类
+
+```java
+package com.atguigu.ggkt.wechat.service;
+
+/**
+ * 公众号消息 服务类
+ *
+ * @author 陈江林
+ * @date 2022/10/15 23:05
+ */
+public interface MessageService {
+
+    /**
+     * 发送模板消息
+     *
+     * @param l l
+     */
+    void pushPayMessage(long l);
+
+}
+```
+
+### 6.3 新建服务实现类
+
+```java
+package com.atguigu.ggkt.wechat.service.impl;
+
+import com.atguigu.ggkt.wechat.config.WxProperties;
+import com.atguigu.ggkt.wechat.service.MessageService;
+import lombok.SneakyThrows;
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
+import me.chanjar.weixin.mp.bean.template.WxMpTemplateMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+/**
+ * 公众号消息 服务实现类
+ *
+ * @author 陈江林
+ * @date 2022/10/15 23:06
+ */
+@Service
+public class MessageServiceImpl implements MessageService {
+
+    @Autowired
+    private WxMpService wxMpService;
+
+    @Autowired
+    private WxProperties wxProperties;
+
+    //TODO 暂时写成固定值测试，后续完善
+    @SneakyThrows
+    @Override
+    public void pushPayMessage(long orderId) {
+        String openid = "oWyia6Mig1f8x9QOcJigHDNHVr-I";
+
+        // 模板id
+        String templateId = "2WOzacjuyXuTWESj17xl9TwHBg0gAYlK5aG9TJj0GkM";
+        // 点击模板消息要访问的网址
+        String url = wxProperties.getWxMpTemplateMessageObject().get(templateId);
+        WxMpTemplateMessage templateMessage = WxMpTemplateMessage.builder()
+                // 要发送的用户的 openid
+                .toUser(openid)
+                .templateId(templateId)
+                .url(url + orderId)
+                .build();
+        // 如果是正式版发送消息，，这里需要配置你的信息
+        templateMessage.addData(new WxMpTemplateData("first", "亲爱的用户：您有一笔订单支付成功。", "#272727"));
+        templateMessage.addData(new WxMpTemplateData("keyword1", "1314520", "#272727"));
+        templateMessage.addData(new WxMpTemplateData("keyword2", "java基础课程", "#272727"));
+        templateMessage.addData(new WxMpTemplateData("keyword3", "2022-01-11", "#272727"));
+        templateMessage.addData(new WxMpTemplateData("keyword4", "100", "#272727"));
+        templateMessage.addData(new WxMpTemplateData("remark", "感谢你购买课程，如有疑问，随时咨询！", "#272727"));
+        String msg = wxMpService.getTemplateMsgService().sendTemplateMsg(templateMessage);
+        System.out.println(msg);
+    }
+
+}
+```
+
+### 6.4 新建属性配置类
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665847518849-44830e1f-fc6d-45a4-b4cd-8529ba9c02c4.png)
+
+```java
+package com.atguigu.ggkt.wechat.config;
+
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+import java.util.Map;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/15 23:13
+ */
+@Data
+@Component
+@ConfigurationProperties("wx")
+public class WxProperties {
+
+    /**
+     * 多个模板消息配置信息
+     * 键（模板 id）, 值（点击模板消息要访问的网址）
+     */
+    private Map<String, String> wxMpTemplateMessageObject;
+
+}
+```
+
+### 6.5 `application.yml` 配置
+
+```yaml
+wx:
+  wx-mp-template-message-object: {
+    "2WOzacjuyXuTWESj17xl9TwHBg0gAYlK5aG9TJj0GkM", "http://ggkt2.vipgz1.91tunnel.com/#/pay/"
+  }
+```
+
+
+
+### 6.6 测试
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665848608517-275e9cd7-95d2-45a2-ac50-7ec09b18c77a.png)
+
+```java
+package com.atguigu.ggkt.wechat;
+
+import com.atguigu.ggkt.vo.wechat.MenuVo;
+import com.atguigu.ggkt.wechat.service.MenuService;
+import com.atguigu.ggkt.wechat.service.MessageService;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/13 21:29
+ */
+@SpringBootTest
+public class ServiceWechatApplicationTest {
+
+    @Autowired
+    private MessageService messageService;
+
+    /**
+     * 测试发送模板消息
+     */
+    @Test
+    public void TestSendMessage() {
+        messageService.pushPayMessage(0L);
+    }
+}
+```
+
+- 依赖
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-test</artifactId>
+    <scope>test</scope>
+</dependency>
+```
+
+
+
+### 6.7 公众号显示
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665849075720-859b08ab-5f97-4bd5-8c91-2beea77ba5bf.png)
