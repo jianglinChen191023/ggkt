@@ -2,6 +2,7 @@ package com.atguigu.ggkt.wechat;
 
 import com.atguigu.ggkt.vo.wechat.MenuVo;
 import com.atguigu.ggkt.wechat.service.MenuService;
+import com.atguigu.ggkt.wechat.service.MessageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +20,17 @@ public class ServiceWechatApplicationTest {
 
     @Autowired
     private MenuService menuService;
+
+    @Autowired
+    private MessageService messageService;
+
+    /**
+     * 测试发送模板消息
+     */
+    @Test
+    public void TestSendMessage() {
+        messageService.pushPayMessage(0L);
+    }
 
     public static void main(String[] args) {
         MenuVo menuVoTwo = new MenuVo();

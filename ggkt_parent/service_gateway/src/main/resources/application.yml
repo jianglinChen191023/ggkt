@@ -18,9 +18,9 @@ spring:
           enabled: true
       # 路由配置
       routes: [
-        { id: service-vod, uri: lb://service-vod, predicates: Path=/admin/vod/** },
-        { id: service-order, uri: lb://service-order, predicates: Path=/admin/order/** },
-        { id: service-activity, uri: lb://service-activity, predicates: Path=/admin/activity/** },
-        { id: service-user, uri: lb://service-user, predicates: Path=/admin/user/** },
-        { id: service-wechat, uri: lb://service-wechat, predicates: Path=/admin/wechat/** },
+        { id: service-vod, uri: lb://service-vod, predicates: Path=/**/vod/** },
+        { id: service-order, uri: lb://service-order, predicates: Path=/**/order/** },
+        { id: service-activity, uri: lb://service-activity, predicates: Path=/**/activity/** },
+        { id: service-user, uri: lb://service-user, predicates: Path=/**/user/** },
+        { id: service-wechat, uri: lb://service-wechat, predicates: Path=/**/wechat/** },
       ]

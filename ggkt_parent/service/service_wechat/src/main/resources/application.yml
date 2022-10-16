@@ -32,8 +32,13 @@ mybatis-plus:
   mapper-locations: classpath:com/atguigu/ggkt/wechat/mapper/xml/*.xml
 
 wx:
+  wx-mp-template-message-object: {
+    "2WOzacjuyXuTWESj17xl9TwHBg0gAYlK5aG9TJj0GkM", "http://ggkt2.vipgz1.91tunnel.com/#/pay/"
+  }
   mp:
     # 公众号的 appid
     app-id: wxc2d7509ddd5c9418
     # 公众号的 appsecret
     secret: 92197f5f41d968266f1ba20b12293574
+    # 公众号的 token
+    token: ggkt

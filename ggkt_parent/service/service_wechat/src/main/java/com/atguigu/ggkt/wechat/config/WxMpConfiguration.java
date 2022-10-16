@@ -1,5 +1,7 @@
 package com.atguigu.ggkt.wechat.config;
 
+import com.atguigu.ggkt.wechat.handler.*;
+import me.chanjar.weixin.mp.api.WxMpMessageRouter;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
 import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
@@ -7,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.function.Function;
+import static me.chanjar.weixin.common.api.WxConsts.EventType;
+import static me.chanjar.weixin.common.api.WxConsts.EventType.SUBSCRIBE;
+import static me.chanjar.weixin.common.api.WxConsts.EventType.UNSUBSCRIBE;
+import static me.chanjar.weixin.common.api.WxConsts.XmlMsgType.EVENT;
 
 /**
  * 微信配置类
@@ -21,49 +26,60 @@ public class WxMpConfiguration {
     @Autowired
     private WxMpProperties wxMpProperties;
 
+    @Autowired
+    private LogHandler logHandler;
+
+    @Autowired
+    private NullHandler nullHandler;
+
+    @Autowired
+    private MenuHandler menuHandler;
+
+    @Autowired
+    private MsgHandler msgHandler;
+
+    @Autowired
+    private UnsubscribeHandler unsubscribeHandler;
+
+    @Autowired
+    private SubscribeHandler subscribeHandler;
+
     @Bean
     public WxMpService wxMpService() {
         WxMpService service = new WxMpServiceImpl();
         WxMpDefaultConfigImpl configStorage = new WxMpDefaultConfigImpl();
         configStorage.setAppId(wxMpProperties.getAppId());
         configStorage.setSecret(wxMpProperties.getSecret());
-//        configStorage.setToken(wxMpProperties.getToken());
+        configStorage.setToken(wxMpProperties.getToken());
 //        configStorage.setAesKey(wxMpProperties.getAesKey());
         service.setWxMpConfigStorage(configStorage);
 
         return service;
     }
 
-    public WxMpService wxMpService2() {
-        return new Function<WxMpDefaultConfigImpl, WxMpService>() {
-            @Override
-            public WxMpService apply(WxMpDefaultConfigImpl wxMpDefaultConfig) {
-                WxMpService service = new WxMpServiceImpl();
-                wxMpDefaultConfig.setAppId(wxMpProperties.getAppId());
-                wxMpDefaultConfig.setSecret(wxMpProperties.getSecret());
-                service.setWxMpConfigStorage(wxMpDefaultConfig);
-                return service;
-            }
-        }.apply(new WxMpDefaultConfigImpl());
-    }
+    @Bean
+    public WxMpMessageRouter messageRouter(WxMpService wxMpService) {
+        final WxMpMessageRouter newRouter = new WxMpMessageRouter(wxMpService);
 
-    public WxMpService wxMpService3() {
-        return ((Function<WxMpDefaultConfigImpl, WxMpService>) wxMpDefaultConfig -> {
-            WxMpService service = new WxMpServiceImpl();
-            wxMpDefaultConfig.setAppId(wxMpProperties.getAppId());
-            wxMpDefaultConfig.setSecret(wxMpProperties.getSecret());
-            service.setWxMpConfigStorage(wxMpDefaultConfig);
-            return service;
-        }).apply(new WxMpDefaultConfigImpl());
-    }
+        // 记录所有事件的日志 （异步执行）
+        newRouter.rule().handler(this.logHandler).next();
 
-    public WxMpService wxMpService4() {
-        WxMpDefaultConfigImpl wxMpDefaultConfig = new WxMpDefaultConfigImpl();
-        WxMpService service = new WxMpServiceImpl();
-        wxMpDefaultConfig.setAppId(wxMpProperties.getAppId());
-        wxMpDefaultConfig.setSecret(wxMpProperties.getSecret());
-        service.setWxMpConfigStorage(wxMpDefaultConfig);
-        return service;
+        // 自定义菜单事件
+        newRouter.rule().async(false).msgType(EVENT).event(EventType.CLICK).handler(this.menuHandler).end();
+
+        // 点击菜单连接事件
+        newRouter.rule().async(false).msgType(EVENT).event(EventType.VIEW).handler(this.nullHandler).end();
+
+        // 关注事件
+        newRouter.rule().async(false).msgType(EVENT).event(SUBSCRIBE).handler(this.subscribeHandler).end();
+
+        // 取消关注事件
+        newRouter.rule().async(false).msgType(EVENT).event(UNSUBSCRIBE).handler(this.unsubscribeHandler).end();
+
+        // 默认
+        newRouter.rule().async(false).handler(this.msgHandler).end();
+
+        return newRouter;
     }
 
 }

@@ -25,4 +25,9 @@ public class WxMpProperties {
      */
     private String secret;
 
+    /**
+     * 公众号的 token
+     */
+    private String token;
+
 }
