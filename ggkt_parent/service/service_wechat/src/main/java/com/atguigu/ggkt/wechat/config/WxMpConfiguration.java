@@ -64,6 +64,9 @@ public class WxMpConfiguration {
         // 记录所有事件的日志 （异步执行）
         newRouter.rule().handler(this.logHandler).next();
 
+        // 授权
+        newRouter.rule().async(false).msgType(EVENT).event(EventType.CLICK).handler(this.menuHandler).end();
+
         // 自定义菜单事件
         newRouter.rule().async(false).msgType(EVENT).event(EventType.CLICK).handler(this.menuHandler).end();
 

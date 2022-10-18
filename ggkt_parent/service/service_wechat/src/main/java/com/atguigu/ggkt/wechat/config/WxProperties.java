@@ -21,4 +21,13 @@ public class WxProperties {
      */
     private Map<String, String> wxMpTemplateMessageObject;
 
+    /**
+     * 授权回调获取用户信息的接口地址
+     */
+    private String userInfoUrl;
+
+    /**
+     * 公众号网页部署地址
+     */
+    private String viewUrl;
 }

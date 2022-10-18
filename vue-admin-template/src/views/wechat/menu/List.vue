@@ -5,7 +5,7 @@
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets" style="margin-top: 5px"></i>
       <span style="margin-top: 5px">数据列表</span>
-      <el-button class="btn-add" size="mini" @click="remove" style="margin-left: 10px;">删除菜单</el-button>
+      <el-button class="btn-add" size="mini" @click="removeMenu" style="margin-left: 10px;">删除菜单</el-button>
       <el-button class="btn-add" size="mini" @click="syncMenu">同步菜单</el-button>
       <el-button class="btn-add" size="mini" @click="add">添 加</el-button>
     </el-card>
@@ -160,6 +160,25 @@ export default {
       })
     },
 
+    removeMenu() {
+      this.$confirm('你确定删除菜单吗, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return menuApi.removeMenu();
+      }).then((response) => {
+        this.$message.success(response.message)
+      }).catch(error => {
+        console.log('error', error)
+        // 当取消时会进入catch语句:error = 'cancel'
+        // 当后端服务抛出异常时：error = 'error'
+        if (error === 'cancel') {
+          this.$message.info('取消')
+        }
+      })
+    },
+
     syncMenu() {
       this.$confirm('你确定上传菜单吗, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -168,7 +187,6 @@ export default {
       }).then(() => {
         return menuApi.syncMenu();
       }).then((response) => {
-        this.fetchData()
         this.$message.success(response.message)
       }).catch(error => {
         console.log('error', error)

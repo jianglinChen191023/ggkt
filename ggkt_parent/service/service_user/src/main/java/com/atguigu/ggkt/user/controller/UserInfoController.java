@@ -4,13 +4,11 @@ package com.atguigu.ggkt.user.controller;
 import com.atguigu.ggkt.model.user.UserInfo;
 import com.atguigu.ggkt.result.Result;
 import com.atguigu.ggkt.user.service.UserInfoService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -33,6 +31,22 @@ public class UserInfoController {
     public Result<UserInfo> getById(@PathVariable Long id) {
         UserInfo userInfo = userInfoService.getById(id);
         return Result.ok(userInfo);
+    }
+
+    @ApiOperation("根据 openid 获取用户信息")
+    @GetMapping("/getUserInfoByOpenId")
+    public Result<UserInfo> getUserInfoByOpenId(@RequestParam("openid") String openid) {
+        LambdaQueryWrapper<UserInfo> wrapper = new LambdaQueryWrapper();
+        wrapper.eq(UserInfo::getOpenId, openid);
+        UserInfo userInfo = userInfoService.getOne(wrapper);
+        return Result.ok(userInfo);
+    }
+
+    @ApiOperation("保存用户信息")
+    @PostMapping(value = "/save", consumes = "application/json")
+    public Result save(@RequestBody UserInfo userInfo) {
+        userInfoService.save(userInfo);
+        return Result.ok();
     }
 
 }

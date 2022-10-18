@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.atguigu.ggkt.exception.GgktException;
 import com.atguigu.ggkt.model.wechat.Menu;
 import com.atguigu.ggkt.vo.wechat.MenuVo;
+import com.atguigu.ggkt.wechat.config.WxProperties;
 import com.atguigu.ggkt.wechat.mapper.MenuMapper;
 import com.atguigu.ggkt.wechat.service.MenuService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -33,6 +34,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
 
     @Autowired
     private WxMpService wxMpService;
+
+    @Autowired
+    private WxProperties wxProperties;
 
     @Override
     public List<Menu> findMenuOneInfo() {
@@ -113,7 +117,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
                         String view = "view";
                         String click = "click";
                         if (view.equals(type)) {
-                            twoObject.put("url", "http://ggkt2.vipgz1.91tunnel.com/#" + menuVoTwo.getUrl());
+                            twoObject.put("url", wxProperties.getViewUrl() + menuVoTwo.getUrl());
                         } else if (click.equals(type)) {
                             twoObject.put("key", menuVoTwo.getMeunKey());
                         }

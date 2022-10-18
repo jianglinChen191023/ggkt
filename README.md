@@ -560,8 +560,48 @@
     - [6.5 `application.yml` 配置](#65-applicationyml-配置)
     - [6.6 测试](#66-测试)
     - [6.7 公众号显示](#67-公众号显示)
-  
 
+- [十四 公众号授权](#十四-公众号授权)
+    - [1 需求描述](#1-需求描述)
+        - [1.1 思路](#11-思路)
+            - [1.1.1 第三步 - 微信端授权显示](#111-第三步---微信端授权显示)
+        - [1.2 微信提示错误信息 10003](#12-微信提示错误信息-10003)
+    - [2 授权登录](#2-授权登录)
+        - [2.1 配置授权回调授权](#21-配置授权回调授权)
+            - [2.1.1 在公众号正式号配置](#211-在公众号正式号配置)
+        - [2.2 部署公众号前端页面](#22-部署公众号前端页面)
+        - [2.3 前端处理](#23-前端处理)
+            - [2.3.1 全局处理授权登录, 处理登录页面: `/src/App.vue`](#231-全局处理授权登录-处理登录页面-srcappvue)
+            - [2.3.2 前端代码示例](#232-前端代码示例)
+    - [3 授权登录接口](#3-授权登录接口)
+        - [3.1 `application.yml` 配置](#31-applicationyml-配置)
+        - [3.2 `WxProperties` 属性配置类](#32-wxproperties-属性配置类)
+        - [3.3 新建控制类 `WechatController`](#33-新建控制类-wechatcontroller)
+        - [3.4 `service_wachet` 依赖](#34-service_wachet-依赖)
+        - [3.5 远程接口](#35-远程接口)
+        - [3.6 `service_user` 控制类](#36-service_user-控制类)
+    - [4 使用 `token`](#4-使用-token)
+        - [4.1 `JWT` 介绍](#41-jwt-介绍)
+        - [4.2 `JWT` 的原理](#42-jwt-的原理)
+            - [4.2.1 公共部分](#421-公共部分)
+            - [4.2.2 私有部分](#422-私有部分)
+            - [4.2.3 签名部分](#423-签名部分)
+        - [4.3 整合 `JWT`](#43-整合-jwt)
+            - [4.3.1 在 `service_utils` 模块添加依赖](#431-在-service_utils-模块添加依赖)
+            - [4.3.2 新建 `JWT` 工具类](#432-新建-jwt-工具类)
+    - [5 新建前端项目](#5-新建前端项目)
+        - [1.1 使用 `vue ui`](#11-使用-vue-ui)
+            - [1.1.1 导入项目](#111-导入项目)
+        - [1.2 新建代码规范](#12-新建代码规范)
+        - [1.3 路由](#13-路由)
+            - [1.3.1 安装路由](#131-安装路由)
+            - [1.3.2 新建路由配置](#132-新建路由配置)
+            - [1.3.3 新建页面](#133-新建页面)
+            - [1.3.4 启用路由](#134-启用路由)
+        - [5.4 引导用户进入授权页面同意授权](#54-引导用户进入授权页面同意授权)
+            - [5.4.1 `App.js`](#541-appjs)
+    - [6 测试](#6-测试)
+    
 # 一 硅谷课堂
 
 ## 项目概述
@@ -16942,3 +16982,796 @@ public class ServiceWechatApplicationTest {
 ### 6.7 公众号显示
 
 ![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665849075720-859b08ab-5f97-4bd5-8c91-2beea77ba5bf.png)
+
+# 十四 公众号授权
+
+```
+git checkout -b 14.0.0_wechat_oauth2
+```
+
+## 1 需求描述
+
+- 通过公众号菜单进入的页面都要授权登录
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665900934080-4258b86b-7cc8-4d05-aa69-251a9b4a3a80.png)
+
+
+
+### 1.1 思路
+
+![img](https://cdn.nlark.com/yuque/__puml/fff5aef6526a6a0694be5fdd4cf71def.svg)
+
+#### 1.1.1 第三步 - 微信端授权显示
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666102485682-0202f317-a052-4605-abfc-634565d140c2.png)
+
+
+
+### 1.2 微信提示错误信息 10003
+
+- 电脑显示
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666076580140-ce03dcbc-5ac4-4013-b5b5-a5892747d73f.png)
+
+- 手机显示
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666076663117-71590075-374a-4f3e-9265-dd06ccd0d491.png)
+
+- `10003`: `redirect_uri`域名与后台配置不一致
+
+    - 重定向到 `userInfo` 的地址的`域名` 和 `公众号配置`的不同
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666073511570-252d9d49-a4f4-402d-ba6b-393357e11430.png)
+
+```yaml
+wx:
+  # 授权回调获取用户信息的接口地址
+  user-info-url: "https://www.th668.top/api/wechat/redirect/userInfo"
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666073796182-6ec911f9-bbf7-446a-93f3-7258c991a872.png)
+
+
+
+
+
+## 2 授权登录
+
+- 文档: `https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665900753529-d7eda34e-6195-4d9b-9e9c-2109333e9187.png)
+
+- `scope` 为 `snsapi_userinfo`
+
+
+
+### 2.1 配置授权回调授权
+
+#### 2.1.1 在公众号正式号配置
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665993675171-dfddf778-ce01-42e3-ba4d-cd3f1c515819.png)
+
+- 在微信公众号请求用户网页授权之前, 开发者需要先到公众平台官网中的
+
+    - `设置与开发`
+
+        - `接口权限`
+
+    -   - `网页服务` -> `网页授权` -> `网页授权获取用户基本信息` 的配置选项中, 修改申请回调域名
+
+- 注意: 填写的是全域名, 不加 `http://` 等响应头
+- 比如需要网页授权的域名为：`www.qq.com`
+
+    - 配置以后此域名下面的页面 `http://www.qq.com/music.html `、 `http://www.qq.com/login.html` 都可以进行OAuth2.0鉴权。但`http://pay.qq.com` 、 `http://music.qq.com` 、 `http://qq.com` 无法进行 `OAuth2.0` 鉴权
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665904845468-6e522c02-d6e1-495d-aa67-6bf31f57d844.png)
+
+
+
+### 2.2 部署公众号前端页面
+
+### 2.3 前端处理
+
+#### 2.3.1 全局处理授权登录, 处理登录页面: `/src/App.vue`
+
+1. 访问页面时首先判断是否有 `token` 信息, 如果没有跳转到授权登录接口
+2. 通过 `localStorage` 存储 `token` 信息
+
+- 在 `H5` 中, 加入一个 `localStorage` 特性, 这个特性主要是用来作为本地存储来使用的, 解决了 `cookie` 存储空间不足的问题（`cookie` 中每条 `cookie` 的存储空间很小, 只有几 `K`）, `localStorage` 中一般浏览器支持的是 `5M` 大小，这个在不同的浏览器中 `localStorage` 会有所不同, 它只能存储字符串格式的数据, 所以最好在每次存储时把数据转换成 `JSON` 格式, 取出的时候再转换回来
+
+#### 2.3.2 前端代码示例
+
+```javascript
+wechatLogin() {
+  // 处理微信授权登录
+  let token = this.getQueryString('token') || '';
+  if(token != '') {
+    window.localStorage.setItem('token', token);
+  }
+
+  // 所有页面都必须登录，两次调整登录, 这里与接口返回 208 状态
+  token = window.localStorage.getItem('token') || '';
+  if(token == '') {
+    const url = window.location.href.replace('#', 'guiguketan');
+    window.location = 'http://www.th668.top/api/wechat/redirect/authorize?returnUrl=' + url;
+  }
+
+  console.log('token2: ' + window.localStorage.getItem('token'));
+}
+```
+
+
+
+## 3 授权登录接口
+
+- 操作模块: `service-wechat`
+
+### 3.1 `application.yml` 配置
+
+```yaml
+wx: 
+	user-info-url: "https://www.th668.top/api/user/wechat/userInfo"
+```
+
+
+
+### 3.2 `WxProperties` 属性配置类
+
+```java
+package com.atguigu.ggkt.wechat.config;
+
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+import java.util.Map;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/15 23:13
+ */
+@Data
+@Component
+@ConfigurationProperties("wx")
+public class WxProperties {
+
+    /**
+     * 多个模板消息配置信息
+     * 键（模板 id）, 值（点击模板消息要访问的网址）
+     */
+    private Map<String, String> wxMpTemplateMessageObject;
+
+    /**
+     * 授权回调获取用户信息的接口地址
+     */
+    private String userInfoUrl;
+}
+```
+
+
+
+### 3.3 新建控制类 `WechatController`
+
+```java
+package com.atguigu.ggkt.wechat.controller;
+
+import com.alibaba.fastjson.JSON;
+import com.atguigu.ggkt.client.user.UserInfoFeignClient;
+import com.atguigu.ggkt.model.user.UserInfo;
+import com.atguigu.ggkt.result.Result;
+import com.atguigu.ggkt.util.JwtHelper;
+import com.atguigu.ggkt.wechat.config.WxProperties;
+import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.api.WxConsts;
+import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
+import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.common.util.http.URIUtil;
+import me.chanjar.weixin.mp.api.WxMpService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+/**
+ * 公众号网页授权
+ *
+ * @author 陈江林
+ * @date 2022/10/17 16:20
+ */
+@Slf4j
+@Controller
+@RequestMapping("/api/wechat/redirect")
+public class WechatController {
+
+    @Autowired
+    private WxMpService wxService;
+
+    @Autowired
+    private WxProperties wxProperties;
+
+    @Autowired
+    private UserInfoFeignClient userInfoFeignClient;
+
+    /**
+     * 第一步 用户同意授权获取 code
+     *
+     * @return {@link String}
+     */
+    @RequestMapping("/authorize")
+    public String authorize(@RequestParam String returnUrl) {
+        // 构造 oauth2 授权的 url 连接
+        String url = wxService.getOAuth2Service()
+                .buildAuthorizationUrl(wxProperties.getUserInfoUrl(),
+                        WxConsts.OAuth2Scope.SNSAPI_USERINFO,
+                        URIUtil.encodeURIComponent(returnUrl.replace("guiguketan", "#")));
+        // 跳转回调 redirect_uri，应当使用 https 链接来确保授权 code 的安全性
+        // 重定向到用户授权界面, 如果用户同意授权，页面将跳转至 redirect_uri/?code=CODE&state=STATE。
+        log.info("redirect_uri: " + url);
+        return "redirect:" + url;
+    }
+
+    /**
+     * 拉取用户信息
+     *
+     * @param code
+     * @param state
+     * @return {@link String}
+     */
+    @RequestMapping("/userInfo")
+    public String userInfo(@RequestParam String code, @RequestParam String state) {
+        try {
+            // 第二步：通过 code 换取网页授权 access_token
+            WxOAuth2AccessToken accessToken = wxService.getOAuth2Service().getAccessToken(code);
+            /// 第三步：刷新access_token（如果需要）
+            // 第四步：拉取用户信息(需 scope 为 snsapi_userinfo)
+            WxOAuth2UserInfo user = wxService.getOAuth2Service().getUserInfo(accessToken, null);
+            log.info(JSON.toJSONString(user));
+
+            // 1. 保存用户信息
+            // 1.1 检查是否已保存
+            // 获取用户 openid
+            String openid = user.getOpenid();
+            // 根据 openid 获取用户信息
+
+            Result<UserInfo> result = userInfoFeignClient.getUserInfoByOpenId(openid);
+            if(result.getMessage().equals(Result.FAILED)){
+                return null;
+            }
+
+            UserInfo userInfo = result.getData();
+            if (userInfo == null) {
+                // 创建用户信息对象
+                userInfo = new UserInfo();
+                userInfo.setOpenId(openid);
+                userInfo.setNickName(user.getNickname());
+                userInfo.setAvatar(user.getHeadImgUrl());
+                userInfo.setSex(user.getSex());
+                userInfo.setProvince(user.getProvince());
+                // 保存操作
+                userInfoFeignClient.save(userInfo);
+            }
+
+            // 生成 token, 按照一定规则生成字符串, 可以包含用户信息
+            String token = JwtHelper.createToken(userInfo.getId(), userInfo.getNickName());
+            log.info("token: " + token);
+            if (!token.contains("?")) {
+                return "redirect:" + state + "?token=" + token;
+            } else {
+                return "redirect:" + state + "&token=" + token;
+            }
+        } catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+
+        log.info("state: " + state);
+        return "null";
+    }
+
+}
+```
+
+
+
+### 3.4 `service_wachet` 依赖
+
+```xml
+<!-- 远程接口 -->
+<dependency>
+    <groupId>com.atguigu</groupId>
+    <artifactId>service_user_client</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+</dependency>
+```
+
+
+
+### 3.5 远程接口
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666103728896-39668a8e-4069-495a-af5a-9ff5b890a348.png)
+
+```java
+package com.atguigu.ggkt.client.user;
+
+import com.atguigu.ggkt.model.user.UserInfo;
+import com.atguigu.ggkt.result.Result;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.*;
+
+/**
+ * 远程调用接口
+ *
+ * @author 陈江林
+ * @date 2022/10/13 14:37
+ */
+@FeignClient(value = "service-user")
+public interface UserInfoFeignClient {
+
+    /**
+     * 根据 id 查询用户数据
+     *
+     * @param id id
+     * @return {@link UserInfo}
+     */
+    @GetMapping("/admin/user/userInfo/inner/getById/{id}")
+    UserInfo getById(@PathVariable Long id);
+
+    /**
+     * 根据 openid 获取用户信息
+     *
+     * @param openid openid
+     * @return {@link Result}<{@link UserInfo}>
+     */
+    @GetMapping("/admin/user/userInfo/getUserInfoByOpenId")
+    Result<UserInfo> getUserInfoByOpenId(@RequestParam("openid") String openid);
+
+    /**
+     * 保存
+     *
+     * @param userInfo
+     * @return {@link Result}
+     */
+    @PostMapping(value = "/admin/user/userInfo/save", consumes = "application/json")
+    Result save(@RequestBody UserInfo userInfo);
+}
+```
+
+
+
+### 3.6 `service_user` 控制类
+
+```java
+package com.atguigu.ggkt.user.controller;
+
+
+import com.atguigu.ggkt.model.user.UserInfo;
+import com.atguigu.ggkt.result.Result;
+import com.atguigu.ggkt.user.service.UserInfoService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+/**
+ * <p>
+ * 用户表 前端控制器
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-10-13
+ */
+@Api(tags = "用户信息")
+@RestController
+@RequestMapping("/admin/user/userInfo")
+public class UserInfoController {
+
+    @Autowired
+    private UserInfoService userInfoService;
+
+    @ApiOperation("获取用户")
+    @GetMapping("/inner/getById/{id}")
+    public Result<UserInfo> getById(@PathVariable Long id) {
+        UserInfo userInfo = userInfoService.getById(id);
+        return Result.ok(userInfo);
+    }
+
+    @ApiOperation("根据 openid 获取用户信息")
+    @GetMapping("/getUserInfoByOpenId")
+    public Result<UserInfo> getUserInfoByOpenId(@RequestParam("openid") String openid) {
+        LambdaQueryWrapper<UserInfo> wrapper = new LambdaQueryWrapper();
+        wrapper.eq(UserInfo::getOpenId, openid);
+        UserInfo userInfo = userInfoService.getOne(wrapper);
+        return Result.ok(userInfo);
+    }
+
+    @ApiOperation("保存用户信息")
+    @PostMapping(value = "/save", consumes = "application/json")
+    public Result save(@RequestBody UserInfo userInfo) {
+        userInfoService.save(userInfo);
+        return Result.ok();
+    }
+
+}
+```
+
+
+
+## 4 使用 `token`
+
+- 通过 `token` 传递用户信息
+
+### 4.1 `JWT` 介绍
+
+- `JWT`（`Json Web Token`）是为了在网络应用环境间传递声明而执行的一种基于 `JSON` 的开放标准
+- `JWT` 的声明一般被用来在`身份提供者`和`服务提供者`间传递被认证的用户身份信息, 以便于从资源服务器获取资源
+
+    - 比如用来用户登录上
+
+- `JWT` 最重要的作用就是对 `token` 信息的`**防伪**`作用
+
+
+
+### 4.2 `JWT` 的原理
+
+- 一个 `JWT` 由三个部分组成: **公共部分、私有部分、签名部分**
+- 最后由这三组合进行 `base64` 编码得到 `JWT`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665907752555-6bc975da-fb99-47db-aa60-971174a6f900.png)
+
+
+
+#### 4.2.1 公共部分
+
+- 主要是该 `JWT` 的相关配置参数、比如签名的加密算法、格式类型、过期时间等等
+
+
+
+#### 4.2.2 私有部分
+
+- 用户自定义的内容, 根据实际要真正要封装的信息
+- `userInfo {用户的 id, 用户的昵称 nickName}`
+
+#### 4.2.3 签名部分
+
+- `SaltiP`: 当前服务器的 `IP` 地址! {`linux` 中配置代理服务器的 `IP`}
+- 主要用户对 `JWT` 生成字符串的时候, 进行加密{盐值}
+- `base64` 编码, 并不是加密, 只是把明文信息变成了不可见的字符串, 但是其实只要用一些工具就可以把 `base64` 编码解成明文, 所以不要在 `JWT` 中放入涉及私密的信息
+
+
+
+### 4.3 整合 `JWT`
+
+#### 4.3.1 在 `service_utils` 模块添加依赖
+
+```xml
+<dependencies>
+	<!-- 整合 JWT -->
+  <dependency>
+		<groupId>org.apache.httpcomponents</groupId>
+		<artifactId>httpclient</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>io.jsonwebtoken</groupId>
+		<artifactId>jjwt</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>joda-time</groupId>
+		<artifactId>joda-time</artifactId>
+	</dependency>
+</dependencies>
+```
+
+
+
+#### 4.3.2 新建 `JWT` 工具类
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666077489804-4f2d5a16-a6fe-48a2-a909-572ca3e2c45f.png)
+
+```java
+package com.atguigu.ggkt.util;
+
+import io.jsonwebtoken.*;
+import org.springframework.util.StringUtils;
+
+import java.util.Date;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/18 15:15
+ */
+public class JwtHelper {
+    /**
+     * token 字符串有效时间
+     */
+    private final static long TOKEN_EXPIRATION = 24 * 60 * 60 * 1000;
+
+    /**
+     * 加密编码秘钥
+     */
+    private final static String TOKEN_SIGN_KEY = "123456";
+
+    /**
+     * 根据 userid 和 username 生成 token 字符串
+     *
+     * @param userId   用户id
+     * @param userName 用户名
+     * @return {@link String}
+     */
+    public static String createToken(Long userId, String userName) {
+        return Jwts.builder()
+                // 设置token分类
+                .setSubject("GGKT-USER")
+                // token字符串有效时长
+                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRATION))
+                // 私有部分（用户信息）
+                .claim("userId", userId)
+                .claim("userName", userName)
+                // 根据秘钥使用加密编码方式进行加密，对字符串压缩
+                .signWith(SignatureAlgorithm.HS512, TOKEN_SIGN_KEY)
+                .compressWith(CompressionCodecs.GZIP)
+                .compact();
+    }
+
+    /**
+     * 从 token 字符串获取 userid
+     *
+     * @param token 令牌
+     * @return {@link Long}
+     */
+    public static Long getUserId(String token) {
+        if (StringUtils.isEmpty(token)) {
+            return null;
+        }
+
+        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(TOKEN_SIGN_KEY).parseClaimsJws(token);
+        Claims claims = claimsJws.getBody();
+        Integer userId = (Integer) claims.get("userId");
+        return userId.longValue();
+    }
+
+
+    /**
+     * 从 token 字符串获取 getUserName
+     *
+     * @param token 令牌
+     * @return {@link String}
+     */
+    public static String getUserName(String token) {
+        if (StringUtils.isEmpty(token)) {
+            return "";
+        }
+
+        Jws<Claims> claimsJws
+                = Jwts.parser().setSigningKey(TOKEN_SIGN_KEY).parseClaimsJws(token);
+        Claims claims = claimsJws.getBody();
+        return (String) claims.get("userName");
+    }
+
+    public static void main(String[] args) {
+        String token = JwtHelper.createToken(1L, "lucy");
+        System.out.println(token);
+        System.out.println(JwtHelper.getUserId(token));
+        System.out.println(JwtHelper.getUserName(token));
+    }
+}
+```
+
+
+
+## 5 新建前端项目
+
+- `vue create vue-mobile`
+
+    - 选择  `**Babel**`**(单选框,** `**空格**`**选择)**
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665926383097-228966ec-e14b-4953-b23b-8e7693f51438.png)
+
+- 选择 `In dedicated config files`（对应的配置单独生成文件）
+- 选择 `n` 是否保存配置
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665926571053-04f56534-49bb-4dca-baff-c86a0614f766.png)
+
+- `public` 中的静态资源会被复制到输出目录中
+- `src` 源代码
+
+    - `assets` 静态文件
+    - `components` 组件
+
+- `.browerslistrc` 浏览器相关支持情况
+- `.gitgnore` GIT 忽略的文件
+- `babel.config.js` ES 语法转换
+
+
+
+### 1.1 使用 `vue ui`
+
+#### 1.1.1 导入项目
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665927051783-c588e927-64f3-4ac2-8cce-1a72763334af.png)
+
+
+
+### 1.2 新建代码规范
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665927704976-727bd13c-a614-47cc-b9c8-83edc3f56c38.png)
+
+```latex
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 2
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+```
+
+
+
+### 1.3 路由
+
+#### 1.3.1 安装路由
+
+```
+npm install vue-router@3.0.2 --save
+```
+
+
+
+#### 1.3.2 新建路由配置
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665927841440-1dd8c41a-1b20-483d-8fb8-83c1ca4eb577.png)
+
+```javascript
+import vue from 'vue'
+import VueRouter from 'vue-router'
+
+const Home = () => import('../views/home/Home')
+
+// 1. 安装插件
+vue.use(VueRouter);
+
+// 2. 创建 router
+const routes = [
+  {
+    path: '',
+    redirect: '/home'
+  },
+  {
+    path: '/home',
+    component: Home
+  }
+]
+
+const router = new VueRouter({
+  routes,
+  mode: 'history'
+})
+
+export default router;
+```
+
+
+
+#### 1.3.3 新建页面
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665927957445-c0e22daf-84fd-4a8a-b9da-b1c021db398e.png)
+
+```vue
+<template>
+  <h1>欢迎来到硅谷课堂公众号测试平台</h1>
+</template>
+
+<script>
+export default {
+  name: "Home"
+}
+</script>
+
+<style scoped>
+
+</style>
+```
+
+
+
+#### 1.3.4 启用路由
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1665928030191-ece0c2e4-d6b4-446e-a36a-0394b5203a9c.png)
+
+```javascript
+import Vue from 'vue'
+import App from './App.vue'
+import router from "./router";
+
+Vue.config.productionTip = false
+
+new Vue({
+  render: h => h(App),
+  router,
+}).$mount('#app')
+```
+
+
+
+### 5.4 引导用户进入授权页面同意授权
+
+#### 5.4.1 `App.js`
+
+```vue
+<template>
+  <div id="app">
+    <!-- 路由出口 -->
+    <!-- 路由匹配到的组件将渲染在这里 -->
+    <router-view></router-view>
+  </div>
+</template>
+
+<script>
+
+export default {
+  name: 'App',
+  created() {
+    this.wechatLogin();
+  },
+  methods: {
+    wechatLogin() {
+      // 处理微信授权登录
+      let token = this.getQueryString('token') || '';
+      if (token !== '') {
+        window.localStorage.setItem('token', token);
+      }
+
+      // 所有页面都必须登录，两次调整登录, 这里与接口返回 208 状态
+      token = window.localStorage.getItem('token') || '';
+      if (token === '') {
+        const url = window.location.href.replace('#', 'guiguketan');
+        window.location = 'http://175.178.174.83/api/wechat/redirect/authorize?returnUrl=' + url;
+      }
+
+      console.log('token2: ' + window.localStorage.getItem('token'));
+    },
+    getQueryString(paramName) {
+      if (window.location.href.indexOf('?') === -1) return '';
+
+      let searchString = window.location.href.split('?')[1];
+      let i, val, params = searchString.split("&");
+
+      for (i = 0; i < params.length; i++) {
+        val = params[i].split("=");
+        if (val[0] === paramName) {
+          return val[1];
+        }
+      }
+
+      return '';
+    }
+  }
+}
+</script>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
+```
+
+
+
+## 6 测试
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666078979935-c29a14a9-0606-403e-823e-a5c556876cb1.png)
+
+```bash
+2022-10-18 15:07:53.061  INFO 7670 --- [nio-8305-exec-5] c.a.g.w.controller.WechatController      : redirect_uri: https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc2d7509ddd5c9418&redirect_uri=http%3A%2F%2F175.178.174.83%2Fapi%2Fwechat%2Fredirect%2FuserInfo&response_type=code&scope=snsapi_userinfo&state=http%3A%2F%2F175.178.174.83%2F%23%2Fhome&connect_redirect=1#wechat_redirect
+2022-10-18 15:07:54.726  INFO 7670 --- [nio-8305-exec-6] c.a.g.w.controller.WechatController      : {"city":"","country":"","headImgUrl":"https://thirdwx.qlogo.cn/mmopen/vi_32/rq1WRl9DdCMBX2F5dWkdDVHlI4rvuhjIOuosfmhszqcPnyRnF0oYQuYJ4NNv7PCUEIoL2iaoHjJbhticSaUfpDqA/132","nickname":"陈江林","openid":"oWyia6Mig1f8x9QOcJigHDNHVr-I","privileges":[],"province":"","sex":0}
+2022-10-18 15:07:54.726  INFO 7670 --- [nio-8305-exec-6] c.a.g.w.controller.WechatController      : state: http://175.178.174.83/#/home
+```

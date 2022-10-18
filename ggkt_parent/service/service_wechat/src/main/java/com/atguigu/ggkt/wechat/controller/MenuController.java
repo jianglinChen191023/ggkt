@@ -35,7 +35,7 @@ public class MenuController {
     }
 
     @ApiOperation("公众号菜单删除")
-    @GetMapping("/removeMenu")
+    @DeleteMapping("/removeMenu")
     public Result removeMenu() {
         menuService.removeMenu();
         return Result.ok();
