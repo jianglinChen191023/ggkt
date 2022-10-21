@@ -66,10 +66,7 @@ export default {
           this.refreshing = false;
         }
 
-        for (let i = 0; i < response.data.records.length; i++) {
-          this.list.push(response.data.records[i]);
-        }
-
+        this.list = response.data.records;
         this.pages = response.data.totalPage;
         this.loading = false;
         if (this.pageNo >= this.pages) {

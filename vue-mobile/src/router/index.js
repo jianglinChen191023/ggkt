@@ -26,6 +26,12 @@ const routes = [
     path: '/course/detail/:courseId',
     name: 'courseDetail',
     component: () => import('../views/course/Detail')
+  },
+  {
+    // 视频播放
+    path: '/course/play/:courseId',
+    name: 'coursePlay',
+    component: () => import('../views/course/Play')
   }
 ]
 

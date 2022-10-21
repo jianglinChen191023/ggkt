@@ -1,5 +1,7 @@
 package com.atguigu.ggkt.vod.service;
 
+import java.util.Map;
+
 /**
  * 腾讯云点播 服务类
  *
@@ -22,4 +24,11 @@ public interface VodService {
      */
     void removeByFileId(String fileId);
 
+    /**
+     * 根据 id 获取对应的视频
+     *
+     * @param videoId  视频id
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    Map<String, Object> getPlayAuth(Long videoId);
 }
