@@ -45,6 +45,7 @@ public class WechatController {
      */
     @RequestMapping("/authorize")
     public String authorize(@RequestParam String returnUrl) {
+        log.info("returnUrl: " + returnUrl);
         // 构造 oauth2 授权的 url 连接
         String url = wxService.getOAuth2Service()
                 .buildAuthorizationUrl(wxProperties.getUserInfoUrl(),
@@ -65,6 +66,7 @@ public class WechatController {
      */
     @RequestMapping("/userInfo")
     public String userInfo(@RequestParam String code, @RequestParam String state) {
+        log.info("state: " + state);
         try {
             // 第二步：通过 code 换取网页授权 access_token
             WxOAuth2AccessToken accessToken = wxService.getOAuth2Service().getAccessToken(code);
@@ -80,7 +82,7 @@ public class WechatController {
             // 根据 openid 获取用户信息
 
             Result<UserInfo> result = userInfoFeignClient.getUserInfoByOpenId(openid);
-            if(result.getMessage().equals(Result.FAILED)){
+            if (result.getMessage().equals(Result.FAILED)) {
                 return null;
             }
 
@@ -109,7 +111,6 @@ public class WechatController {
             e.printStackTrace();
         }
 
-        log.info("state: " + state);
         return "null";
     }
 

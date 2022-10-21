@@ -19,4 +19,25 @@
         WHERE c.id = #{id}
     </select>
 
+    <select id="selectCourseVoById" resultType="com.atguigu.ggkt.vo.vod.CourseVo">
+        SELECT c.id,
+               c.title,
+               c.lesson_num   AS lessonNum,
+               c.price,
+               c.cover,
+               c.buy_count    AS buyCount,
+               c.view_count   AS viewCount,
+               c.status,
+               c.publish_time AS publishTime,
+               c.teacher_id   as teacherId,
+               t.name         AS teacherName,
+               s1.title       AS subjectParentTitle,
+               s2.title       AS subjectTitle
+        FROM course c
+                 LEFT JOIN teacher t ON c.teacher_id = t.id
+                 LEFT JOIN subject s1 ON c.subject_parent_id = s1.id
+                 LEFT JOIN subject s2 ON c.subject_id = s2.id
+        WHERE c.id = #{id}
+    </select>
+
 </mapper>

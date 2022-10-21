@@ -73,4 +73,22 @@ public interface CourseService extends IService<Course> {
      */
     void removeCourseById(Long id);
 
+
+    /**
+     * 根据课程分类 id 查询课程列表（分页）
+     *
+     * @param subjectId 课程分类 id
+     * @param page      当前页码
+     * @param limit     每页记录数
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    Map<String, Object> findPage(Long subjectId, Long page, Long limit);
+
+    /**
+     * 根据课程 id 查询课程详情
+     *
+     * @param courseId 课程 id
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    Map<String, Object> getInfoById(Long courseId);
 }

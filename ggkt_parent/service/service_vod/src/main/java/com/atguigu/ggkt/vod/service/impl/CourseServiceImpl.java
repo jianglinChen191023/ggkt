@@ -4,12 +4,11 @@ import com.atguigu.ggkt.model.vod.Course;
 import com.atguigu.ggkt.model.vod.CourseDescription;
 import com.atguigu.ggkt.model.vod.Subject;
 import com.atguigu.ggkt.model.vod.Teacher;
-import com.atguigu.ggkt.vo.vod.CourseFormVo;
-import com.atguigu.ggkt.vo.vod.CoursePublishVo;
-import com.atguigu.ggkt.vo.vod.CourseQueryVo;
+import com.atguigu.ggkt.vo.vod.*;
 import com.atguigu.ggkt.vod.mapper.CourseMapper;
 import com.atguigu.ggkt.vod.service.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
@@ -188,6 +187,85 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         courseDescriptionService.removeById(id);
         // 根据课程 id 删除课程
         baseMapper.deleteById(id);
+    }
+
+    @Override
+    public Map<String, Object> findPage(Long subjectId, Long page, Long limit) {
+        // 创建分页对象
+        IPage<Course> coursePage = new Page<>(page, limit);
+        // 创建条件对象
+        LambdaQueryWrapper<Course> wrapper = new LambdaQueryWrapper();
+        wrapper.eq(Course::getSubjectParentId, subjectId);
+        // 分页查询
+        IPage<Course> courseIPage = baseMapper.selectPage(coursePage, wrapper);
+
+
+        // 每页数据集合
+        List<Course> records = courseIPage.getRecords();
+        records.stream().forEach(course -> {
+            // 封装其他数据
+            // 根据讲师 id 获取讲师对象
+            Teacher teacher = teacherService.getById(course.getTeacherId());
+            if (teacher != null) {
+                course.getParam().put("teacherName", teacher.getName());
+            }
+
+            // 一级分类标题
+            Subject subject = subjectService.getById(course.getSubjectParentId());
+            if (subject != null) {
+                course.getParam().put("subjectParentTitle", subject.getTitle());
+            }
+
+            // 二级分类标题
+            Subject subjectTwo = subjectService.getById(course.getSubjectId());
+            if (subjectTwo != null) {
+                course.getParam().put("subjectTitle", subjectTwo.getTitle());
+            }
+        });
+
+        // 总记录数
+        long totalCount = courseIPage.getTotal();
+        // 总页数
+        long totalPage = courseIPage.getPages();
+        // 当前页
+        long currentPage = courseIPage.getCurrent();
+        // 每页记录数
+        long size = courseIPage.getSize();
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("totalCount", totalCount);
+        map.put("totalPage", totalPage);
+        map.put("records", records);
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> getInfoById(Long courseId) {
+        Course course = baseMapper.selectById(courseId);
+        if (course == null) {
+            return null;
+        }
+
+        course.setViewCount(course.getViewCount() + 1);
+        baseMapper.updateById(course);
+
+        // 根据课程 id 查询课程详情
+        CourseVo courseVo = baseMapper.selectCourseVoById(courseId);
+        // 课程章节小节数据
+        List<ChapterVo> chapterVoList = chapterService.getTreeList(courseId);
+        // 课程描述信息
+        CourseDescription courseDescription = courseDescriptionService.getById(courseId);
+        // 查询所属讲师信息
+        Teacher teacher = teacherService.getById(course.getTeacherId());
+
+        // 创建 map 集合, 封装并返回数据
+        Map<String, Object> map = new HashMap<>(2);
+        map.put("courseVo", courseVo);
+        map.put("chapterVoList", chapterVoList);
+        map.put("description", null != courseDescription ? courseDescription.getDescription() : "");
+        map.put("teacher", teacher);
+        map.put("isBuy", false);
+        return map;
     }
 
 }

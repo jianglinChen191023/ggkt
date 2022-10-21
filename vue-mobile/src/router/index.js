@@ -1,26 +1,36 @@
 import vue from 'vue'
 import VueRouter from 'vue-router'
 
-const Home = () => import('../views/home/Home')
-
 // 1. 安装插件
 vue.use(VueRouter);
 
 // 2. 创建 router
 const routes = [
   {
-    path: '',
+    path: '/',
     redirect: '/home'
   },
   {
     path: '/home',
-    component: Home
+    name: 'home',
+    component: () => import('../views/home/Home')
+  },
+  {
+    // 课程列表
+    path: '/course/list/:subjectId',
+    name: 'courseList',
+    component: () => import('../views/course/List')
+  },
+  {
+    // 课程详情
+    path: '/course/detail/:courseId',
+    name: 'courseDetail',
+    component: () => import('../views/course/Detail')
   }
 ]
 
 const router = new VueRouter({
-  routes,
-  mode: 'history'
+  routes
 })
 
 export default router;

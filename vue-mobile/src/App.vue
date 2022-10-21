@@ -7,13 +7,17 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 
 export default {
   name: 'App',
   created() {
-    this.wechatLogin();
+    // this.wechatLogin();
   },
   methods: {
+    ...mapGetters({
+      wechatPath: 'wechatPath'
+    }),
     wechatLogin() {
       // 处理微信授权登录
       let token = this.getQueryString('token') || '';
@@ -24,8 +28,8 @@ export default {
       // 所有页面都必须登录，两次调整登录, 这里与接口返回 208 状态
       token = window.localStorage.getItem('token') || '';
       if (token === '') {
-        const url = window.location.href.replace('#', 'guiguketan');
-        window.location = 'http://175.178.174.83/api/wechat/redirect/authorize?returnUrl=' + url;
+        const url = window.location.href.replace('#', 'guiguketan')
+        window.location = this.wechatPath + url;
       }
 
       console.log('token2: ' + window.localStorage.getItem('token'));

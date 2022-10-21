@@ -14,7 +14,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/glkt_wechat?characterEncoding=utf-8&useSSL=false
     username: root
-    password: 12345678
+    password: '@root1314'
   #返回json的全局时间格式
   jackson:
     date-format=yyyy-MM-dd HH:mm:ss
@@ -35,7 +35,7 @@ wx:
   wx-mp-template-message-object: { "2WOzacjuyXuTWESj17xl9TwHBg0gAYlK5aG9TJj0GkM", "http://ggkt2.vipgz1.91tunnel.com/#/pay/" }
   # 授权回调获取用户信息的接口地址
   user-info-url: "https://www.th668.com/api/wechat/redirect/userInfo"
-  view-url: "http://www.th668.com/#"
+  view-url: "http://175.178.174.83/#"
   mp:
     # 公众号的 appid
     app-id: wxc2d7509ddd5c9418
