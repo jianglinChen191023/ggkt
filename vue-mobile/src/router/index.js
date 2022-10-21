@@ -29,7 +29,7 @@ const routes = [
   },
   {
     // 视频播放
-    path: '/course/play/:courseId',
+    path: '/course/play/:courseId/:videoId',
     name: 'coursePlay',
     component: () => import('../views/course/Play')
   }

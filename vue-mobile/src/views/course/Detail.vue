@@ -105,7 +105,7 @@ export default {
     // 视频播放
     play(video) {
       const videoId = video.id;
-      this.$.router.push({path: '/course/play/' + videoId})
+      this.$router.push({path: '/course/play/' + this.courseId + "/" + videoId})
     },
     see() {
       this.$router.push({path: '/play/' + this.courseId + '/0'})

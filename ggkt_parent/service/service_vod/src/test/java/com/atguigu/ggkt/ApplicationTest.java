@@ -1,6 +1,7 @@
 package com.atguigu.ggkt;
 
 import com.atguigu.ggkt.vod.service.CourseService;
+import com.atguigu.ggkt.vod.service.VodService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +18,9 @@ public class ApplicationTest {
     @Autowired
     private CourseService courseService;
 
+    @Autowired
+    private VodService vodService;
+
     @Test
     public void test() {
         System.out.println(courseService.findPage(1L, 1L, 10L).get("records"));
@@ -26,6 +30,11 @@ public class ApplicationTest {
     public void getInfoById() {
         Map<String, Object> infoById = courseService.getInfoById(4L);
         System.out.println("infoById: "+ infoById);
+    }
+
+    @Test
+    public void getPlayAuth() {
+        System.out.println(vodService.getPlayAuth(6L));
     }
 
 }

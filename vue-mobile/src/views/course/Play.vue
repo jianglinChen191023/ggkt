@@ -126,7 +126,7 @@ export default {
     play(data) {
       var player = TCPlayer("player-container-id", { /**player-container-id 为播放器容器ID，必须与html中一致*/
         fileID: data.videoSourceId, /**请传入需要播放的视频fileID 必须 */
-        appID: data.appId, /**请传入点播账号的子应用appID 必须 */
+        appID: data.appid, /**请传入点播账号的子应用appID 必须 */
         psign: ""
         /**其他参数请在开发文档中查看 */
       });
