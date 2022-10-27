@@ -12,12 +12,12 @@ import {mapGetters} from 'vuex'
 export default {
   name: 'App',
   created() {
-    // this.wechatLogin();
+    this.wechatLogin();
+  },
+  computed: {
+    ...mapGetters(['wechatPath'])
   },
   methods: {
-    ...mapGetters({
-      wechatPath: 'wechatPath'
-    }),
     wechatLogin() {
       // 处理微信授权登录
       let token = this.getQueryString('token') || '';

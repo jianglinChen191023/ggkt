@@ -23,4 +23,12 @@ public interface CourseFeignClient {
     @GetMapping("/api/vod/course/inner/findByKeyword/{keyword}")
     List<Course> findByKeyword(@PathVariable String keyword);
 
+    /**
+     * 根据ID查询课程
+     *
+     * @param courseId 课程 id
+     * @return {@link Course}
+     */
+    @GetMapping("/api/vod/course/inner/getById/{courseId}")
+    Course getById(@PathVariable Long courseId);
 }

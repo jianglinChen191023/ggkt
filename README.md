@@ -12661,7 +12661,7 @@ mybatis-plus:
 ### 1.6 创建测试类 `OrderApplicationTest`
 
 ```java
-package con.atguigu.ggkt.order;
+package com.atguigu.ggkt.order;
 
 /**
  * @author 陈江林

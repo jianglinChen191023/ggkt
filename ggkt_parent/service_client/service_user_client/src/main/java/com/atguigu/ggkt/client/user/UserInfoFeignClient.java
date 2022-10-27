@@ -21,7 +21,7 @@ public interface UserInfoFeignClient {
      * @return {@link UserInfo}
      */
     @GetMapping("/admin/user/userInfo/inner/getById/{id}")
-    UserInfo getById(@PathVariable Long id);
+    Result<UserInfo> getById(@PathVariable Long id);
 
     /**
      * 根据 openid 获取用户信息

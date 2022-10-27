@@ -1,7 +1,9 @@
 package com.atguigu.ggkt.order.service;
 
 import com.atguigu.ggkt.model.order.OrderInfo;
+import com.atguigu.ggkt.vo.order.OrderFormVo;
 import com.atguigu.ggkt.vo.order.OrderInfoQueryVo;
+import com.atguigu.ggkt.vo.order.OrderInfoVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.Map;
@@ -26,4 +28,26 @@ public interface OrderInfoService extends IService<OrderInfo> {
      */
     Map<String, Object> selectOrderInfoPage(Long page, Long limit, OrderInfoQueryVo orderInfoQueryVo);
 
+    /**
+     * 新增点播课程订单
+     *
+     * @param orderFormVo
+     * @return {@link Long} 返回订单 id
+     */
+    Long submitOrder(OrderFormVo orderFormVo);
+
+    /**
+     * 根据 id 获取订单信息
+     *
+     * @param id id
+     * @return {@link OrderInfoVo}
+     */
+    OrderInfoVo getOrderInfoVoById(Long id);
+
+    /**
+     * 更新订单状态 - 已支付
+     *
+     * @param out_trade_no 商户订单号
+     */
+    void updateOrderStatus(String out_trade_no);
 }

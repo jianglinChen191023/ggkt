@@ -9,7 +9,9 @@ export default new Vuex.Store({
     wechatPath: "http://175.178.174.83/api/wechat/redirect/authorize?returnUrl="
   },
   getters: {
-    wechatPath: state => state.wechatPath
+    wechatPath: state => {
+      return state.wechatPath
+    }
   },
   mutations: {},
   actions: {},

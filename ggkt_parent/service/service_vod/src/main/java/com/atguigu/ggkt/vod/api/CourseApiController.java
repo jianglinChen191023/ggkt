@@ -32,6 +32,14 @@ public class CourseApiController {
     @Autowired
     private CourseService courseService;
 
+    @ApiOperation("根据ID查询课程")
+    @GetMapping("/inner/getById/{courseId}")
+    public Course getById(
+            @ApiParam(value = "课程ID", required = true)
+            @PathVariable Long courseId){
+        return courseService.getById(courseId);
+    }
+
     @ApiOperation("根据关键字查询课程")
     @GetMapping("/inner/findByKeyword/{keyword}")
     public List<Course> findByKeyword(

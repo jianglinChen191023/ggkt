@@ -4,9 +4,11 @@ import com.atguigu.ggkt.activity.mapper.CouponInfoMapper;
 import com.atguigu.ggkt.activity.service.CouponInfoService;
 import com.atguigu.ggkt.activity.service.CouponUseService;
 import com.atguigu.ggkt.client.user.UserInfoFeignClient;
+import com.atguigu.ggkt.exception.GgktException;
 import com.atguigu.ggkt.model.activity.CouponInfo;
 import com.atguigu.ggkt.model.activity.CouponUse;
 import com.atguigu.ggkt.model.user.UserInfo;
+import com.atguigu.ggkt.result.Result;
 import com.atguigu.ggkt.vo.activity.CouponUseQueryVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -73,7 +76,12 @@ public class CouponInfoServiceImpl extends ServiceImpl<CouponInfoMapper, CouponI
             Long userId = couponUse.getUserId();
             if (!StringUtils.isEmpty(userId)) {
                 // 调用远程接口获取用户信息
-                UserInfo userInfo = userInfoFeignClient.getById(userId);
+                Result<UserInfo> result = userInfoFeignClient.getById(userId);
+                if (result.getMessage().equals(Result.FAILED)) {
+                    throw new GgktException(result.getCode(), result.getMessage());
+                }
+
+                UserInfo userInfo = result.getData();
                 if (userInfo != null) {
                     couponUse.getParam().put("nickName", userInfo.getNickName());
                     couponUse.getParam().put("phone", userInfo.getPhone());
@@ -82,5 +90,15 @@ public class CouponInfoServiceImpl extends ServiceImpl<CouponInfoMapper, CouponI
         });
 
         return page;
+    }
+
+    @Override
+    public void updateCouponInfoUseStatus(Long couponUseId, Long orderId) {
+        CouponUse couponUse = new CouponUse();
+        couponUse.setId(couponUseId);
+        couponUse.setOrderId(orderId);
+        couponUse.setCouponStatus("1");
+        couponUse.setUsingTime(new Date());
+        couponUseService.updateById(couponUse);
     }
 }

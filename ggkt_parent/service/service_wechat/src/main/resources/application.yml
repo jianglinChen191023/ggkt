@@ -34,12 +34,17 @@ mybatis-plus:
 wx:
   wx-mp-template-message-object: { "2WOzacjuyXuTWESj17xl9TwHBg0gAYlK5aG9TJj0GkM", "http://ggkt2.vipgz1.91tunnel.com/#/pay/" }
   # 授权回调获取用户信息的接口地址
-  user-info-url: "https://www.th668.com/api/wechat/redirect/userInfo"
+  user-info-url: "http://175.178.174.83/api/wechat/redirect/userInfo"
   view-url: "http://175.178.174.83/#"
   mp:
-    # 公众号的 appid
+    # 测试公众号的 appid
     app-id: wxc2d7509ddd5c9418
-    # 公众号的 appsecret
+    # 测试公众号的 appsecret
     secret: 92197f5f41d968266f1ba20b12293574
+
+    # 尚硅谷支付公众号的 appid
+    # app-id: wxf913bfa3a2c7eeeb
+    # 尚硅谷支付公众号的 appsecret
+    # secret: cd360d429e5c8db0c638d5ef9df74f6d
     # 公众号的 token
     token: ggkt
