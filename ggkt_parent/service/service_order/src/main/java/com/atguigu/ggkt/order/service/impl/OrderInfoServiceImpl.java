@@ -154,7 +154,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
             throw new GgktException(20001, "课程不存在");
         }
 
-        log.info("CS----------------");
+        log.info("CS----------------" + userId);
         // 根据用户 id 查询用户信息
         Result<UserInfo> result = userInfoFeignClient.getById(userId);
         if (result.getMessage().equals(Result.FAILED)) {

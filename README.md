@@ -601,7 +601,88 @@
         - [5.4 引导用户进入授权页面同意授权](#54-引导用户进入授权页面同意授权)
             - [5.4.1 `App.js`](#541-appjs)
     - [6 测试](#6-测试)
-    
+
+- [十五 点播课程模块-微信支付](#十五-点播课程模块-微信支付)
+- [1 课程列表和详情](#1-课程列表和详情)
+  - [1.1 目标](#11-目标)
+  - [1.2 接口](#12-接口)
+    - [1.2.1 追加代码 `CourseApiController`控制类](#121-追加代码-courseapicontroller控制类)
+    - [1.2.2 服务接口](#122-服务接口)
+    - [1.2.3 服务实现类](#123-服务实现类)
+    - [1.2.4 `Mapper` 接口](#124-mapper-接口)
+    - [1.2.5 `Mapper.xml`](#125-mapperxml)
+  - [1.3 前端](#13-前端)
+    - [1.3.1 路由](#131-路由)
+    - [1.3.2 页面](#132-页面)
+    - [1.3.3 使用  `Vant` 移动组件库](#133-使用--vant-移动组件库)
+    - [1.3.4 使用 `scss`](#134-使用-scss)
+    - [1.3.5 网络请求 `axios`](#135-网络请求-axios)
+    - [1.3.6 `store`](#136-store)
+    - [](#)
+    - [1.3.7 `API`](#137-api)
+    - [1.3.8 `App.vue` 使用 `store`](#138-appvue-使用-store)
+  - [2 点播视频播放](#2-点播视频播放)
+    - [2.1 目标](#21-目标)
+    - [2.2 接口](#22-接口)
+      - [2.2.1 新建 `VodApiController` 控制类](#221-新建-vodapicontroller-控制类)
+      - [2.2.2 服务接口](#222-服务接口)
+      - [2.2.3 服务实现类](#223-服务实现类)
+      - [2.2.4 `application.yml` 配置](#224-applicationyml-配置)
+    - [2.3 前端](#23-前端)
+      - [2.3.1 `API` 新建 `vod.js`](#231-api-新建-vodjs)
+      - [2.3.2 修改 `Detail.vue` 中 `play` 方法](#232-修改-detailvue-中-play-方法)
+      - [2.3.3 新建页面 `play.vue`](#233-新建页面-playvue)
+      - [2.3.4 对应路由](#234-对应路由)
+      - [2.3.5 引入 `js` `css`](#235-引入-js-css)
+  - [3 付费观看点播课程](#3-付费观看点播课程)
+    - [3.1 目标](#31-目标)
+      - [3.1.1 思路](#311-思路)
+    - [3.2 接口](#32-接口)
+      - [3.2.1 新建 `OrderInfoApiController` 控制类](#321-新建-orderinfoapicontroller-控制类)
+      - [3.2.2 服务接口](#322-服务接口)
+      - [3.2.3 服务实现](#323-服务实现)
+      - [3.2.4 新建 `OrderNoUtils`](#324-新建-ordernoutils)
+      - [3.2.5 引入依赖](#325-引入依赖)
+      - [3.2.6 主启动类添加注解](#326-主启动类添加注解)
+    - [3.3 远程接口](#33-远程接口)
+      - [3.3.1 根据 `ID` 查询课程](#331-根据-id-查询课程)
+      - [3.3.2 优惠券远程接口](#332-优惠券远程接口)
+    - [3.4 `token` 获取当前用户 `id`](#34-token-获取当前用户-id)
+      - [3.4.1 添加依赖](#341-添加依赖)
+      - [3.4.2 新建 `LoginWebMvcConfigurerImpl`](#342-新建-loginwebmvcconfigurerimpl)
+      - [3.4.3 新建 `UserLoginInterceptor` 拦截器](#343-新建-userlogininterceptor-拦截器)
+      - [3.4.4 新建 `AuthContextHolder`](#344-新建-authcontextholder)
+      - [3.4.5 前端实现 <已完成>](#345-前端实现-已完成)
+  - [4 微信支付](#4-微信支付)
+    - [4.1 接口文档](#41-接口文档)
+    - [4.2 公众号配置](#42-公众号配置)
+      - [4.2.1 绑定域名](#421-绑定域名)
+      - [4.2.2 商户平台配置支付目录](#422-商户平台配置支付目录)
+    - [4.3 创建订单支付接口](#43-创建订单支付接口)
+      - [4.3.1 新建 `WXPayController`](#431-新建-wxpaycontroller)
+      - [4.3.2 新建服务接口](#432-新建服务接口)
+      - [4.3.3 新建服务实现](#433-新建服务实现)
+      - [4.3.4 新建`HttpClientUtils`](#434-新建httpclientutils)
+    - [4.4 引入依赖](#44-引入依赖)
+    - [4.5 获取正式公众号里自己微信的`openid`（示例）](#45-获取正式公众号里自己微信的openid示例)
+      - [4.5.1 配置文件修改为支付公众号](#451-配置文件修改为支付公众号)
+      - [4.5.2 新建控制类](#452-新建控制类)
+    - [4.6 路由和对应页面和对应的`API`](#46-路由和对应页面和对应的api)
+      - [4.6.1 支付下单页面 `Trade.vue`](#461-支付下单页面-tradevue)
+      - [4.6.2 支付页面 `Pay.vue`](#462-支付页面-payvue)
+      - [4.6.3 `order.js`](#463-orderjs)
+      - [4.6.4 `coupon.js`](#464-couponjs)
+    - [4.7 订单详情接口](#47-订单详情接口)
+      - [4.7.1 追加代码 控制类](#471-追加代码-控制类)
+      - [4.7.2 服务接口类](#472-服务接口类)
+      - [4.7.3 服务实现类](#473-服务实现类)
+    - [4.8 查询支付结果](#48-查询支付结果)
+      - [4.8.1 追加代码 控制类](#481-追加代码-控制类)
+      - [4.8.2 服务接口类](#482-服务接口类)
+      - [4.8.3 服务实现类](#483-服务实现类)
+      - [4.8.4 服务接口类](#484-服务接口类)
+      - [4.8.5 服务实现类](#485-服务实现类)
+
 # 一 硅谷课堂
 
 ## 项目概述
@@ -17774,4 +17855,3100 @@ export default {
 2022-10-18 15:07:53.061  INFO 7670 --- [nio-8305-exec-5] c.a.g.w.controller.WechatController      : redirect_uri: https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc2d7509ddd5c9418&redirect_uri=http%3A%2F%2F175.178.174.83%2Fapi%2Fwechat%2Fredirect%2FuserInfo&response_type=code&scope=snsapi_userinfo&state=http%3A%2F%2F175.178.174.83%2F%23%2Fhome&connect_redirect=1#wechat_redirect
 2022-10-18 15:07:54.726  INFO 7670 --- [nio-8305-exec-6] c.a.g.w.controller.WechatController      : {"city":"","country":"","headImgUrl":"https://thirdwx.qlogo.cn/mmopen/vi_32/rq1WRl9DdCMBX2F5dWkdDVHlI4rvuhjIOuosfmhszqcPnyRnF0oYQuYJ4NNv7PCUEIoL2iaoHjJbhticSaUfpDqA/132","nickname":"陈江林","openid":"oWyia6Mig1f8x9QOcJigHDNHVr-I","privileges":[],"province":"","sex":0}
 2022-10-18 15:07:54.726  INFO 7670 --- [nio-8305-exec-6] c.a.g.w.controller.WechatController      : state: http://175.178.174.83/#/home
+```
+
+# 十五 点播课程模块-微信支付
+
+```
+git checkout -b 15.0.0_course
+```
+
+# 1 课程列表和详情
+
+### 1.1 目标
+
+- 点击公众号菜单`课程->后端开发`, 显示课程列表
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666105605108-3c15e627-7dbe-467e-86fb-fdb65deff302.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666105676270-09aa7542-d4e0-4772-b5f9-29df4250fd24.png)
+
+- 点击`去看看`, 显示课程详情
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666105706038-df278072-8742-494d-bbd1-7a91a4eab8fb.png)
+
+### 1.2 接口
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666322582409-29645060-d6be-4744-88e3-37cbc40bd699.png)
+
+#### 1.2.1 追加代码 `CourseApiController`控制类
+
+```java
+    @ApiOperation("根据课程分类 id 查询课程列表（分页）")
+    @GetMapping("/{subjectId}/{page}/{limit}")
+    public Result<Map<String, Object>> findPageCourse(
+            @ApiParam(value = "课程一级分类 id", required = true)
+            @PathVariable Long subjectId,
+            @ApiParam(value = "当前页码", required = true)
+            @PathVariable Long page,
+            @ApiParam(value = "每页记录数", required = true)
+            @PathVariable Long limit
+    ) {
+        Map<String, Object> map = courseService.findPage(subjectId, page, limit);
+        return Result.ok(map);
+    }
+
+    @ApiOperation("根据课程 id 查询课程详情")
+    @GetMapping("/getInfo/{courseId}")
+    public Result<Map<String, Object>> getInfo(
+            @ApiParam(value = "课程 id", required = true)
+            @PathVariable Long courseId
+    ) {
+        Map<String, Object> map = courseService.getInfoById(courseId);
+        return Result.ok(map);
+    }
+```
+
+
+
+#### 1.2.2 服务接口
+
+```java
+    /**
+     * 根据课程分类 id 查询课程列表（分页）
+     *
+     * @param subjectId 课程分类 id
+     * @param page      当前页码
+     * @param limit     每页记录数
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    Map<String, Object> findPage(Long subjectId, Long page, Long limit);
+
+    /**
+     * 根据课程 id 查询课程详情
+     *
+     * @param courseId 课程 id
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    Map<String, Object> getInfoById(Long courseId);
+```
+
+
+
+#### 1.2.3 服务实现类
+
+```java
+    @Override
+    public Map<String, Object> findPage(Long subjectId, Long page, Long limit) {
+        // 创建分页对象
+        IPage<Course> coursePage = new Page<>(page, limit);
+        // 创建条件对象
+        LambdaQueryWrapper<Course> wrapper = new LambdaQueryWrapper();
+        wrapper.eq(Course::getSubjectParentId, subjectId);
+        // 分页查询
+        IPage<Course> courseIPage = baseMapper.selectPage(coursePage, wrapper);
+
+
+        // 每页数据集合
+        List<Course> records = courseIPage.getRecords();
+        records.stream().forEach(course -> {
+            // 封装其他数据
+            // 根据讲师 id 获取讲师对象
+            Teacher teacher = teacherService.getById(course.getTeacherId());
+            if (teacher != null) {
+                course.getParam().put("teacherName", teacher.getName());
+            }
+
+            // 一级分类标题
+            Subject subject = subjectService.getById(course.getSubjectParentId());
+            if (subject != null) {
+                course.getParam().put("subjectParentTitle", subject.getTitle());
+            }
+
+            // 二级分类标题
+            Subject subjectTwo = subjectService.getById(course.getSubjectId());
+            if (subjectTwo != null) {
+                course.getParam().put("subjectTitle", subjectTwo.getTitle());
+            }
+        });
+
+        // 总记录数
+        long totalCount = courseIPage.getTotal();
+        // 总页数
+        long totalPage = courseIPage.getPages();
+        // 当前页
+        long currentPage = courseIPage.getCurrent();
+        // 每页记录数
+        long size = courseIPage.getSize();
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("totalCount", totalCount);
+        map.put("totalPage", totalPage);
+        map.put("records", records);
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> getInfoById(Long courseId) {
+        Course course = baseMapper.selectById(courseId);
+        if (course == null) {
+            return null;
+        }
+
+        course.setViewCount(course.getViewCount() + 1);
+        baseMapper.updateById(course);
+
+        // 根据课程 id 查询课程详情
+        CourseVo courseVo = baseMapper.selectCourseVoById(courseId);
+        // 课程章节小节数据
+        List<ChapterVo> chapterVoList = chapterService.getTreeList(courseId);
+        // 课程描述信息
+        CourseDescription courseDescription = courseDescriptionService.getById(courseId);
+        // 查询所属讲师信息
+        Teacher teacher = teacherService.getById(course.getTeacherId());
+
+        // 创建 map 集合, 封装并返回数据
+        Map<String, Object> map = new HashMap<>(2);
+        map.put("courseVo", courseVo);
+        map.put("chapterVoList", chapterVoList);
+        map.put("description", null != courseDescription ? courseDescription.getDescription() : "");
+        map.put("teacher", teacher);
+        map.put("isBuy", false);
+        return map;
+    }
+```
+
+
+
+#### 1.2.4 `Mapper` 接口
+
+```java
+    /**
+     * 根据课程 id 查询课程详情
+     *
+     * @param courseId 课程 id
+     * @return {@link CourseVo}
+     */
+    CourseVo selectCourseVoById(Long courseId);
+```
+
+
+
+#### 1.2.5 `Mapper.xml`
+
+```xml
+    <select id="selectCourseVoById" resultType="com.atguigu.ggkt.vo.vod.CourseVo">
+        SELECT c.id,
+               c.title,
+               c.lesson_num   AS lessonNum,
+               c.price,
+               c.cover,
+               c.buy_count    AS buyCount,
+               c.view_count   AS viewCount,
+               c.status,
+               c.publish_time AS publishTime,
+               c.teacher_id   as teacherId,
+               t.name         AS teacherName,
+               s1.title       AS subjectParentTitle,
+               s2.title       AS subjectTitle
+        FROM course c
+                 LEFT JOIN teacher t ON c.teacher_id = t.id
+                 LEFT JOIN subject s1 ON c.subject_parent_id = s1.id
+                 LEFT JOIN subject s2 ON c.subject_id = s2.id
+        WHERE c.id = #{id}
+    </select>
+```
+
+
+
+### 1.3 前端
+
+#### 1.3.1 路由
+
+```javascript
+import vue from 'vue'
+import VueRouter from 'vue-router'
+
+// 1. 安装插件
+vue.use(VueRouter);
+
+// 2. 创建 router
+const routes = [
+  {
+    path: '/',
+    redirect: '/home'
+  },
+  {
+    path: '/home',
+    name: 'home',
+    component: () => import('../views/home/Home')
+  },
+  {
+    // 课程列表
+    path: '/course/list/:subjectId',
+    name: 'courseList',
+    component: () => import('../views/course/List')
+  },
+  {
+    // 课程详情
+    path: '/course/detail/:courseId',
+    name: 'courseDetail',
+    component: () => import('../views/course/Detail')
+  }
+]
+
+const router = new VueRouter({
+  routes
+})
+
+export default router;
+```
+
+
+
+#### 1.3.2 页面
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666325735784-fa78279e-0eb4-473c-ad61-8a1a27523b95.png)
+
+- `List.vue`
+
+```vue
+<template>
+  <div>
+    <van-image width="100%" height="200" src="https://cdn.uviewui.com/uview/swiper/1.jpg"/>
+    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+      <!-- offset：滚动条与底部距离小于 offset 时触发load事件 默认300，因此要改小，否则首次进入一直触发  -->
+      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" offset="10" @load="onLoad">
+        <van-card
+          v-for="(item,index) in list" :key="index"
+          :price="item.price"
+          :title="item.title"
+          :thumb="item.cover"
+        >
+          <template #tags>
+            <van-tag round plain color="#ffe1e1" text-color="#ad0000">课时数：{{ item.lessonNum }}</van-tag>
+            <br/>
+            <van-tag round plain color="#ffe1e1" text-color="#ad0000">购买数：{{ item.buyCount }}</van-tag>
+            <br/>
+            <van-tag round plain color="#ffe1e1" text-color="#ad0000">访问量：{{ item.viewCount }}</van-tag>
+          </template>
+          <template #footer>
+            <van-button size="mini" @click="info(item.id)">去看看</van-button>
+          </template>
+        </van-card>
+      </van-list>
+    </van-pull-refresh>
+  </div>
+</template>
+<script>
+import {findPage} from '@/api/course'
+
+export default {
+  name: "Course",
+  data() {
+    return {
+      subjectParentId: 1,
+      loading: false,
+      finished: false,
+      refreshing: false,
+      pageNo: 1,
+      pageSize: 5,
+      pages: 1,
+      list: []
+    };
+  },
+  created() {
+    this.subjectParentId = this.$route.params.subjectId;
+  },
+  methods: {
+    onLoad() {
+      this.fetchData();
+    },
+    onRefresh() {
+      // 清空列表数据
+      this.finished = false;
+      this.pageNo = 1;
+      // 重新加载数据
+      // 将 loading 设置为 true，表示处于加载状态
+      this.loading = true;
+      this.fetchData();
+    },
+    fetchData() {
+      findPage(this.subjectParentId, this.pageNo, this.pageSize).then(response => {
+        console.log(response.data);
+        if (this.refreshing) {
+          this.list = [];
+          this.refreshing = false;
+        }
+
+        this.list = response.data.records;
+        this.pages = response.data.totalPage;
+        this.loading = false;
+        if (this.pageNo >= this.pages) {
+          this.finished = true;
+        }
+
+        this.pageNo++;
+      });
+    },
+    info(id) {
+      this.$router.push({path: '/course/detail/' + id})
+    }
+  }
+}
+</script>
+<style lang="scss" scoped>
+.list {
+  li {
+    margin: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #e5e5e5;
+
+    h1 {
+      font-size: 20px;
+    }
+
+    .list-box {
+      display: flex;
+      font-size: 14px;
+
+      ul {
+        flex: 1;
+        margin: 0;
+
+        li {
+          margin: 0;
+          border-bottom: none;
+        }
+      }
+
+      p {
+        margin: 0;
+        width: 50px;
+        align-items: center;
+        align-self: flex-end;
+      }
+    }
+  }
+}
+</style>
+```
+
+- `Detail.vue`
+
+```vue
+<template>
+  <div>
+    <van-image width="100%" height="200" :src="courseVo.cover"/>
+    <van-row>
+      <van-col span="8">
+        <div class="course_count">
+          <h1>购买数</h1>
+          <p>{{ courseVo.buyCount }}</p>
+        </div>
+      </van-col>
+      <van-col span="8">
+        <div class="course_count">
+          <h1>课时数</h1>
+          <p>{{ courseVo.lessonNum }}</p>
+        </div>
+      </van-col>
+      <van-col span="8">
+        <div class="course_count">
+          <h1>浏览数</h1>
+          <p>{{ courseVo.viewCount }}</p>
+        </div>
+      </van-col>
+    </van-row>
+    <h1 class="van-ellipsis course_title">{{ courseVo.title }}</h1>
+    <div class="course_teacher_price_box">
+      <div class="course_teacher_price">
+        <div class="course_price">价格：</div>
+        <div class="course_price_number">￥{{ courseVo.price }}</div>
+      </div>
+      <div>
+        <van-button @click="see()" v-if="isBuy || courseVo.price == '0.00'" plain type="warning" size="mini">立即观看
+        </van-button>
+        <van-button @click="buy" v-else plain type="warning" size="mini">立即购买</van-button>
+      </div>
+    </div>
+    <div class="course_teacher_price_box">
+      <div class="course_teacher_box">
+        <div class="course_teacher">主讲： {{ teacher.name }}</div>
+        <van-image :src="teacher.avatar" round width="50px" height="50px"/>
+      </div>
+    </div>
+    <div class="course_contents">
+      <div class="course_title_font">课程详情</div>
+      <van-divider :style="{ margin: '5px 0 ' }"/>
+      <div class="course_content" v-html="description">
+      </div>
+      <div class="course_title_font">课程大纲</div>
+      <div class="gap"></div>
+      <van-collapse v-model="activeNames">
+        <van-collapse-item :title="item.title" :name="item.id" v-for="item in chapterVoList" :key="item.id">
+          <ul class="course_chapter_list" v-for="child in item.children" :key="child.id">
+            <h2>{{ child.title }}</h2>
+            <p v-if="child.isFree == 1">
+              <van-button @click="play(child)" type="warning" size="mini" plain>免费观看</van-button>
+            </p>
+            <p v-else>
+              <van-button @click="play(child)" type="warning" size="mini" plain>观看</van-button>
+            </p>
+          </ul>
+        </van-collapse-item>
+      </van-collapse>
+    </div>
+    <van-loading vertical="true" v-show="loading">加载中...</van-loading>
+  </div>
+</template>
+
+<script>
+import {getInfo} from '@/api/course'
+
+export default {
+  data() {
+    return {
+      loading: false,
+      courseId: null,
+      courseVo: {},
+      description: '',
+      teacher: {},
+      chapterVoList: [],
+      isBuy: false,
+      activeNames: ["1"]
+    };
+  },
+  created() {
+    this.courseId = this.$route.params.courseId;
+    this.fetchData();
+  },
+  methods: {
+    fetchData() {
+      this.loading = true;
+      getInfo(this.courseId).then(response => {
+        console.log(response.data);
+
+        this.courseVo = response.data.courseVo;
+        this.description = response.data.description;
+        this.isBuy = response.data.isBuy;
+        this.chapterVoList = response.data.chapterVoList;
+        this.teacher = response.data.teacher;
+
+        this.loading = false;
+      });
+    },
+    buy() {
+      this.$router.push({path: '/trade/' + this.courseId})
+    },
+    play(video) {
+
+    },
+    see() {
+      this.$router.push({path: '/play/' + this.courseId + '/0'})
+    }
+  }
+};
+</script>
+<style lang="scss" scoped>
+.gap {
+  height: 10px;
+}
+
+::v-deep.van-image {
+  display: block;
+}
+
+.course_count {
+  background-color: #82848a;
+  color: white;
+  padding: 5px;
+  text-align: center;
+  border-right: 1px solid #939393;
+
+  h1 {
+    font-size: 14px;
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+}
+
+.course_title {
+  font-size: 20px;
+  margin: 10px;
+}
+
+.course_teacher_price_box {
+  margin: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .course_teacher_price {
+    display: flex;
+    font-size: 14px;
+    align-items: center;
+
+    .course_price_number {
+      color: red;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .course_teacher {
+      margin-left: 20px;
+    }
+  }
+
+  .course_teacher_box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .course_teacher {
+      margin-right: 20px;
+    }
+  }
+}
+
+.course_contents {
+  margin: 10px;
+
+  .course_title_font {
+    color: #68cb9b;
+    font-weight: bold;
+  }
+
+  .course_content {
+    margin-bottom: 20px;
+  }
+}
+
+.course_chapter_list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    font-size: 14px;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+</style>
+```
+
+
+
+#### 1.3.3 使用  `Vant` 移动组件库
+
+- 安装: `npm i vant@2.12.48`
+- 配置:
+
+```javascript
+import Vue from 'vue'
+import App from './App.vue'
+import router from "./router";
+import store from './store'
+
+// 1. 引入 vant 组件
+import Vant from 'vant';
+// 2. 引入组件样式
+import 'vant/lib/index.css';
+// 3. 注册组件
+Vue.use(Vant);
+
+Vue.config.productionTip = false
+
+new Vue({
+  render: h => h(App),
+  router,
+  store,
+}).$mount('#app')
+```
+
+
+
+#### 1.3.4 使用 `scss`
+
+- 安装 `npm i --save-dev sass@1.32.7 sass-loader@12.0.0`
+
+
+
+#### 1.3.5 网络请求 `axios`
+
+- 安装 `npm i axios@0.18.0`
+- 配置
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666326028708-a43bdd34-61f7-4410-86af-21e98a578173.png)
+
+```javascript
+import axios from 'axios'
+import store from '../store'
+
+export function request(config) {
+  // 1. 创建 axios 的实例
+  const instance = axios.create({
+    baseURL: 'https://www.th668.top',
+    // 请求超时时间
+    timeout: 30000
+  });
+
+  // 2. axios 的拦截器
+  // 配置请求和响应拦截
+  instance.interceptors.request.use(config => {
+    // 1. 比如 config 中一些信息不符合服务器的要求
+    // 2. 比如每次发送网络请求时, 都希望在界面中显示一个请求的图标
+    console.log('来到了 request 拦截 success 中')
+
+    //获取 localStorage 里面的 token 值
+    let token = window.localStorage.getItem('token') || '';
+    if (token !== '') {
+      //把 token 值放到 header 里面
+      config.headers['token'] = token; // 'eyJhbGciOiJIUzUxMiIsInppcCI6IkdaSVAifQ.H4sIAAAAAAAAAKtWKi5NUrJSCjAK0A0Ndg1S0lFKrShQsjI0MzY3MTQxMTbWUSotTi3yTAGKQZh-ibmpQB1KtQARkjypPAAAAA.B6dziXWxcc2mIYYaDQnXB1t0IHwQK-GwWNFsAQ0Z7CbCBVb11uoNjojWYotC8YEdlVW9Ahtq99LWtz1_Wbhhlw';//cookie.get('guli_token');
+    }
+
+    return config;
+  }, err => {
+    console.log('来到了 request 拦截 failure 中')
+    return Promise.reject(err);
+  })
+
+  // 响应拦截
+  instance.interceptors.response.use(res => {
+    console.log('来到了 response 拦截 success 中')
+
+    if (res.data.code === 208) {
+      // 微信状态码
+      // 替换# 后台获取不到#后面的参数
+      let url = window.location.href.replace('#', 'guiguketan')
+      window.location = store.getters.wechatPath + url;
+    } else {
+      if (res.data.code === 20000) {
+        // 成功
+        return res.data
+      } else {
+        // 错误
+        console.log("response.data:" + JSON.stringify(res.data))
+        alert(res.data.message || 'error')
+        return Promise.reject(res)
+      }
+    }
+  }, err => {
+    console.log('来到了 response 拦截 failure 中')
+    return Promise.reject(err);
+  })
+
+  // 3. 发送真正的网络请求
+  return instance(config);
+}
+```
+
+
+
+#### 1.3.6 `store`
+
+```javascript
+import Vue from 'vue'
+import Vuex from 'vuex'
+
+Vue.use(Vuex)
+
+export default new Vuex.Store({
+  state: {
+    // 微信接口
+    wechatPath: "http://175.178.174.83/api/wechat/redirect/authorize?returnUrl="
+  },
+  getters: {
+    wechatPath: state => state.wechatPath
+  },
+  mutations: {},
+  actions: {},
+  modules: {}
+})
+```
+
+####  
+
+#### 1.3.7 `API`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666326074664-e11c5296-3ae8-4de2-be5f-2f46e278209f.png)
+
+```javascript
+import {request} from '@/utils/request'
+
+const api_name = '/api/vod/course'
+
+// 课程分页列表
+export function findPage(subjectParentId, pageNo, pageSize) {
+  return request({
+    url: `${api_name}/${subjectParentId}/${pageNo}/${pageSize}`,
+    method: 'get'
+  })
+}
+
+// 课程详情
+export function getInfo(courseId) {
+  return request({
+    url: `${api_name}/getInfo/${courseId}`,
+    method: 'get'
+  })
+}
+```
+
+
+
+#### 1.3.8 `App.vue` 使用 `store`
+
+```vue
+<template>
+  <div id="app">
+    <!-- 路由出口 -->
+    <!-- 路由匹配到的组件将渲染在这里 -->
+    <router-view></router-view>
+  </div>
+</template>
+
+<script>
+import {mapGetters} from 'vuex'
+
+export default {
+  name: 'App',
+  created() {
+    this.wechatLogin();
+  },
+  methods: {
+    ...mapGetters({
+      wechatPath: 'wechatPath'
+    }),
+    wechatLogin() {
+      // 处理微信授权登录
+      let token = this.getQueryString('token') || '';
+      if (token !== '') {
+        window.localStorage.setItem('token', token);
+      }
+
+      // 所有页面都必须登录，两次调整登录, 这里与接口返回 208 状态
+      token = window.localStorage.getItem('token') || '';
+      if (token === '') {
+        const url = window.location.href.replace('#', 'guiguketan')
+        window.location = this.wechatPath + url;
+      }
+
+      console.log('token2: ' + window.localStorage.getItem('token'));
+    },
+    getQueryString(paramName) {
+      if (window.location.href.indexOf('?') === -1) return '';
+
+      let searchString = window.location.href.split('?')[1];
+      let i, val, params = searchString.split("&");
+
+      for (i = 0; i < params.length; i++) {
+        val = params[i].split("=");
+        if (val[0] === paramName) {
+          return val[1];
+        }
+      }
+
+      return '';
+    }
+  }
+}
+</script>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
+```
+
+
+
+## 2 点播视频播放
+
+- 腾讯云视频点播示例
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
+        <title>腾讯云视频点播示例</title>
+        <!-- 引入播放器 css 文件 -->
+        <link href="https://cloudcache.tencent-cloud.com/open/qcloud/video/tcplayer/tcplayer.css" rel="stylesheet">
+        <!-- 如需在IE8、9浏览器中初始化播放器，浏览器需支持Flash并在页面中引入 -->
+        <!--[if lt IE 9]>
+        <script src="https://cloudcache.tencent-cloud.com/open/qcloud/video/tcplayer/ie8/videojs-ie8.js"></script>
+        <![endif]-->
+        <!-- 如果需要在 Chrome 和 Firefox 等现代浏览器中通过 H5 播放 HLS 格式的视频，需要在 tcplayer.v4.1.min.js 之前引入 hls.min.0.13.2m.js -->
+        <script src="https://imgcache.qq.com/open/qcloud/video/tcplayer/libs/hls.min.0.13.2m.js"></script>
+        <!-- 引入播放器 js 文件 -->
+        <script src="https://imgcache.qq.com/open/qcloud/video/tcplayer/tcplayer.v4.1.min.js"></script>
+        <!-- 示例 CSS 样式可自行删除 -->
+    </head>
+    <body>
+        <!-- 设置播放器容器 -->
+        <video id="player-container-id" preload="auto" width="600" height="400" playsinline webkit-playsinline x5-playsinline></video>
+        <!--
+        注意事项：
+        * 播放器容器必须为 video 标签
+        * player-container-id 为播放器容器的ID，可自行设置
+        * 播放器区域的尺寸请按需设置，建议通过 css 进行设置，通过css可实现容器自适应等效果
+        * playsinline webkit-playsinline x5-playsinline 这几个属性是为了在标准移动端浏览器不劫持视频播放的情况下实现行内播放，此处仅作示例，请按需使用
+        -->
+        <script>
+            var player = TCPlayer("player-container-id", { /**player-container-id 为播放器容器ID，必须与html中一致*/
+                fileID: "387702307413810418", /**请传入需要播放的视频fileID 必须 */
+                appID: "1301043802", /**请传入点播账号的子应用appID 必须 */
+                psign: ""
+                /**其他参数请在开发文档中查看 */
+                });
+        </script>
+    </body>
+</html>
+```
+
+### 2.1 目标
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666337272499-4dfbf1ec-e486-42ff-a955-287a250ea8ee.png)
+
+
+
+### 2.2 接口
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666342103487-871c5ba3-36b3-4834-99c7-d6c77fbed0be.png)
+
+#### 2.2.1 新建 `VodApiController` 控制类
+
+```java
+package com.atguigu.ggkt.vod.api;
+
+import com.atguigu.ggkt.result.Result;
+import com.atguigu.ggkt.vod.service.VodService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
+
+/**
+ * 腾讯视频点播 控制类
+ * 
+ * @author 陈江林
+ * @date 2022/10/21 16:29
+ */
+@Api(tags = "腾讯视频点播")
+@RestController
+@RequestMapping("/api/vod")
+public class VodApiController {
+
+    @Autowired
+    private VodService vodService;
+
+    @GetMapping("/getPlayAuth/{videoId}")
+    public Result<Map<String, Object>> getPlayAuth(
+            @ApiParam(value = "小节id", required = true)
+            @PathVariable Long videoId) {
+        return Result.ok(vodService.getPlayAuth(videoId));
+    }
+
+}
+```
+
+
+
+#### 2.2.2 服务接口
+
+```java
+    /**
+     * 根据 id 获取对应的视频
+     *
+     * @param videoId  视频id
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    Map<String, Object> getPlayAuth(Long videoId);
+```
+
+
+
+#### 2.2.3 服务实现类
+
+```java
+    @Value("${tencent.video.appid}")
+    private String appid;
+
+	@Override
+    public Map<String, Object> getPlayAuth(Long videoId) {
+        // 根据小节 id 获取小节对象， 获取腾讯云视频ID
+        Video video = videoService.getById(videoId);
+        if (video == null) {
+            throw new GgktException(20001, "小节信息不存在");
+        }
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("videoSourceId", video.getVideoSourceId());
+        map.put("appid", appid);
+        return map;
+    }
+```
+
+
+
+#### 2.2.4 `application.yml` 配置
+
+```yaml
+tencent:
+	# 腾讯云点播
+  video:
+    appid: 1301043802
+```
+
+
+
+### 2.3 前端
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666342950535-6edd23d1-5046-465d-8ab9-0d3425e9a3bf.png)
+
+#### 2.3.1 `API` 新建 `vod.js`
+
+```javascript
+import {request} from '@/utils/request'
+const api_name = '/api/vod'
+
+export default {
+  // 获取播放凭证
+  getPlayAuth(courseId, videoId) {
+    return request({
+      url: `${api_name}/getPlayAuth/${videoId}`,
+      method: 'get'
+    })
+  }
+}
+```
+
+
+
+#### 2.3.2 修改 `Detail.vue` 中 `play` 方法
+
+```javascript
+    // 视频播放
+    play(video) {
+      const videoId = video.id;
+      this.$router.push({path: '/course/play/' + this.courseId + "/" + videoId})
+    },
+```
+
+
+
+#### 2.3.3 新建页面 `play.vue`
+
+```vue
+<template>
+  <div>
+    <video id="player-container-id" preload="auto" width="600" height="400" playsinline webkit-playsinline x5-playsinline></video>
+    <h1 class="van-ellipsis course_title">{{ courseVo.title }}</h1>
+
+    <div class="course_teacher_price_box">
+      <div class="course_teacher_price">
+        <div class="course_price">价格：</div>
+        <div class="course_price_number">￥{{ courseVo.price }}</div>
+        <div class="course_teacher">主讲： {{ courseVo.teacherName }}</div>
+      </div>
+      <div>
+        <van-button @click="getPlayAuth('0')" v-if="isBuy || courseVo.price == '0.00'" plain type="warning" size="mini">立即观看</van-button>
+        <van-button @click="buy" v-else plain type="warning" size="mini">立即购买</van-button>
+      </div>
+    </div>
+
+    <div class="course_contents">
+      <div class="course_title_font">课程大纲</div>
+      <div class="gap"></div>
+      <van-collapse v-model="activeNames">
+        <van-collapse-item :title="item.title" :name="item.id" v-for="item in chapterVoList" :key="item.id">
+          <ul class="course_chapter_list" v-for="child in item.children" :key="child.id">
+            <h2 :style="activeVideoId == child.id ? 'color:blue' : ''">{{child.title}}</h2>
+            <p v-if="child.isFree == 1">
+              <van-button @click="see(child)" type="warning" size="mini" plain>免费观看</van-button>
+            </p>
+            <p v-else>
+              <van-button @click="see(child)" type="warning" size="mini" plain>观看</van-button>
+            </p>
+          </ul>
+        </van-collapse-item>
+      </van-collapse>
+    </div>
+
+    <van-loading vertical="true" v-show="loading">加载中...</van-loading>
+  </div>
+</template>
+
+<script>
+import {getInfo} from '@/api/course'
+import vodApi from '@/api/vod'
+
+// import videoVisitorApi from '@/api/videoVisitor'
+export default {
+  data() {
+    return {
+      loading: false,
+
+      courseId: null,
+      videoId: null,
+
+      courseVo: {},
+      description: '',
+      chapterVoList: [],
+      isBuy: false,
+      // firstVideo: null,
+
+      activeNames: ["1"],
+      activeVideoId: 0, //记录当前正在播放的视频
+      player: null
+    };
+  },
+
+  created() {
+    this.courseId = this.$route.params.courseId;
+    this.videoId = this.$route.params.videoId || '0';
+
+    this.fetchData();
+    this.getPlayAuth(this.videoId);
+  },
+
+  methods: {
+    fetchData() {
+      this.loading = true;
+      getInfo(this.courseId).then(response => {
+        console.log(response.data);
+
+        this.courseVo = response.data.courseVo;
+        this.description = response.data.description;
+        this.isBuy = response.data.isBuy;
+        this.chapterVoList = response.data.chapterVoList;
+
+        //获取第一个播放视频id
+        // this.firstVideo = this.chapterVoList[0].children[0]
+        // if(this.videoSourceId == '0') {
+        //     this.see(this.firstVideo);
+        // }
+        this.loading = false;
+      });
+    },
+
+    see(video) {
+      let videoId = video.id;
+      let isFree = video.isFree;
+      //if(isFree === 1 || this.isBuy || this.courseVo.price == '0.00') {
+      this.getPlayAuth(videoId);
+      // } else {
+      //     if (window.confirm("购买了才可以观看, 是否继续？")) {
+      //         this.buy()
+      //     }
+      // }
+    },
+
+    buy() {
+      this.$router.push({ path: '/trade/'+this.courseId })
+    },
+
+    getPlayAuth(videoId) {
+      if (this.player != null) {
+        // 是销毁之前的视频，不销毁的话，它会一直存在
+        this.player.dispose();
+      }
+
+      vodApi.getPlayAuth(this.courseId, videoId).then(response => {
+        console.log(response.data);
+        this.play(response.data);
+
+        //展开章节
+        this.activeNames = [response.data.chapterId]
+        //选中播放视频
+        this.activeVideoId = response.data.videoId
+      })
+    },
+    //视频播放
+    play(data) {
+      var player = TCPlayer("player-container-id", { /**player-container-id 为播放器容器ID，必须与html中一致*/
+        fileID: data.videoSourceId, /**请传入需要播放的视频fileID 必须 */
+        appID: data.appid, /**请传入点播账号的子应用appID 必须 */
+        psign: ""
+        /**其他参数请在开发文档中查看 */
+      });
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.gap {
+  height: 10px;
+}
+
+::v-deep.van-image {
+  display: block;
+}
+
+.course_count {
+  background-color: #82848a;
+  color: white;
+  padding: 5px;
+  text-align: center;
+  border-right: 1px solid #939393;
+
+  h1 {
+    font-size: 14px;
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+}
+
+.course_title {
+  font-size: 20px;
+  margin: 10px;
+}
+
+.course_teacher_price_box {
+  margin: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .course_teacher_price {
+    display: flex;
+    font-size: 14px;
+    align-items: center;
+
+    .course_price_number {
+      color: red;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .course_teacher {
+      margin-left: 20px;
+    }
+  }
+}
+
+.course_contents {
+  margin: 10px;
+
+  .course_title_font {
+    color: #68cb9b;
+    font-weight: bold;
+  }
+
+  .course_content {
+    margin-bottom: 20px;
+  }
+}
+
+.course_chapter_list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    font-size: 14px;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+</style>
+```
+
+
+
+#### 2.3.4 对应路由
+
+```javascript
+,
+  {
+    // 视频播放
+    path: '/course/play/:courseId/:videoId',
+    name: 'coursePlay',
+    component: () => import('../views/course/Play')
+  }
+```
+
+
+
+#### 2.3.5 引入 `js` `css`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666342733408-01860428-e1c3-4292-8329-1a0939146f20.png)
+
+```html
+    <!-- 引入播放器 css 文件 -->
+    <link href="https://cloudcache.tencent-cloud.com/open/qcloud/video/tcplayer/tcplayer.css" rel="stylesheet">
+    <!-- 如需在IE8、9浏览器中初始化播放器，浏览器需支持Flash并在页面中引入 -->
+    <!--[if lt IE 9]>
+    <script src="https://cloudcache.tencent-cloud.com/open/qcloud/video/tcplayer/ie8/videojs-ie8.js"></script>
+    <![endif]-->
+    <!-- 如果需要在 Chrome 和 Firefox 等现代浏览器中通过 H5 播放 HLS 格式的视频，需要在 tcplayer.v4.1.min.js 之前引入 hls.min.0.13.2m.js -->
+    <script src="https://imgcache.qq.com/open/qcloud/video/tcplayer/libs/hls.min.0.13.2m.js"></script>
+    <!-- 引入播放器 js 文件 -->
+    <script src="https://imgcache.qq.com/open/qcloud/video/tcplayer/tcplayer.v4.1.min.js"></script>
+```
+
+
+
+
+
+## 3 付费观看点播课程
+
+### 3.1 目标
+
+1. 课程详情
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666343473139-2955df54-d7d6-4916-90ac-7d8c1a89af9b.png)
+
+1. 点击立即购买
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666343503366-c33a8776-14a6-4187-8906-24e54df6b0fa.png)
+
+1. 点击确认下单, 生成课程订单信息
+
+
+
+
+
+#### 3.1.1 思路
+
+1. 微信授权成功后, 会返回 `token` 字符串（`id`和`nickname`）
+2. 把返回的 `token` 放到 `localStorage`
+3. 每次发送`axios`请求都会将 `token` 放到请求头中传递
+
+
+
+### 3.2 接口
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666355680442-fca1502d-c7b5-43e1-9aa1-62f95eeeca17.png)
+
+#### 3.2.1 新建 `OrderInfoApiController` 控制类
+
+```java
+@RestController
+@RequestMapping("api/order/orderInfo")
+public class OrderInfoApiController {
+
+    @Autowired
+    private OrderInfoService orderInfoService;
+
+    @ApiOperation("新增点播课程订单")
+    @PostMapping("submitOrder")
+    public Result submitOrder(@RequestBody OrderFormVo orderFormVo, HttpServletRequest request) {
+        //返回订单id
+        Long orderId = orderInfoService.submitOrder(orderFormVo);
+        return Result.ok(orderId);
+    }
+}	
+```
+
+
+
+#### 3.2.2 服务接口
+
+```java
+    /**
+     * 新增点播课程订单
+     *
+     * @param orderFormVo
+     * @return {@link Long} 返回订单 id
+     */
+    Long submitOrder(OrderFormVo orderFormVo);
+```
+
+
+
+#### 3.2.3 服务实现
+
+```java
+    @Override
+    public Long submitOrder(OrderFormVo orderFormVo) {
+        // 获取生成订单条件值
+        if (orderFormVo == null) {
+            throw new GgktException(20001, "订单条件不存在");
+        }
+
+        Long courseId = orderFormVo.getCourseId();
+        Long couponId = orderFormVo.getCouponId();
+
+
+        // 获取当前用户的 id
+        Long userId = AuthContextHolder.getUserId();
+        // 判断当前用户, 针对当前课程是否已经生成订单
+        // 根据课程 id, 用户 id 查询订单
+        LambdaQueryWrapper<OrderDetail> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(OrderDetail::getCourseId, courseId);
+        queryWrapper.eq(OrderDetail::getUserId, userId);
+        OrderDetail orderDetailExist = orderDetailService.getOne(queryWrapper);
+        if (orderDetailExist != null) {
+            // 如果订单已存在，则直接返回订单 id
+            return orderDetailExist.getId();
+        }
+
+        // 根据课程 id 查询课程信息
+        Course course = courseFeignClient.getById(courseId);
+        if (course == null) {
+            throw new GgktException(20001, "课程不存在");
+        }
+
+        // 根据用户 id 查询用户信息
+        Result<UserInfo> result = userInfoFeignClient.getById(userId);
+        if (result.getMessage().equals(Result.FAILED)) {
+            throw new GgktException(result.getCode(), result.getMessage());
+        }
+
+        UserInfo userInfo = result.getData();
+        if (userInfo == null) {
+            throw new GgktException(20001, "用户不存在");
+        }
+
+        // 优惠券金额
+        BigDecimal couponReduce = new BigDecimal(0);
+        // 是否拥有优惠券
+        if (null != couponId) {
+            // 根据优惠券 id 查询优惠券信息
+            CouponInfo couponInfo = couponInfoFeignClient.getById(couponId);
+            couponReduce = couponInfo.getAmount();
+        }
+
+        // 封装订单生成需要的数据到对象, 完成添加订单
+        // - 封装数据到 OrderInfo 对象中, 添加订单基本信息
+        // 创建订单对象
+        OrderInfo orderInfo = new OrderInfo();
+        orderInfo.setUserId(userId);
+        orderInfo.setNickName(userInfo.getNickName());
+        orderInfo.setPhone(userInfo.getPhone());
+        orderInfo.setProvince(userInfo.getProvince());
+        orderInfo.setOriginAmount(course.getPrice());
+        orderInfo.setCouponReduce(couponReduce);
+        // 订单总价格 - 优惠券减免
+        orderInfo.setFinalAmount(orderInfo.getOriginAmount().subtract(orderInfo.getCouponReduce()));
+        // 流水号
+        orderInfo.setOutTradeNo(OrderNoUtils.getOrderNo());
+        orderInfo.setTradeBody(course.getTitle());
+        orderInfo.setOrderStatus("0");
+        baseMapper.insert(orderInfo);
+
+        // - 封装数据到 OrderDetail 对象中, 添加订单详情信息表
+        OrderDetail orderDetail = new OrderDetail();
+        orderDetail.setOrderId(orderInfo.getId());
+        orderDetail.setUserId(userId);
+        orderDetail.setCourseId(courseId);
+        orderDetail.setCourseName(course.getTitle());
+        orderDetail.setCover(course.getCover());
+        orderDetail.setOriginAmount(course.getPrice());
+        orderDetail.setCouponReduce(new BigDecimal(0));
+        orderDetail.setFinalAmount(orderDetail.getOriginAmount().subtract(orderDetail.getCouponReduce()));
+        orderDetailService.save(orderDetail);
+
+        // 更新优惠券状态
+        if (null != orderFormVo.getCouponUseId()) {
+            couponInfoFeignClient.updateCouponInfoUseStatus(orderFormVo.getCouponUseId(), orderInfo.getId());
+        }
+
+        // 返回订单 id
+        return orderInfo.getId();
+    }
+```
+
+
+
+#### 3.2.4 新建 `OrderNoUtils`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666357654079-9915f0b4-a7e4-49c3-9f49-9ab0d89f0869.png)
+
+```java
+package com.atguigu.ggkt.util;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Random;
+
+/**
+ * 订单工具类
+ *
+ * @author 陈江林
+ * @date 2022/10/21 21:07
+ */
+public class OrderNoUtils {
+
+    /**
+     * 获取订单号
+     *
+     * @return
+     */
+    public static String getOrderNo() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String newDate = sdf.format(new Date());
+        String result = "";
+        Random random = new Random();
+        for (int i = 0; i < 3; i++) {
+            result += random.nextInt(10);
+        }
+        
+        return newDate + result;
+    }
+
+}
+```
+
+
+
+#### 3.2.5 引入依赖
+
+```xml
+    <dependencies>
+        <dependency>
+            <groupId>com.atguigu</groupId>
+            <artifactId>service_course_client</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.atguigu</groupId>
+            <artifactId>service_user_client</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.atguigu</groupId>
+            <artifactId>service_activity_client</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+```
+
+
+
+#### 3.2.6 主启动类添加注解
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666948587255-7e481f03-722f-45b5-ab76-071505fa0c38.png)
+
+```java
+@EnableFeignClients(basePackages = "com.atguigu")
+```
+
+
+
+### 3.3 远程接口
+
+#### 3.3.1 根据 `ID` 查询课程
+
+- `CourseFeignClient`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666348584530-a2d9fda9-24a2-4512-9780-5f84e43899e8.png)
+
+```java
+    /**
+     * 根据ID查询课程
+     *
+     * @param courseId 课程 id
+     * @return {@link Course}
+     */
+    @GetMapping("/api/vod/course/inner/getById/{courseId}")
+    Course getById(@PathVariable Long courseId);
+```
+
+- `CourseApiController`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666348464090-3d3b733f-1cb1-411a-8205-7f33d15d66e9.png)
+
+```java
+    @ApiOperation("根据ID查询课程")
+    @GetMapping("/inner/getById/{courseId}")
+    public Course getById(
+            @ApiParam(value = "课程ID", required = true)
+            @PathVariable Long courseId){
+        return courseService.getById(courseId);
+    }
+```
+
+
+
+
+
+#### 3.3.2 优惠券远程接口
+
+**远程接口**
+
+- 新建 `service_activity_client` 模块
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666349176426-03cd59de-f758-4311-9a5e-e1905627b2ef.png)
+
+- `pom.xml`
+
+```xml
+	<build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!-- 取消查找本项目下的Main方法：为了解决Unable to find main class的问题 -->
+                    <mainClass>none</mainClass>
+                    <!-- 为了解决依赖模块找不到此模块中的类或属性 -->
+                    <classifier>execute</classifier>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+```
+
+- 新建 `CouponInfoFeignClient`接口类
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666349469593-ea7702ca-0ae7-4a77-8dfb-e70f48050d78.png)
+
+```java
+package com.atguigu.ggkt.client.activity;
+
+import com.atguigu.ggkt.model.activity.CouponInfo;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/21 18:47
+ */
+@FeignClient(value = "service-activity")
+public interface CouponInfoFeignClient {
+
+    /**
+     * 获取优惠券
+     *
+     * @param couponId 优惠券 id
+     * @return {@link CouponInfo}
+     */
+    @GetMapping(value = "/api/activity/couponInfo/inner/getById/{couponId}")
+    CouponInfo getById(@PathVariable("couponId") Long couponId);
+
+    /**
+     * 更新优惠券使用状态
+     *
+     * @param couponUseId 优惠券使用 id
+     * @param orderId     订单 id
+     * @return {@link Boolean}
+     */
+    @GetMapping(value = "/api/activity/couponInfo/inner/updateCouponInfoUseStatus/{couponUseId}/{orderId}")
+    Boolean updateCouponInfoUseStatus(@PathVariable("couponUseId") Long couponUseId, @PathVariable("orderId") Long orderId);
+
+}
+```
+
+
+
+**对应接口**
+
+- 新建 `CouponInfoApiController`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666348812757-72f9c5d4-92d7-458d-a565-ca102fa2dcc7.png)
+
+```java
+package com.atguigu.ggkt.activity.api;
+
+import com.atguigu.ggkt.activity.service.CouponInfoService;
+import com.atguigu.ggkt.model.activity.CouponInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * 优惠券 控制类
+ *
+ * @author 陈江林
+ * @date 2022/10/21 18:39
+ */
+@Api(tags = "优惠券接口")
+@RestController
+@RequestMapping("/api/activity/couponInfo")
+public class CouponInfoApiController {
+
+    @Autowired
+    private CouponInfoService couponInfoService;
+
+    @ApiOperation(value = "根据 id 获取优惠券对象")
+    @GetMapping(value = "/inner/getById/{couponId}")
+    public CouponInfo getById(@PathVariable("couponId") Long couponId) {
+        return couponInfoService.getById(couponId);
+    }
+
+    @ApiOperation(value = "更新优惠券使用状态")
+    @GetMapping(value = "/inner/updateCouponInfoUseStatus/{couponUseId}/{orderId}")
+    public Boolean updateCouponInfoUseStatus(
+            @PathVariable("couponUseId") Long couponUseId, @PathVariable("orderId") Long orderId
+    ) {
+        couponInfoService.updateCouponInfoUseStatus(couponUseId, orderId);
+        return true;
+    }
+
+}
+```
+
+- 服务接口
+
+```java
+    /**
+     * 更新优惠券使用状态
+     *
+     * @param couponUseId 优惠券使用id
+     * @param orderId     订单id
+     */
+    void updateCouponInfoUseStatus(Long couponUseId, Long orderId);
+```
+
+- 服务实现
+
+```java
+    @Override
+    public void updateCouponInfoUseStatus(Long couponUseId, Long orderId) {
+        CouponUse couponUse = new CouponUse();
+        couponUse.setId(couponUseId);
+        couponUse.setOrderId(orderId);
+        couponUse.setCouponStatus("1");
+        couponUse.setUsingTime(new Date());
+        couponUseService.updateById(couponUse);
+    }
+```
+
+
+
+### 3.4 `token` 获取当前用户 `id`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666352591834-8f68cd05-6493-4d61-a796-23741a9b987f.png)
+
+#### 3.4.1 添加依赖
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666350447489-269da5a7-5b69-4003-9df8-51f75328ecbe.png)
+
+```xml
+<!-- redis -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>
+
+<!-- spring2.X集成redis所需common-pool2-->
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-pool2</artifactId>
+    <version>2.6.0</version>
+</dependency>
+```
+
+
+
+#### 3.4.2 新建 `LoginWebMvcConfigurerImpl`
+
+```java
+package com.atguigu.ggkt.util;
+
+import com.atguigu.ggkt.interceptor.UserLoginInterceptor;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+/**
+ * Spring Mvc 配置类
+ *
+ * @author 陈江林
+ * @date 2022/10/21 19:12
+ */
+@Configuration
+@EnableWebMvc
+public class LoginWebMvcConfigurerImpl implements WebMvcConfigurer {
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        // 添加自定义拦截器, 设置拦截路径
+        registry.addInterceptor(new UserLoginInterceptor())
+                .addPathPatterns("/api/**");
+    }
+
+}
+```
+
+
+
+#### 3.4.3 新建 `UserLoginInterceptor` 拦截器
+
+```java
+package com.atguigu.ggkt.interceptor;
+
+import com.atguigu.ggkt.util.AuthContextHolder;
+import com.atguigu.ggkt.util.JwtHelper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/21 19:16
+ */
+@Slf4j
+public class UserLoginInterceptor extends HandlerInterceptorAdapter {
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String token = request.getHeader("token");
+        log.info("当前用户token：" + token);
+        if (StringUtils.isEmpty(token)) {
+            AuthContextHolder.setUserId(1L);
+            // throw new GgktException(208, "未登录");
+        } else {
+            Long userId = JwtHelper.getUserId(token);
+            log.info("当前用户：" + userId);
+            if (StringUtils.isEmpty(userId)) {
+                AuthContextHolder.setUserId(1L);
+                // throw new GgktException(208, "未登录");
+            } else {
+                AuthContextHolder.setUserId(userId);
+            }
+        }
+
+        return true;
+    }
+
+}
+```
+
+
+
+#### 3.4.4 新建 `AuthContextHolder`
+
+```java
+package com.atguigu.ggkt.util;
+
+/**
+ * 获取登录用户信息类
+ *
+ * @author 陈江林
+ * @date 2022/10/21 19:23
+ */
+public class AuthContextHolder {
+
+    /**
+     * 后台管理用户id
+     */
+    private static ThreadLocal<Long> adminId = new ThreadLocal<>();
+
+    /**
+     * 会员用户id
+     */
+    private static ThreadLocal<Long> userId = new ThreadLocal<>();
+
+    public static Long getAdminId() {
+        return adminId.get();
+    }
+
+    public static void setAdminId(Long _adminId) {
+        adminId.set(_adminId);
+    }
+
+    public static Long getUserId() {
+        return userId.get();
+    }
+
+    public static void setUserId(Long _userId) {
+        userId.set(_userId);
+    }
+
+}
+```
+
+
+
+#### 3.4.5 前端实现 <已完成>
+
+```javascript
+	// 配置请求和响应拦截
+  instance.interceptors.request.use(config => {
+    //获取 localStorage 里面的 token 值
+    let token = window.localStorage.getItem('token') || '';
+    if (token !== '') {
+      //把 token 值放到 header 里面
+      config.headers['token'] = token;
+    }
+
+    return config;
+  }, err => {
+    return Promise.reject(err);
+  })
+```
+
+
+
+## 4 微信支付
+
+### 4.1 接口文档
+
+- `https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_1`
+
+
+
+### 4.2 公众号配置
+
+#### 4.2.1 绑定域名
+
+- 注意: 测试号不支持支付功能, 需要使用正式号
+
+**填写** `**JS**` **接口安全域名**
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666358710524-3d4cc108-6cd9-4c2e-9242-7e86f70c4689.png)
+
+
+
+#### 4.2.2 商户平台配置支付目录
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666358873930-0520a48d-42c8-4a8a-9796-c8cc6b8c8bd0.png)
+
+
+
+### 4.3 创建订单支付接口
+
+#### 4.3.1 新建 `WXPayController`
+
+```java
+package com.atguigu.ggkt.order.api;
+
+import com.atguigu.ggkt.order.service.WXPayService;
+import com.atguigu.ggkt.result.Result;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
+
+/**
+ * 微信支付接口 控制类
+ *
+ * @author 陈江林
+ * @date 2022/10/21 21:30
+ */
+@Api(tags = "微信支付接口")
+@RestController
+@RequestMapping("/api/order/wxPay")
+public class WXPayController {
+
+    @Autowired
+    private WXPayService wxPayService;
+
+    @ApiOperation(value = "下单 小程序支付")
+    @GetMapping("/createJsapi/{orderNo}")
+    public Result<Map<String, Object>> createJsapi(
+            @ApiParam(name = "orderNo", value = "订单No", required = true)
+            @PathVariable("orderNo") String orderNo) {
+        return Result.ok(wxPayService.createJsapi(orderNo));
+    }
+
+}
+```
+
+
+
+#### 4.3.2 新建服务接口
+
+```java
+package com.atguigu.ggkt.order.service;
+
+import java.util.Map;
+
+/**
+ * 微信支付接口 接口类
+ *
+ * @author 陈江林
+ * @date 2022/10/21 21:31
+ */
+public interface WXPayService {
+
+    /**
+     * 微信支付
+     *
+     * @param orderNo 订单号
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    Map<String, Object> createJsapi(String orderNo);
+
+}
+```
+
+
+
+#### 4.3.3 新建服务实现
+
+```java
+package com.atguigu.ggkt.order.service.impl;
+
+import com.atguigu.ggkt.exception.GgktException;
+import com.atguigu.ggkt.order.service.WXPayService;
+import com.atguigu.ggkt.util.HttpClientUtils;
+import com.github.wxpay.sdk.WXPayUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * 微信支付接口 接口实现类
+ *
+ * @author 陈江林
+ * @date 2022/10/21 21:31
+ */
+@Slf4j
+@Service
+public class WXPayServiceImpl implements WXPayService {
+
+    @Override
+    public Map<String, Object> createJsapi(String orderNo) {
+        // 封装微信支付需要参数, 使用 map 集合
+        Map<String, String> paramMap = new HashMap<>( );
+        // 设置参数
+
+        // 正式服务号 id
+        paramMap.put("appid", "wxf913bfa3a2c7eeeb");
+        // 服务号的商户号
+        paramMap.put("mch_id", "1481962542");
+        // 使用微信提供的工具类生成 32 位随机字符串
+        paramMap.put("nonce_str", WXPayUtil.generateNonceStr());
+        // 微信弹框
+        paramMap.put("body", "test");
+        paramMap.put("out_trade_no", orderNo);
+        // 支付金额
+        // 测试支付 0.01
+        paramMap.put("total_fee", "1");
+        // 当前支付客户端的 ip 地址
+        paramMap.put("spbill_create_ip", "127.0.0.1");
+        // 支付之后的跳转
+        paramMap.put("notify_url", "http://glkt.atguigu.cn/api/order/wxPay/notify");
+
+        paramMap.put("trade_type", "JSAPI");
+        // 设置参数值当前微信用户 openid
+        // - 根据订单号获取用户 id, 根据用户 id 获取 openid
+        // - 因为当前使用测试号, 测试号不支持支付功能, 为了使用正式服务号测试, 直接设置 oQTXC56lAy3xMOCkKCImHtHoLL
+        // paramMap.put("openid", "o1R-t5trto9c5sdYt6l1ncGmY5Y");
+        // UserInfo userInfo = userInfoFeignClient.getById(paymentInfo.getUserId());
+        // paramMap.put("openid", "oepf36SawvvS8Rdqva-Cy4flFFg");
+        paramMap.put("openid", "oQTXC56lAy3xMOCkKCImHtHoLL");
+
+        // 通过 httpclient 调用微信支付接口
+        // HTTPClient 来根据URL访问第三方接口并且传递参数
+        // - url: 微信固定路径
+        HttpClientUtils client = new HttpClientUtils("https://api.mch.weixin.qq.com/pay/unifiedorder");
+
+        try {
+            // 设置请求参数
+            // - 参数
+            // key: 商户 key
+            String paramXml = WXPayUtil.generateSignature(paramMap, "MXb72b9RfshXZD4FRGV5KLqmv5bx9LT9");
+            client.setXmlParam(paramXml);
+            client.setHttps(true);
+            // 请求
+            client.post();
+
+            // 微信支付接口返回数据
+            String xml = client.getContent();
+            log.info("XML: " + xml);
+            // xml -> map
+            Map<String, String> resultMap = WXPayUtil.xmlToMap(xml);
+
+            // 进行封装
+            if (null != resultMap.get("result_code") && !"SUCCESS".equals(resultMap.get("result_code"))) {
+                throw new GgktException(20001, "支付失败");
+            }
+
+            //4、再次封装参数
+            Map<String, String> parameterMap = new HashMap<>();
+            String prepayId = String.valueOf(resultMap.get("prepay_id"));
+            String packages = "prepay_id=" + prepayId;
+            parameterMap.put("appId", "wxf913bfa3a2c7eeeb");
+            parameterMap.put("nonceStr", resultMap.get("nonce_str"));
+            parameterMap.put("package", packages);
+            parameterMap.put("signType", "MD5");
+            parameterMap.put("timeStamp", String.valueOf(System.currentTimeMillis()));
+            String sign = WXPayUtil.generateSignature(parameterMap, "MXb72b9RfshXZD4FRGV5KLqmv5bx9LT9");
+
+            //返回结果
+            Map<String, Object> result = new HashMap<>();
+            result.put("appId", "wxf913bfa3a2c7eeeb");
+            result.put("timeStamp", parameterMap.get("timeStamp"));
+            result.put("nonceStr", parameterMap.get("nonceStr"));
+            result.put("signType", "MD5");
+            result.put("paySign", sign);
+            result.put("package", packages);
+            System.out.println(result);
+
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+}
+```
+
+
+
+#### 4.3.4 新建`HttpClientUtils`
+
+```java
+package com.atguigu.ggkt.util;
+
+import org.apache.http.Consts;
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.*;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+
+import javax.net.ssl.SSLContext;
+import java.io.IOException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.text.ParseException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * http 请求客户端
+ *
+ * @author 陈江林
+ * @date 2022/10/21 22:33
+ */
+public class HttpClientUtils {
+
+    private String url;
+    private Map<String, String> param;
+    private int statusCode;
+    private String content;
+    private String xmlParam;
+    private boolean isHttps;
+
+    public boolean isHttps() {
+        return isHttps;
+    }
+
+    public void setHttps(boolean isHttps) {
+        this.isHttps = isHttps;
+    }
+
+    public String getXmlParam() {
+        return xmlParam;
+    }
+
+    public void setXmlParam(String xmlParam) {
+        this.xmlParam = xmlParam;
+    }
+
+    public HttpClientUtils(String url, Map<String, String> param) {
+        this.url = url;
+        this.param = param;
+    }
+
+    public HttpClientUtils(String url) {
+        this.url = url;
+    }
+
+    public void setParameter(Map<String, String> map) {
+        param = map;
+    }
+
+    public void addParameter(String key, String value) {
+        if (param == null)
+            param = new HashMap<String, String>();
+        param.put(key, value);
+    }
+
+    public void post() throws ClientProtocolException, IOException {
+        HttpPost http = new HttpPost(url);
+        setEntity(http);
+        execute(http);
+    }
+
+    public void put() throws ClientProtocolException, IOException {
+        HttpPut http = new HttpPut(url);
+        setEntity(http);
+        execute(http);
+    }
+
+    public void get() throws ClientProtocolException, IOException {
+        if (param != null) {
+            StringBuilder url = new StringBuilder(this.url);
+            boolean isFirst = true;
+            for (String key : param.keySet()) {
+                if (isFirst) {
+                    url.append("?");
+                    isFirst = false;
+                } else {
+                    url.append("&");
+                }
+                url.append(key).append("=").append(param.get(key));
+            }
+            
+            this.url = url.toString();
+        }
+        
+        HttpGet http = new HttpGet(url);
+        execute(http);
+    }
+
+    /**
+     * set http post,put param
+     */
+    private void setEntity(HttpEntityEnclosingRequestBase http) {
+        if (param != null) {
+            List<NameValuePair> nvps = new LinkedList<>();
+            for (String key : param.keySet()) {
+                // 参数
+                nvps.add(new BasicNameValuePair(key, param.get(key)));
+            }
+
+            // 设置参数
+            http.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
+        }
+        
+        if (xmlParam != null) {
+            http.setEntity(new StringEntity(xmlParam, Consts.UTF_8));
+        }
+    }
+
+    private void execute(HttpUriRequest http) throws ClientProtocolException,
+            IOException {
+        CloseableHttpClient httpClient = null;
+        try {
+            if (isHttps) {
+                // 信任所有
+                SSLContext sslContext = new SSLContextBuilder()
+                        .loadTrustMaterial(null, (chain, authType) -> true).build();
+                SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+                        sslContext);
+                httpClient = HttpClients.custom().setSSLSocketFactory(sslsf)
+                        .build();
+            } else {
+                httpClient = HttpClients.createDefault();
+            }
+            
+            CloseableHttpResponse response = httpClient.execute(http);
+            try {
+                if (response != null) {
+                    if (response.getStatusLine() != null) {
+                        statusCode = response.getStatusLine().getStatusCode();
+                    }
+
+                    HttpEntity entity = response.getEntity();
+                    // 响应内容
+                    content = EntityUtils.toString(entity, Consts.UTF_8);
+                }
+            } finally {
+                response.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            httpClient.close();
+        }
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public String getContent() throws ParseException, IOException {
+        return content;
+    }
+
+}
+```
+
+
+
+### 4.4 引入依赖
+
+```xml
+<!-- 微信支付 SDK -->
+<dependency>
+	<groupId>com.github.wxpay</groupId>
+	<artifactId>wxpay-sdk</artifactId>
+	<version>0.0.3</version>
+</dependency>
+```
+
+
+
+### 4.5 获取正式公众号里自己微信的`openid`（示例）
+
+#### 4.5.1 配置文件修改为支付公众号
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666693647452-4b6d49ec-bbe7-4d18-a3e6-a67b24324661.png)
+
+```yaml
+wx: 
+	mp:
+    # 尚硅谷支付公众号的 appid
+    app-id: wxf913bfa3a2c7eeeb
+    # 尚硅谷支付公众号的 appsecret
+    secret: cd360d429e5c8db0c638d5ef9df74f6d
+```
+
+
+
+#### 4.5.2 新建控制类
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666695059092-34a8164c-f967-475d-af18-440da303593a.png)
+
+```java
+package com.atguigu.ggkt.wechat.api;
+
+import me.chanjar.weixin.common.api.WxConsts;
+import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
+import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
+import me.chanjar.weixin.common.util.http.URIUtil;
+import me.chanjar.weixin.mp.api.WxMpService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+/**
+ * 示例
+ * 获取 openid 控制类
+ *
+ * @author 陈江林
+ * @date 2022/10/25 18:38
+ */
+@Controller
+@RequestMapping("/api/wechat/openid")
+public class GetOpenIdController {
+
+    @Autowired
+    private WxMpService wxMpService;
+
+    @GetMapping("/authorize")
+    public String authorize() {
+        // 正式号的授权的回调域名
+        // 使用尚硅谷的接口获取 openid
+        String userInfoUrl = "http://glkt.atguigu.cn/api/user/openid/userInfo";
+
+        // 构造 oauth2 授权的 url 连接
+        String redirectURL = wxMpService.getOAuth2Service()
+                .buildAuthorizationUrl(userInfoUrl,
+                        WxConsts.OAuth2Scope.SNSAPI_USERINFO,
+                        URIUtil.encodeURIComponent(""));
+        // 跳转回调 redirect_uri，应当使用 https 链接来确保授权 code 的安全性
+        // 重定向到用户授权界面, 如果用户同意授权，页面将跳转至 redirect_uri/?code=CODE&state=STATE。
+        return "redirect:" + redirectURL;
+    }
+
+    /**
+     * 获取 openid
+     *
+     * @param code
+     * @return {@link String}
+     * @throws Exception
+     */
+    @GetMapping("/userInfo")
+    @ResponseBody
+    public String userInfo(@RequestParam("code") String code) throws Exception {
+        // 通过 code 换取网页授权 access_token
+        WxOAuth2AccessToken accessToken = wxMpService.getOAuth2Service().getAccessToken(code);
+        // 拉取用户信息(需 scope 为 snsapi_userinfo)
+        WxOAuth2UserInfo user = wxMpService.getOAuth2Service().getUserInfo(accessToken, null);
+        return user.getOpenid();
+    }
+
+}
+```
+
+
+
+
+
+### 4.6 路由和对应页面和对应的`API`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666833216320-3a4fa488-f6e0-4f48-a47f-61da85720609.png)
+
+```javascript
+,
+  {
+    // 支付下单
+    path: '/trade/:courseId',
+    name: 'Trade',
+    component: () => import('../views/Trade')
+  },
+  {
+    // 支付
+    path: '/pay/:orderId',
+    name: 'Pay',
+    component: () => import('../views/Pay')
+  }
+```
+
+
+
+#### 4.6.1 支付下单页面 `Trade.vue`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666948818465-09b15406-81f3-42ec-9554-4b0d5db2059e.png)
+
+```vue
+<template>
+
+  <div>
+    <van-image width="100%" height="200" :src="courseVo.cover"/>
+
+    <h1 class="van-ellipsis course_title">{{ courseVo.title }}</h1>
+
+    <div class="course_teacher_price_box">
+      <div class="course_teacher_price">
+        <div class="course_price">价格：</div>
+        <div class="course_price_number">￥{{ courseVo.price }}</div>
+      </div>
+    </div>
+    <div class="course_teacher_price_box">
+      <div class="course_teacher_box">
+        <div class="course_teacher">主讲： {{ teacher.name }}</div>
+        <van-image :src="teacher.avatar" round width="50px" height="50px"/>
+      </div>
+    </div>
+
+    <van-loading vertical="true" v-show="loading">加载中...</van-loading>
+
+    <div style="position:fixed;left:0px;bottom:50px;width:100%;height:50px;z-index:999;">
+      <!-- 优惠券单元格 -->
+      <van-coupon-cell
+        :coupons="coupons"
+        :chosen-coupon="chosenCoupon"
+        @click="showList = true"
+      />
+      <!-- 优惠券列表 -->
+      <van-popup
+        v-model="showList"
+        round
+        position="bottom"
+        style="height: 90%; padding-top: 4px;"
+      >
+        <van-coupon-list
+          :coupons="coupons"
+          :chosen-coupon="chosenCoupon"
+          :disabled-coupons="disabledCoupons"
+          @change="onChange"
+        />
+      </van-popup>
+    </div>
+
+    <van-goods-action>
+      <van-submit-bar :price="finalAmount" button-text="确认下单" @submit="sureOrder"/>
+    </van-goods-action>
+  </div>
+</template>
+
+<script>
+import courseApi from '@/api/course'
+import orderApi from '@/api/order'
+import couponApi from '@/api/coupon'
+
+export default {
+  data() {
+    return {
+      loading: false,
+
+      courseId: null,
+      courseVo: {},
+      teacher: {},
+
+      orderId: null,
+
+      showList: false,
+      chosenCoupon: -1,
+      coupons: [],
+      disabledCoupons: [],
+      couponId: null,
+      couponUseId: null,
+
+      couponReduce: 0,
+      finalAmount: 0
+    };
+  },
+
+  created() {
+    this.courseId = this.$route.params.courseId;
+    this.fetchData()
+    this.getCouponInfo();
+  },
+
+  methods: {
+    onChange(index) {
+      debugger
+      this.showList = false;
+      this.chosenCoupon = index;
+
+      this.couponId = this.coupons[index].id;
+      this.couponUseId = this.coupons[index].couponUseId;
+      this.couponReduce = this.coupons[index].value;
+      this.finalAmount = parseFloat(this.finalAmount) - parseFloat(this.couponReduce)
+    },
+
+    fetchData() {
+      debugger
+      this.loading = true;
+      courseApi.getInfo(this.courseId).then(response => {
+        // console.log(response.data);
+        this.courseVo = response.data.courseVo;
+        this.teacher = response.data.teacher;
+        //转换为分
+        this.finalAmount = parseFloat(this.courseVo.price) * 100;
+
+        this.loading = false;
+      });
+    },
+
+
+    getCouponInfo() {
+      //debugger
+      couponApi.findCouponInfo().then(response => {
+        // console.log(response.data);
+        this.coupons = response.data.abledCouponsList;
+        this.disabledCoupons = response.data.disabledCouponsList;
+      });
+    },
+
+    sureOrder() {
+      //debugger
+      this.loading = true;
+      let orderFormVo = {
+        'courseId': this.courseId,
+        'couponId': this.couponId,
+        'couponUseId': this.couponUseId
+      }
+      orderApi.submitOrder(orderFormVo).then(response => {
+        console.log(response.data)
+        this.$router.push({path: '/pay/' + response.data})
+      })
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.gap {
+  height: 10px;
+}
+
+::v-deep.van-image {
+  display: block;
+}
+
+.course_count {
+  background-color: #82848a;
+  color: white;
+  padding: 5px;
+  text-align: center;
+  border-right: 1px solid #939393;
+
+  h1 {
+    font-size: 14px;
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+}
+
+.course_title {
+  font-size: 20px;
+  margin: 10px;
+}
+
+.course_teacher_price_box {
+  margin: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .course_teacher_price {
+    display: flex;
+    font-size: 14px;
+    align-items: center;
+
+    .course_price_number {
+      color: red;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  }
+
+  .course_teacher_box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .course_teacher {
+      margin-right: 20px;
+    }
+  }
+}
+
+.course_contents {
+  margin: 10px;
+
+  .course_title_font {
+    color: #68cb9b;
+    font-weight: bold;
+  }
+
+  .course_content {
+    margin-bottom: 20px;
+  }
+}
+
+.course_chapter_list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    font-size: 14px;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+</style>
+```
+
+
+
+#### 4.6.2 支付页面 `Pay.vue`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666948800359-3723f4ba-1cc5-4e0a-bae4-170313fa7002.png)
+
+```vue
+<template>
+
+  <div>
+    <van-image width="100%" height="200" src="https://cdn.uviewui.com/uview/swiper/1.jpg"/>
+
+    <h1 class="van-ellipsis course_title">课程名称: {{ orderInfo.courseName }}</h1>
+
+    <div class="course_teacher_price_box">
+      <div class="course_price">订单号：{{ orderInfo.outTradeNo }}</div>
+    </div>
+    <div class="course_teacher_price_box">
+      <div class="course_price">下单时间：{{ orderInfo.createTime }}</div>
+    </div>
+    <div class="course_teacher_price_box">
+      <div class="course_price">支付状态：{{ orderInfo.orderStatus == 'UNPAID' ? '未支付' : '已支付' }}</div>
+    </div>
+    <div class="course_teacher_price_box" v-if="orderInfo.orderStatus == 'PAID'">
+      <div class="course_price">支付时间：{{ orderInfo.payTime }}</div>
+    </div>
+    <van-divider/>
+    <div class="course_teacher_price_box">
+      <div class="course_price">订单金额：<span style="color: red">￥{{ orderInfo.originAmount }}</span></div>
+    </div>
+    <div class="course_teacher_price_box">
+      <div class="course_price">优惠券金额：<span style="color: red">￥{{ orderInfo.couponReduce }}</span></div>
+    </div>
+    <div class="course_teacher_price_box">
+      <div class="course_price">支付金额：<span style="color: red">￥{{ orderInfo.finalAmount }}</span></div>
+    </div>
+
+    <van-goods-action>
+      <van-goods-action-button type="danger" text="支付" @click="pay" v-if="orderInfo.orderStatus == '0'"/>
+      <van-goods-action-button type="warning" text="去观看" @click="see" v-else/>
+    </van-goods-action>
+
+    <van-loading vertical="true" v-show="loading">加载中...</van-loading>
+  </div>
+</template>
+
+<script>
+import orderApi from '@/api/order'
+
+export default {
+  data() {
+    return {
+      loading: false,
+
+      orderId: null,
+      orderInfo: {},
+
+      showList: false,
+      chosenCoupon: -1,
+      coupons: [],
+      disabledCoupons: [],
+
+      couponReduce: 0,
+      finalAmount: 0
+    };
+  },
+
+  created() {
+    this.orderId = this.$route.params.orderId;
+
+    this.fetchData();
+  },
+
+  methods: {
+    fetchData() {
+      this.loading = true;
+      orderApi.getInfo(this.orderId).then(response => {
+        this.orderInfo = response.data;
+        this.finalAmount = parseFloat(this.orderInfo.finalAmount) * 100;
+
+        this.loading = false;
+      });
+    },
+
+    pay() {
+      this.loading = true;
+      orderApi.createJsapi(this.orderInfo.outTradeNo).then(response => {
+        console.log(response.data)
+        this.loading = false;
+        this.onBridgeReady(response.data)
+      })
+    },
+
+    onBridgeReady(data) {
+      let that = this;
+      console.log(data)
+      WeixinJSBridge.invoke(
+        'getBrandWCPayRequest', {
+          'appId': data.appId,     //公众号ID，由商户传入
+          'timeStamp': data.timeStamp,         //时间戳，自1970年以来的秒数
+          'nonceStr': data.nonceStr, //随机串
+          'package': data.package,
+          'signType': data.signType,         //微信签名方式：
+          'paySign': data.paySign //微信签名
+        },
+        function (res) {
+          if (res.err_msg == 'get_brand_wcpay_request:ok') {
+            // 使用以上方式判断前端返回,微信团队郑重提示：
+            //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+            console.log('支付成功')
+            that.queryPayStatus();
+          }
+        });
+    },
+
+    queryPayStatus() {
+      // 回调查询
+      orderApi.queryPayStatus(this.orderInfo.outTradeNo).then(response => {
+        console.log(response.data)
+        this.fetchData()
+      })
+    },
+
+    see() {
+      this.$router.push({path: '/courseInfo/' + this.orderInfo.courseId})
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.gap {
+  height: 10px;
+}
+
+::v-deep.van-image {
+  display: block;
+}
+
+.course_count {
+  background-color: #82848a;
+  color: white;
+  padding: 5px;
+  text-align: center;
+  border-right: 1px solid #939393;
+
+  h1 {
+    font-size: 14px;
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+}
+
+.course_title {
+  font-size: 20px;
+  margin: 10px;
+}
+
+.course_teacher_price_box {
+  margin: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .course_teacher_price {
+    display: flex;
+    font-size: 14px;
+    align-items: center;
+
+    .course_price_number {
+      color: red;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  }
+
+  .course_teacher_box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .course_teacher {
+      margin-right: 20px;
+    }
+  }
+}
+
+.course_contents {
+  margin: 10px;
+
+  .course_title_font {
+    color: #68cb9b;
+    font-weight: bold;
+  }
+
+  .course_content {
+    margin-bottom: 20px;
+  }
+}
+
+.course_chapter_list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    font-size: 14px;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+</style>
+```
+
+
+
+#### 4.6.3 `order.js`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666862272554-b267f141-13c7-458d-8745-840fc7d36d54.png)
+
+```javascript
+import {request} from '@/utils/request'
+
+const api_name = '/api/order'
+
+export default {
+
+  // 订单支付
+  createJsapi(orderNo) {
+    return request({
+      url: `${api_name}/wxPay/createJsapi/${orderNo}`,
+      method: 'get'
+    })
+  },
+
+  // 订单信息
+  getInfo(orderId) {
+    return request({
+      url: `${api_name}/orderInfo/getInfo/${orderId}`,
+      method: 'get'
+    })
+  },
+
+  submitOrder(orderFormVo) {
+    return request({
+      url: `${api_name}/orderInfo/submitOrder`,
+      method: 'post',
+      data: orderFormVo
+    })
+  },
+
+  queryPayStatus(orderNo) {
+    return request({
+      url: `${api_name}/wxPay/queryPayStatus/${orderNo}`,
+      method: 'get'
+    })
+  },
+
+  findListPage(pageNo, pageSize) {
+    return request({
+      url: `${api_name}/orderInfo/${pageNo}/${pageSize}`,
+      method: 'get'
+    })
+  },
+
+  findCourseListPage(pageNo, pageSize) {
+    return request({
+      url: `${api_name}/orderInfo/course/${pageNo}/${pageSize}`,
+      method: 'get'
+    })
+  }
+}
+```
+
+
+
+#### 4.6.4 `coupon.js`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666862296249-983e5a3b-2458-4e6c-942a-fe6f5bebf38e.png)
+
+```javascript
+import {request} from '@/utils/request'
+
+const api_name = '/api/activity/couponInfo'
+
+export default {
+
+  findCouponInfo() {
+    return request({
+      url: `${api_name}/findCouponInfo`,
+      method: 'get'
+    })
+  },
+
+  findListPage(pageNo, pageSize) {
+    return request({
+      url: `${api_name}/${pageNo}/${pageSize}`,
+      method: 'get'
+    })
+  }
+}
+```
+
+
+
+### 4.7 订单详情接口
+
+#### 4.7.1 追加代码 控制类
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666833401391-07d9d53a-c7de-467c-98bc-a35899b4f20d.png)
+
+```java
+    @ApiOperation(value = " 获取订单信息")
+    @GetMapping("/getInfo/{id}")
+    public Result<OrderInfoVo> getInfo(@PathVariable Long id) {
+        OrderInfoVo orderInfoVo = orderInfoService.getOrderInfoVoById(id);
+        return Result.ok(orderInfoVo);
+    }
+```
+
+
+
+#### 4.7.2 服务接口类
+
+```java
+    /**
+     * 根据 id 获取订单信息
+     *
+     * @param id id
+     * @return {@link OrderInfoVo}
+     */
+    OrderInfoVo getOrderInfoVoById(Long id);
+```
+
+
+
+#### 4.7.3 服务实现类
+
+```java
+    @Override
+    public OrderInfoVo getOrderInfoVoById(Long id) {
+        // 根据 id 获取订单信息
+        OrderInfo orderInfo = baseMapper.selectById(id);
+        // 根据 id 获取订单详情
+        OrderDetail orderDetail = orderDetailService.getById(id);
+        // 创建订单信息视图对象
+        OrderInfoVo orderInfoVo = new OrderInfoVo();
+        // 将属性复制到视图对象
+        BeanUtils.copyProperties(orderInfo, orderInfoVo);
+        // 设置属性值
+        orderInfoVo.setCourseId(orderDetail.getCourseId());
+        orderInfoVo.setCourseName(orderDetail.getCourseName());
+        return orderInfoVo;
+    }
+```
+
+
+
+### 4.8 查询支付结果
+
+#### 4.8.1 追加代码 控制类
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666833917632-f4765bc1-e29e-4316-a367-b24eaf58b2fa.png)
+
+```java
+    /**
+     * 查询支付状态
+     *
+     * @param orderNo 商户订单号（对应 order_indo 表字段 out_trade_no）
+     * @return {@link Result}
+     */
+    @ApiOperation(value = "查询支付状态")
+    @GetMapping("/queryPayStatus/{orderNo}")
+    public Result queryPayStatus(
+            @ApiParam(name = "orderNo", value = "订单No（）", required = true)
+            @PathVariable("orderNo") String orderNo) {
+        // 根据订单号调用微信接口查询支付状态
+        Map<String, String> resultMap = wxPayService.queryPayStatus(orderNo);
+
+        if (resultMap == null) {
+            return Result.fail(null).message("支付出错");
+        }
+
+        if ("SUCCESS".equals(resultMap.get("trade_state"))) {
+            // 更改订单状态，处理支付结果
+            String out_trade_no = resultMap.get("out_trade_no");
+            orderInfoService.updateOrderStatus(out_trade_no);
+            return Result.ok(null).message("支付成功");
+        }
+
+        return Result.ok().message("支付中");
+    }
+```
+
+
+
+#### 4.8.2 服务接口类
+
+```java
+    /**
+     * 根据订单号调用微信接口查询支付状态
+     *
+     * @param orderNo 微信订单号
+     * @return {@link Map}<{@link String}, {@link String}>
+     */
+    Map<String, String> queryPayStatus(String orderNo);
+```
+
+
+
+#### 4.8.3 服务实现类
+
+```java
+    @Override
+    public Map<String, String> queryPayStatus(String orderNo) {
+        try {
+            // 1、封装参数
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put("appid", "wxf913bfa3a2c7eeeb");
+            paramMap.put("mch_id", "1481962542");
+            paramMap.put("out_trade_no", orderNo);
+            paramMap.put("nonce_str", WXPayUtil.generateNonceStr());
+
+            // 2、设置请求
+            HttpClientUtils client = new HttpClientUtils("https://api.mch.weixin.qq.com/pay/orderquery");
+            client.setXmlParam(WXPayUtil.generateSignedXml(paramMap, "MXb72b9RfshXZD4FRGV5KLqmv5bx9LT9"));
+            client.setHttps(true);
+            client.post();
+            // 3、返回第三方的数据
+            String xml = client.getContent();
+            // 6、转成Map
+            // 7、返回
+            return WXPayUtil.xmlToMap(xml);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+```
+
+
+
+#### 4.8.4 服务接口类
+
+```java
+    /**
+     * 更新订单状态 - 已支付
+     *
+     * @param out_trade_no 商户订单号
+     */
+    void updateOrderStatus(String out_trade_no);
+```
+
+
+
+#### 4.8.5 服务实现类
+
+```java
+    @Override
+    public void updateOrderStatus(String out_trade_no) {
+        // 根据 out_trade_no 查询订单
+        LambdaQueryWrapper<OrderInfo> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OrderInfo::getOutTradeNo, out_trade_no);
+        OrderInfo orderInfo = baseMapper.selectOne(wrapper);
+        // 更新订单状态 1 已经支付
+        orderInfo.setOrderStatus("1");
+        baseMapper.updateById(orderInfo);
+    }
 ```

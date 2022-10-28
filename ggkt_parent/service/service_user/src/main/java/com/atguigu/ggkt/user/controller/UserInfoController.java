@@ -28,7 +28,7 @@ public class UserInfoController {
 
     @ApiOperation("获取用户")
     @GetMapping("/inner/getById/{id}")
-    public Result<UserInfo> getById(@PathVariable Long id) {
+    public Result<UserInfo> getById(@PathVariable("id") Long id) {
         UserInfo userInfo = userInfoService.getById(id);
         return Result.ok(userInfo);
     }
