@@ -54,7 +54,8 @@
           <el-select
             v-model="menu.name"
             placeholder="请选择"
-            @change="liveCourseChanged">
+            @change="liveCourseChanged"
+          >
             <el-option
               v-for="item in liveCourseList"
               :key="item.id"
@@ -102,7 +103,7 @@
 </template>
 <script>
 import menuApi from '@/api/wechat/menu'
-//import liveCourseApi from '@/api/live/liveCourse'
+import liveCourseApi from '@/api/live/course'
 import subjectApi from '@/api/vod/subject'
 
 const defaultForm = {
@@ -132,7 +133,7 @@ export default {
   // 当页面加载时获取数据
   created() {
     this.fetchData()
-    // this.fetchLiveCourse()
+    this.fetchLiveCourse()
     this.fetchSubject()
   },
 
@@ -146,12 +147,12 @@ export default {
       })
     },
 
-    // fetchLiveCourse() {
-    //   liveCourseApi.findLatelyList().then(response => {
-    //     this.liveCourseList = response.data
-    //     this.liveCourseList.push({'id': 0, 'courseName': '全部列表'})
-    //   })
-    // },
+    fetchLiveCourse() {
+      liveCourseApi.findLatelyList().then(response => {
+        this.liveCourseList = response.data
+        this.liveCourseList.push({'id': 0, 'courseName': '全部列表'})
+      })
+    },
 
     fetchSubject() {
       console.log('加载列表')

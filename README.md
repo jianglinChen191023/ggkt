@@ -12724,8 +12724,8 @@ spring:
     password: 12345678
   #返回json的全局时间格式
   jackson:
-    date-format=yyyy-MM-dd HH:mm:ss
-    time-zone=GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
   # nacos 地址
   cloud:
     nacos:
@@ -13339,8 +13339,8 @@ spring:
     password: 12345678
   #返回json的全局时间格式
   jackson:
-    date-format=yyyy-MM-dd HH:mm:ss
-    time-zone=GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
   # nacos 地址
   cloud:
     nacos:
@@ -13687,8 +13687,8 @@ spring:
     password: 12345678
   #返回json的全局时间格式
   jackson:
-    date-format=yyyy-MM-dd HH:mm:ss
-    time-zone=GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
   # nacos 地址
   cloud:
     nacos:
@@ -14911,8 +14911,8 @@ spring:
     password: 12345678
   #返回json的全局时间格式
   jackson:
-    date-format=yyyy-MM-dd HH:mm:ss
-    time-zone=GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
   # nacos 地址
   cloud:
     nacos:

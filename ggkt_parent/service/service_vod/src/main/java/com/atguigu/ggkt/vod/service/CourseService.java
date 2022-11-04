@@ -6,6 +6,7 @@ import com.atguigu.ggkt.vo.vod.CoursePublishVo;
 import com.atguigu.ggkt.vo.vod.CourseQueryVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -91,4 +92,11 @@ public interface CourseService extends IService<Course> {
      * @return {@link Map}<{@link String}, {@link Object}>
      */
     Map<String, Object> getInfoById(Long courseId);
+
+    /**
+     * 查询所有课程
+     *
+     * @return {@link List}<{@link Course}>
+     */
+    List<Course> findList();
 }

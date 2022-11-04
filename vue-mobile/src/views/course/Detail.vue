@@ -66,6 +66,8 @@
 
 <script>
 import {getInfo} from '@/api/course'
+import shareApi from '@/api/share'
+import wxShare from '@/utils/wxShare'
 
 export default {
   data() {
@@ -85,6 +87,29 @@ export default {
     this.fetchData();
   },
   methods: {
+    wxRegister() {
+      // 说明：后台加密url必须与当前页面url一致
+      let url = window.location.href.replace('#', 'guiguketan')
+      shareApi.getSignature(url).then(response => {
+        console.log(response.data);
+        // 记录分享用户
+        let link = '';
+        if(window.location.href.indexOf('?') !== -1) {
+          link = window.location.href + '&recommend=' + response.data.userEedId;
+        } else {
+          link = window.location.href + '?recommend=' + response.data.userEedId;
+        }
+
+        let option = {
+          'title': this.courseVo.title,
+          'desc': this.description,
+          'link': link,
+          'imgUrl': this.courseVo.cover
+        }
+
+        wxShare.wxRegister(response.data, option);
+      });
+    },
     fetchData() {
       this.loading = true;
       getInfo(this.courseId).then(response => {
@@ -97,6 +122,9 @@ export default {
         this.teacher = response.data.teacher;
 
         this.loading = false;
+
+        // 微信分享注册
+        this.wxRegister();
       });
     },
     buy() {

@@ -44,6 +44,12 @@ const routes = [
     path: '/pay/:orderId',
     name: 'Pay',
     component: () => import('../views/Pay')
+  },
+  {
+    // 直播观看
+    path: '/liveInfo/:liveCourseId',
+    name: 'LiveInfo',
+    component: () => import('../views/LiveInfo')
   }
 ]
 

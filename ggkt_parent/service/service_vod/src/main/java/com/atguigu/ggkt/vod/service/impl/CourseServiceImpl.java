@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -266,6 +267,30 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         map.put("teacher", teacher);
         map.put("isBuy", false);
         return map;
+    }
+
+    @Override
+    public List<Course> findList() {
+        return baseMapper.selectList(null).stream().peek(course -> {
+            // 封装数据
+            // 根据讲师 id 获取讲师名称
+            Teacher teacher = teacherService.getById(course.getTeacherId());
+            if (teacher != null) {
+                String name = teacher.getName();
+                course.getParam().put("teacherName", name);
+            }
+
+            // 根据课程分类 id 获取课程分类名称
+            Subject subjectOne = subjectService.getById(course.getSubjectParentId());
+            if (subjectOne != null) {
+                course.getParam().put("subjectParentTitle", subjectOne.getTitle());
+            }
+
+            Subject subjectTwo = subjectService.getById(course.getSubjectId());
+            if (subjectTwo != null) {
+                course.getParam().put("subjectTitle", subjectTwo.getTitle());
+            }
+        }).collect(Collectors.toList());
     }
 
 }

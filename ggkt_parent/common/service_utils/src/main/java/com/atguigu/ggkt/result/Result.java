@@ -21,6 +21,8 @@ public class Result<T> {
 
     public static final String SUCCESS = "成功";
     public static final String FAILED = "失败";
+    public static final Integer SUCCESS_CODE = 20000;
+    public static final Integer FAILED_CODE = 20001;
 
     /**
      * 状态码
@@ -55,7 +57,7 @@ public class Result<T> {
      * @return {@link Result}<{@link T}>
      */
     public static <T> Result<T> ok(T data) {
-        return new Result<>(20000, SUCCESS, data);
+        return new Result<>(SUCCESS_CODE, SUCCESS, data);
     }
 
     /**
@@ -73,7 +75,7 @@ public class Result<T> {
      * @return {@link Result}<{@link T}>
      */
     public static <T> Result<T> fail(T data) {
-        return new Result<>(20001, FAILED, data);
+        return new Result<>(FAILED_CODE, FAILED, data);
     }
 
     /**

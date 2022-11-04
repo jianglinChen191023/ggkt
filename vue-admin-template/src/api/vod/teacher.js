@@ -16,7 +16,7 @@ export default {
       method: 'delete'
     })
   },
-  // 讲师添加
+  // 讲师添加teacher
   saveTeacher(data) {
     return request({
       url: `${api_name}/save`,

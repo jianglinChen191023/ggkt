@@ -23,4 +23,5 @@ spring:
         { id: service-activity, uri: lb://service-activity, predicates: Path=/**/activity/** },
         { id: service-user, uri: lb://service-user, predicates: Path=/**/user/** },
         { id: service-wechat, uri: lb://service-wechat, predicates: Path=/**/wechat/** },
+        { id: service-live, uri: lb://service-live, predicates: Path=/**/live/** }
       ]

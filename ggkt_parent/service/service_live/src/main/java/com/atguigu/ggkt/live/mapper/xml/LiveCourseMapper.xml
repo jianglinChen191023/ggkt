@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.ggkt.live.mapper.LiveCourseMapper">
+
+    <select id="getLatelyList" resultType="com.atguigu.ggkt.vo.live.LiveCourseVo">
+        select id,
+               course_id,
+               course_name,
+               start_time,
+               end_time,
+               teacher_id,
+               cover,
+               create_time,
+               update_time,
+               is_deleted
+        from live_course
+        where date(start_time) >= curdate() and is_deleted = 0
+        order by id
+        limit 5
+    </select>
+
+</mapper>

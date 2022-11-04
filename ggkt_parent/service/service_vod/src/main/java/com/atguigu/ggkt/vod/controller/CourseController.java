@@ -1,6 +1,7 @@
 package com.atguigu.ggkt.vod.controller;
 
 
+import com.atguigu.ggkt.model.vod.Course;
 import com.atguigu.ggkt.result.Result;
 import com.atguigu.ggkt.vo.vod.CourseFormVo;
 import com.atguigu.ggkt.vo.vod.CoursePublishVo;
@@ -11,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -80,5 +82,10 @@ public class CourseController {
         return Result.ok();
     }
 
+    @ApiOperation("查询所有课程")
+    @GetMapping("/findAll")
+    public Result<List<Course>> findAll() {
+        return Result.ok(courseService.findList());
+    }
 }
 

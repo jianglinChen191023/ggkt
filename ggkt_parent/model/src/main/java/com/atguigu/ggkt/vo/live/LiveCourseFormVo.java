@@ -12,6 +12,9 @@ public class LiveCourseFormVo {
 	@ApiModelProperty(value = "id")
 	private Long id;
 
+	@ApiModelProperty(value = "课程id")
+	private Long courseId;
+
 	@ApiModelProperty(value = "直播名称")
 	private String courseName;
 

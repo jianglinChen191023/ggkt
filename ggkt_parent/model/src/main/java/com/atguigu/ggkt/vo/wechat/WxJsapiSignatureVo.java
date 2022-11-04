@@ -12,6 +12,6 @@ public class WxJsapiSignatureVo {
     private long timestamp;
     private String url;
     private String signature;
-    //加密用户id
+    // 加密用户id
     private String userEedId;
 }
