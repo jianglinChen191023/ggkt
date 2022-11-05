@@ -683,6 +683,129 @@
       - [4.8.4 服务接口类](#484-服务接口类)
       - [4.8.5 服务实现类](#485-服务实现类)
 
+- [十六 直播管理模块和公众号观看、分享](#十六-直播管理模块和公众号观看分享)
+  - [数据库表](#数据库表)
+  - [1 欢拓云直播](#1-欢拓云直播)
+    - [1.1 创建直播](#11-创建直播)
+    - [1.2 观看直播](#12-观看直播)
+    - [1.3 获取 `open id` 和 `open taken`](#13-获取-open-id-和-open-taken)
+    - [1.4 下载 `SDK`](#14-下载-sdk)
+  - [2 新建模块 `service_live`](#2-新建模块-service_live)
+    - [2.1 依赖](#21-依赖)
+    - [2.2 复制 `SDK` 文件到项目中](#22-复制-sdk-文件到项目中)
+    - [2.3 新建 `application.yml`](#23-新建-applicationyml)
+    - [2.4 启动类](#24-启动类)
+    - [2.5 生成代码](#25-生成代码)
+      - [2.5.1 修改控制层](#251-修改控制层)
+      - [2.5.2 删除 `entity`, 修改所有生成文件中对应 `entity`的引用](#252-删除-entity-修改所有生成文件中对应-entity的引用)
+    - [2.6 网关配置](#26-网关配置)
+  - [3 直播课程列表](#3-直播课程列表)
+    - [3.1 接口](#31-接口)
+      - [3.1.1 控制层](#311-控制层)
+      - [3.1.2 服务接口](#312-服务接口)
+      - [3.1.3 服务实现类](#313-服务实现类)
+    - [3.2 远程接口](#32-远程接口)
+      - [3.2.1 `service_live` 添加依赖](#321-service_live-添加依赖)
+      - [3.2.2 定义接口](#322-定义接口)
+    - [3.3 全局统一返回结果](#33-全局统一返回结果)
+    - [3.4 常量类](#34-常量类)
+  - [4 直播课程添加](#4-直播课程添加)
+    - [4.1 接口](#41-接口)
+      - [4.1.1 控制类](#411-控制类)
+      - [4.1.2 服务接口](#412-服务接口)
+      - [4.1.3 服务实现类](#413-服务实现类)
+    - [4.2 欢拓云属性配置类](#42-欢拓云属性配置类)
+      - [4.2.1 `application.yml` 配置](#421-applicationyml-配置)
+    - [4.3 欢拓云 `SDK` 配置类](#43-欢拓云-sdk-配置类)
+    - [4.4 常量](#44-常量)
+  - [5 直播课程删除](#5-直播课程删除)
+    - [5.1 接口](#51-接口)
+      - [5.1.1 控制类](#511-控制类)
+      - [5.1.2 服务接口](#512-服务接口)
+      - [5.1.3 服务实现类](#513-服务实现类)
+    - [5.2 常量](#52-常量)
+    - [6 直播课程修改](#6-直播课程修改)
+    - [6.1 接口](#61-接口)
+      - [6.1.1 控制层](#611-控制层)
+      - [6.1.2 服务接口](#612-服务接口)
+      - [6.1.3 服务实现](#613-服务实现)
+    - [6.2 常量](#62-常量)
+  - [7 查看账号](#7-查看账号)
+    - [7.1 接口](#71-接口)
+      - [7.1.1 控制层](#711-控制层)
+      - [7.1.2 服务接口](#712-服务接口)
+      - [7.1.3 服务实现](#713-服务实现)
+  - [8 配置信息](#8-配置信息)
+    - [8.1 查询配置信息](#81-查询配置信息)
+      - [8.1.1 控制层](#811-控制层)
+      - [8.1.2 服务接口](#812-服务接口)
+      - [8.1.3 服务实现](#813-服务实现)
+      - [8.1.4 根据直播课程 id 查询配置信息](#814-根据直播课程-id-查询配置信息)
+      - [8.1.5 根据直播课程 id 查询直播课程商品列表](#815-根据直播课程-id-查询直播课程商品列表)
+    - [8.2 修改直播配置信息](#82-修改直播配置信息)
+      - [8.2.1 控制层](#821-控制层)
+      - [8.2.2 服务接口](#822-服务接口)
+      - [8.2.3 服务实现](#823-服务实现)
+  - [9 获取最近直播课程](#9-获取最近直播课程)
+    - [9.1 控制层](#91-控制层)
+    - [9.2 服务接口](#92-服务接口)
+    - [9.3 服务实现](#93-服务实现)
+    - [9.4 `mapper` 接口](#94-mapper-接口)
+    - [9.5 `mapper.xml`](#95-mapperxml)
+    - [9.6 `DateUtil`](#96-dateutil)
+  - [10 获取所有课程](#10-获取所有课程)
+    - [10.1 控制层](#101-控制层)
+    - [10.2 服务接口](#102-服务接口)
+    - [10.3 服务实现](#103-服务实现)
+    - [10.4 后台管理系统-菜单管理-菜单列表](#104-后台管理系统-菜单管理-菜单列表)
+  - [11 后台管理系统-直播管理模块前端](#11-后台管理系统-直播管理模块前端)
+    - [11.1 配置路由](#111-配置路由)
+    - [11.2 新建页面](#112-新建页面)
+      - [11.2.1 `course/List.vue`](#1121-courselistvue)
+      - [11.2.2 `Config.vue`](#1122-configvue)
+    - [11.3 `API`](#113-api)
+      - [11.3.1 追加代码 `api`](#1131-追加代码-api)
+  - [12 测试直播管理模块](#12-测试直播管理模块)
+    - [12.1 列表显示](#121-列表显示)
+    - [12.2 `Bug`分页显示异常](#122-bug分页显示异常)
+      - [12.2.1 `Bug`修复 - `MybatisPlus` 分页插件](#1221-bug修复---mybatisplus-分页插件)
+    - [12.3 测试添加直播](#123-测试添加直播)
+      - [12.3.1 `Bug`时间显示错误](#1231-bug时间显示错误)
+    - [12.4 修改直播](#124-修改直播)
+      - [12.4.1 修复`Bug`](#1241-修复bug)
+      - [12.4.2 修改成功](#1242-修改成功)
+  - [13 微信公众号直播观看](#13-微信公众号直播观看)
+    - [13.1 欢拓云观看端集成`WebSDK`](#131-欢拓云观看端集成websdk)
+      - [13.1.1 获取用户`access_token`](#1311-获取用户access_token)
+      - [13.1.2 下载前端SDK](#1312-下载前端sdk)
+      - [12.1.3 使用快捷模板](#1213-使用快捷模板)
+    - [13.2 前端整合](#132-前端整合)
+      - [13.2.1 新建直播播放页面 `live.html`](#1321-新建直播播放页面-livehtml)
+      - [13.2.2 新建直播播放 `LiveInfo.vue`](#1322-新建直播播放-liveinfovue)
+      - [13.2.3 新建 `API`](#1323-新建-api)
+      - [13.2.4 新建工具 `wxShare.js`](#1324-新建工具-wxsharejs)
+    - [13.3 对应接口](#133-对应接口)
+      - [13.3.1 控制层](#1331-控制层)
+      - [13.3.2 服务接口](#1332-服务接口)
+      - [13.3.3 服务实现](#1333-服务实现)
+    - [13.4 测试公众号直播观看](#134-测试公众号直播观看)
+      - [13.4.1 管理后台添加直播](#1341-管理后台添加直播)
+      - [13.4.2 公众号设置路径](#1342-公众号设置路径)
+      - [13.4.3 登录开播并打开公众号点击测试直播菜单](#1343-登录开播并打开公众号点击测试直播菜单)
+  - [14 微信网页开发-使用微信分享功能](#14-微信网页开发-使用微信分享功能)
+    - [14.1 使用微信 `JS-SDK`](#141-使用微信-js-sdk)
+      - [14.1.1 绑定域名](#1411-绑定域名)
+      - [14.1.2 引入`JS`文件](#1412-引入js文件)
+    - [14.2 新建微信配置文件 `wxShare.js`](#142-新建微信配置文件-wxsharejs)
+    - [14.3 点播课程详情分享](#143-点播课程详情分享)
+      - [14.3.1 引入 `wxShare.js`](#1431-引入-wxsharejs)
+      - [14.3.2 `methods`](#1432-methods)
+    - [14.4 新建`API`, `share.js`](#144-新建api-sharejs)
+    - [14.5 获取签名](#145-获取签名)
+      - [14.5.1 控制层 - 新建 `ShareController`类](#1451-控制层---新建-sharecontroller类)
+      - [14.5.2 新建工具类 `Base64Util`](#1452-新建工具类-base64util)
+    - [14.6 测试](#146-测试)
+
 # 一 硅谷课堂
 
 ## 项目概述
@@ -20952,3 +21075,4533 @@ export default {
         baseMapper.updateById(orderInfo);
     }
 ```
+
+
+# 十六 直播管理模块和公众号观看、分享
+
+```
+git checkout -b 16.0.0_live
+```
+
+
+
+## 数据库表
+
+```plsql
+/*
+SQLyog Ultimate - MySQL GUI v8.2 
+MySQL - 5.7.29-32-log : Database - glkt_live
+*********************************************************************
+*/
+
+
+/*!40101 SET NAMES utf8 */;
+
+/*!40101 SET SQL_MODE=''*/;
+
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`glkt_live` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+
+USE `glkt_live`;
+
+/*Table structure for table `live_course` */
+
+DROP TABLE IF EXISTS `live_course`;
+
+CREATE TABLE `live_course` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `subject_id` bigint(20) DEFAULT NULL COMMENT '分类Id',
+  `course_name` varchar(64) NOT NULL DEFAULT '' COMMENT '直播名称',
+  `start_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '直播开始时间',
+  `end_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '直播结束时间',
+  `cover` varchar(255) DEFAULT NULL,
+  `course_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '课程id',
+  `teacher_id` bigint(20) DEFAULT NULL COMMENT '主播老师id',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_deleted` tinyint(3) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COMMENT='直播课程表';
+
+/*Data for the table `live_course` */
+
+insert  into `live_course`(`id`,`subject_id`,`course_name`,`start_time`,`end_time`,`cover`,`course_id`,`teacher_id`,`create_time`,`update_time`,`is_deleted`) values (1,NULL,'Spring Cloud源码讲解','2021-11-07 17:00:00','2021-10-28 17:00:00','https://online-teach-file.oss-cn-beijing.aliyuncs.com/cover/2021/08/09/f5ada6ba-8d12-4c00-8ad9-6a521f71b0da.jpg',2687659,2,'2021-10-27 08:11:33','2021-11-22 13:25:21',0),(2,NULL,'大数据Spark全面分析','2021-11-27 17:00:00','2021-10-28 17:00:00','https://online-teach-file.oss-cn-beijing.aliyuncs.com/cover/2021/08/09/f5ada6ba-8d12-4c00-8ad9-6a521f71b0da.jpg',2671785,1,'2021-10-27 08:50:18','2021-11-22 13:25:27',0),(3,NULL,'微服务架构演进','2021-12-28 16:00:00','2021-10-29 16:00:00','https://online-teach-file.oss-cn-beijing.aliyuncs.com/cover/2021/08/09/f5ada6ba-8d12-4c00-8ad9-6a521f71b0da.jpg',2679789,1,'2021-10-28 07:42:04','2021-11-22 13:25:36',0),(4,NULL,'JAVA新特性全面讲解','2021-11-08 14:30:00','2021-11-09 14:30:00','https://online-teach-file.oss-cn-beijing.aliyuncs.com/cover/2021/08/09/f5ada6ba-8d12-4c00-8ad9-6a521f71b0da.jpg',2687659,4,'2021-11-08 06:00:43','2021-11-09 07:44:03',0),(5,NULL,'Spring MVC讲解','2021-11-09 15:04:00','2021-11-10 15:00:00','https://online-teach-file.oss-cn-beijing.aliyuncs.com/cover/2021/08/09/f5ada6ba-8d12-4c00-8ad9-6a521f71b0da.jpg',2689593,2,'2021-11-09 07:40:37','2021-11-22 13:31:03',0),(6,NULL,'Mysql源码级讲解','2021-11-22 21:25:00','2021-11-23 21:25:00','http://47.93.148.192:9000/gmall/20211122/1504320cbe2b246514.jpg',2709689,5,'2021-11-22 13:29:18','2021-11-22 13:30:24',0),(7,NULL,'Spark讲解','2021-11-23 18:30:00','2021-11-23 22:00:00','https://cdn.uviewui.com/uview/swiper/1.jpg',2711543,6,'2021-11-23 10:40:44','2021-11-23 10:40:44',0),(8,NULL,'11月26日晚8点电商分享','2021-11-26 17:00:00','2021-11-27 17:00:00','https://online-teach-file.oss-cn-beijing.aliyuncs.com/cover/2021/08/09/2829c8d1-f16f-44a4-96cd-d13b451a8d56.jpg',2716727,6,'2021-11-26 09:19:39','2021-11-26 09:20:58',0);
+
+/*Table structure for table `live_course_account` */
+
+DROP TABLE IF EXISTS `live_course_account`;
+
+CREATE TABLE `live_course_account` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `live_course_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '直播课程id',
+  `zhubo_account` varchar(20) DEFAULT NULL COMMENT '主播账号（欢拓系统的主播id）',
+  `zhubo_password` varchar(32) DEFAULT NULL COMMENT '主播密码',
+  `zhubo_key` varchar(64) NOT NULL DEFAULT '' COMMENT '主播登录秘钥',
+  `admin_key` varchar(32) NOT NULL DEFAULT '' COMMENT '助教登录秘钥',
+  `user_key` varchar(32) NOT NULL DEFAULT '' COMMENT '学生登录秘钥',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_deleted` tinyint(3) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COMMENT='直播课程账号表（受保护信息）';
+
+/*Data for the table `live_course_account` */
+
+insert  into `live_course_account`(`id`,`live_course_id`,`zhubo_account`,`zhubo_password`,`zhubo_key`,`admin_key`,`user_key`,`create_time`,`update_time`,`is_deleted`) values (1,1,'582523',NULL,'2518','6240','8447','2021-10-27 08:11:33','2021-10-27 08:11:33',0),(2,2,'582549','000000','1325','6632','8582','2021-10-27 08:50:30','2021-10-27 08:50:30',0),(3,3,'582825','111111','1758','5167','8643','2021-10-28 07:42:04','2021-10-28 07:42:04',0),(4,4,'582549','000000','3800','4233','8874','2021-11-08 06:00:43','2021-11-08 06:04:27',0),(5,5,'582523','111111','3060','4868','8963','2021-11-09 07:40:37','2021-11-09 07:40:37',0),(6,6,'582825','111111','3977','4548','8658','2021-11-22 13:29:18','2021-11-22 13:29:18',0),(7,7,'589813','111111','1921','4328','8302','2021-11-23 10:40:44','2021-11-23 10:40:44',0),(8,8,'589813','111111','3108','6824','8717','2021-11-26 09:19:39','2021-11-26 09:19:39',0);
+
+/*Table structure for table `live_course_config` */
+
+DROP TABLE IF EXISTS `live_course_config`;
+
+CREATE TABLE `live_course_config` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `live_course_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '直播课程id',
+  `page_view_mode` tinyint(3) NOT NULL DEFAULT '0' COMMENT '界面模式 1全屏模式 0二分屏 2课件模式',
+  `number_enable` tinyint(3) NOT NULL DEFAULT '0' COMMENT '是否开启 观看人数 0否 1是',
+  `store_enable` tinyint(3) NOT NULL DEFAULT '0' COMMENT '商城是否开启 0未开启 1开启',
+  `store_type` tinyint(3) NOT NULL DEFAULT '1' COMMENT '1商品列表,2商城链接,3商城二维码',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_deleted` tinyint(3) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COMMENT='直播课程配置表';
+
+/*Data for the table `live_course_config` */
+
+insert  into `live_course_config`(`id`,`live_course_id`,`page_view_mode`,`number_enable`,`store_enable`,`store_type`,`create_time`,`update_time`,`is_deleted`) values (1,2,1,1,1,1,'2021-10-28 07:27:23','2021-10-28 07:27:23',0),(2,3,1,1,1,1,'2021-10-28 07:42:29','2021-10-28 07:42:29',0),(3,4,1,1,1,1,'2021-11-08 06:12:04','2021-11-08 06:12:04',0),(4,5,1,1,1,1,'2021-11-09 07:54:01','2021-11-09 07:54:01',0),(5,6,1,1,1,1,'2021-11-22 13:32:13','2021-11-22 13:32:13',0),(6,7,1,1,1,1,'2021-11-23 10:42:01','2021-11-23 10:42:01',0),(7,8,1,1,1,1,'2021-11-26 09:20:07','2021-11-26 09:20:07',0);
+
+/*Table structure for table `live_course_description` */
+
+DROP TABLE IF EXISTS `live_course_description`;
+
+CREATE TABLE `live_course_description` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `live_course_id` bigint(20) DEFAULT NULL,
+  `description` text COMMENT '课程简介',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_deleted` tinyint(3) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COMMENT='课程简介';
+
+/*Data for the table `live_course_description` */
+
+insert  into `live_course_description`(`id`,`live_course_id`,`description`,`create_time`,`update_time`,`is_deleted`) values (1,1,'<p>本套Java视频完全针对零基础学员，课堂实录，自发布以来，好评如潮！Java视频中注重与学生互动，讲授幽默诙谐、细致入微，覆盖Java基础所有核心知识点，同类Java视频中也是代码量大、案例多、实战性强的。同时，本Java视频教程注重技术原理剖析，深入JDK源码，辅以代码实战贯穿始终，用实践驱动理论，并辅以必要的代码练习。</p>\n<p>------------------------------------</p>\n<p>视频特点：</p>\n<p>通过学习本Java视频教程，大家能够真正将Java基础知识学以致用、活学活用，构架Java编程思想，牢牢掌握\"源码级\"的Javase核心技术，并为后续JavaWeb等技术的学习奠定扎实基础。<br /><br />1.通俗易懂，细致入微：每个知识点高屋建瓴，深入浅出，简洁明了的说明问题<br />2.具实战性：全程真正代码实战，涵盖上百个企业应用案例及练习<br />3.深入：源码分析，更有 Java 反射、动态代理的实际应用等<br />4.登录尚硅谷官网，技术讲师免费在线答疑</p>\n','2021-11-08 01:42:07','2021-11-08 01:42:18',0),(2,2,'<p>本套Java视频完全针对零基础学员，课堂实录，自发布以来，好评如潮！Java视频中注重与学生互动，讲授幽默诙谐、细致入微，覆盖Java基础所有核心知识点，同类Java视频中也是代码量大、案例多、实战性强的。同时，本Java视频教程注重技术原理剖析，深入JDK源码，辅以代码实战贯穿始终，用实践驱动理论，并辅以必要的代码练习。</p>\n<p>------------------------------------</p>\n<p>视频特点：</p>\n<p>通过学习本Java视频教程，大家能够真正将Java基础知识学以致用、活学活用，构架Java编程思想，牢牢掌握\"源码级\"的Javase核心技术，并为后续JavaWeb等技术的学习奠定扎实基础。<br /><br />1.通俗易懂，细致入微：每个知识点高屋建瓴，深入浅出，简洁明了的说明问题<br />2.具实战性：全程真正代码实战，涵盖上百个企业应用案例及练习<br />3.深入：源码分析，更有 Java 反射、动态代理的实际应用等<br />4.登录尚硅谷官网，技术讲师免费在线答疑</p>\n','2021-11-08 01:42:25','2021-11-08 01:42:30',0),(14,3,'<p>本套Java视频完全针对零基础学员，课堂实录，自发布以来，好评如潮！Java视频中注重与学生互动，讲授幽默诙谐、细致入微，覆盖Java基础所有核心知识点，同类Java视频中也是代码量大、案例多、实战性强的。同时，本Java视频教程注重技术原理剖析，深入JDK源码，辅以代码实战贯穿始终，用实践驱动理论，并辅以必要的代码练习。</p>\n<p>------------------------------------</p>\n<p>视频特点：</p>\n<p>通过学习本Java视频教程，大家能够真正将Java基础知识学以致用、活学活用，构架Java编程思想，牢牢掌握\"源码级\"的Javase核心技术，并为后续JavaWeb等技术的学习奠定扎实基础。<br /><br />1.通俗易懂，细致入微：每个知识点高屋建瓴，深入浅出，简洁明了的说明问题<br />2.具实战性：全程真正代码实战，涵盖上百个企业应用案例及练习<br />3.深入：源码分析，更有 Java 反射、动态代理的实际应用等<br />4.登录尚硅谷官网，技术讲师免费在线答疑</p>\n','2021-11-08 01:42:34','2021-11-08 01:42:34',0),(15,4,'<p>本套Java视频完全针对零基础学员，课堂实录，自发布以来，好评如潮！Java视频中注重与学生互动，讲授幽默诙谐、细致入微，覆盖Java基础所有核心知识点，同类Java视频中也是代码量大、案例多、实战性强的。同时，本Java视频教程注重技术原理剖析，深入JDK源码，辅以代码实战贯穿始终，用实践驱动理论，并辅以必要的代码练习。</p>\n<p>------------------------------------</p>\n<p>视频特点：</p>\n<p>通过学习本Java视频教程，大家能够真正将Java基础知识学以致用、活学活用，构架Java编程思想，牢牢掌握\"源码级\"的Javase核心技术，并为后续JavaWeb等技术的学习奠定扎实基础。<br /><br />1.通俗易懂，细致入微：每个知识点高屋建瓴，深入浅出，简洁明了的说明问题<br />2.具实战性：全程真正代码实战，涵盖上百个企业应用案例及练习<br />3.深入：源码分析，更有 Java 反射、动态代理的实际应用等<br />4.登录尚硅谷官网，技术讲师免费在线答疑</p>','2021-11-08 06:00:43','2021-11-08 06:24:59',0),(16,5,'本套Java视频完全针对零基础学员，课堂实录，自发布以来，好评如潮！Java视频中注重与学生互动，讲授幽默诙谐、细致入微，覆盖Java基础所有核心知识点，同类Java视频中也是代码量大、案例多、实战性强的。同时，本Java视频教程注重技术原理剖析，深入JDK源码，辅以代码实战贯穿始终，用实践驱动理论，并辅以必要的代码练习。','2021-11-09 07:40:37','2021-11-09 07:40:37',0),(17,6,' 数据库就像一棵常青的技能树，无论是初级程序员还是CTO、首席架构师都能从中汲取足够的技术养料。菜鸟往往积累单点技术，如 DML、DDL、存储过程和函数、约束、索引的数据结构，老鸟则需要吃透底层原理，数据库事务ACID如何实现？锁机制与MVCC又是怎么回事？分布式场景下数据库怎么优化保持高性能？\n      知道怎么用是一方面，知道为什么则是更为稀缺的能力。程序员核心能力中至关重要的一点：精通数据库。精通意味着：第一，形成知识网，更灵活地应对突发问题；第二，懂底层原理，更自由地应对复杂多变的业务场景。','2021-11-22 13:29:18','2021-11-22 13:29:18',0),(18,7,'Spring4.0是 Spring 推出的一个重大版本升级，进一步加强了 Spring 作为 Java 领域第一开源平台的地位。Spring4.0 引入了众多 Java 开发者期盼的新特性，如泛型依赖注入、SpEL、校验及格式化框架、Rest风格的 WEB 编程模型等。这些新功能实用性强、易用性高，可大幅降低 JavaEE 开发的难度，同时有效提升应用开发的优雅性。','2021-11-23 10:40:44','2021-11-23 10:40:44',0),(19,8,' 数据库就像一棵常青的技能树，无论是初级程序员还是CTO、首席架构师都能从中汲取足够的技术养料。菜鸟往往积累单点技术，如 DML、DDL、存储过程和函数、约束、索引的数据结构，老鸟则需要吃透底层原理，数据库事务ACID如何实现？锁机制与MVCC又是怎么回事？分布式场景下数据库怎么优化保持高性能？\n      知道怎么用是一方面，知道为什么则是更为稀缺的能力。程序员核心能力中至关重要的一点：精通数据库。精通意味着：第一，形成知识网，更灵活地应对突发问题；第二，懂底层原理，更自由地应对复杂多变的业务场景。\n','2021-11-26 09:19:39','2021-11-26 09:21:18',0);
+
+/*Table structure for table `live_course_goods` */
+
+DROP TABLE IF EXISTS `live_course_goods`;
+
+CREATE TABLE `live_course_goods` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `live_course_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '直播课程id',
+  `goods_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '推荐点播课程id',
+  `name` varchar(100) DEFAULT NULL COMMENT '商品名称',
+  `img` varchar(255) DEFAULT NULL COMMENT '图片',
+  `price` decimal(10,0) DEFAULT NULL COMMENT '商品现价',
+  `originalPrice` decimal(10,0) DEFAULT NULL COMMENT '商品原价',
+  `tab` tinyint(3) DEFAULT NULL COMMENT '商品标签',
+  `url` varchar(255) DEFAULT NULL COMMENT '商品链接',
+  `putaway` varchar(255) DEFAULT NULL COMMENT '商品状态：0下架，1上架，2推荐',
+  `pay` tinyint(3) DEFAULT NULL COMMENT '购买模式(1,链接购买 2,二维码购买)',
+  `qrcode` varchar(255) DEFAULT NULL COMMENT '商品二维码',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_deleted` tinyint(3) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COMMENT='直播课程关联推荐表';
+
+/*Data for the table `live_course_goods` */
+
+insert  into `live_course_goods`(`id`,`live_course_id`,`goods_id`,`name`,`img`,`price`,`originalPrice`,`tab`,`url`,`putaway`,`pay`,`qrcode`,`create_time`,`update_time`,`is_deleted`) values (1,2,1,'小米1','http://47.93.148.192:9000/gmall/20211027/235.jpg','10','10',1,'http://item.atguigu.cn/1.html','1',1,'','2021-10-28 07:29:36','2021-10-28 08:54:17',0),(2,3,1,'小米2','http://47.93.148.192:9000/gmall/20211027/235.jpg','10','10',1,'http://item.atguigu.cn/2.html','1',1,'','2021-10-28 07:42:30','2021-10-28 08:52:54',0),(3,4,18,'Java精品课程','https://online-teach-file.oss-cn-beijing.aliyuncs.com/cover/2021/08/09/e4ee03d7-52bd-41ca-99f9-04dc23250a71.jpg','22800','22800',1,'http://item.gmall.com/118.html','1',1,'','2021-11-08 06:12:05','2021-11-08 06:12:05',0),(4,4,8,'大数据Scala入门到精通（新版）','https://online-teach-file.oss-cn-beijing.aliyuncs.com/cover/2021/08/10/f2cd321f-6378-4e92-8515-0b8f42f2770b.jpg','0','0',1,'http://item.gmall.com/18.html','1',1,'','2021-11-08 06:12:05','2021-11-08 06:12:05',0),(5,5,15,'  14417人 分享 收藏 SpringMVC','https://online-teach-file.oss-cn-beijing.aliyuncs.com/cover/2021/08/09/273ddd90-5ef7-40e5-9ffd-86e8175fc229.jpg','22800','22800',1,'http://glkt.atguigu.cn/#/courseInfo/15','1',1,'','2021-11-09 07:54:01','2021-11-09 07:54:01',0),(6,6,19,'JAVA之Mysql基础','http://47.93.148.192:9000/gmall/20211122/1504320cbe2b246514.jpg','1000','1000',1,'http://glkt.atguigu.cn/#/courseInfo/19','1',1,'','2021-11-22 13:32:13','2021-11-22 13:32:13',0),(7,6,18,'Java精品课程','https://online-teach-file.oss-cn-beijing.aliyuncs.com/cover/2021/08/09/e4ee03d7-52bd-41ca-99f9-04dc23250a71.jpg','22800','22800',1,'http://glkt.atguigu.cn/#/courseInfo/18','1',1,'','2021-11-22 13:32:13','2021-11-22 13:32:13',0),(8,7,19,'JAVA之Mysql基础','http://47.93.148.192:9000/gmall/20211122/1504320cbe2b246514.jpg','1000','1000',1,'http://glkt.atguigu.cn/#/courseInfo/19','1',1,'','2021-11-23 10:42:01','2021-11-23 10:42:01',0),(9,7,15,'  14417人 分享 收藏 SpringMVC','https://online-teach-file.oss-cn-beijing.aliyuncs.com/cover/2021/08/09/273ddd90-5ef7-40e5-9ffd-86e8175fc229.jpg','22800','22800',1,'http://glkt.atguigu.cn/#/courseInfo/15','1',1,'','2021-11-23 10:42:01','2021-11-23 10:42:01',0),(10,8,19,'JAVA之Mysql基础','http://47.93.148.192:9000/gmall/20211122/1504320cbe2b246514.jpg','1000','1000',1,'http://glkt.atguigu.cn/#/courseInfo/19','1',1,'','2021-11-26 09:20:07','2021-11-26 09:20:07',0),(11,8,15,'  14417人 分享 收藏 SpringMVC','https://online-teach-file.oss-cn-beijing.aliyuncs.com/cover/2021/08/09/273ddd90-5ef7-40e5-9ffd-86e8175fc229.jpg','22800','22800',1,'http://glkt.atguigu.cn/#/courseInfo/15','1',1,'','2021-11-26 09:20:07','2021-11-26 09:20:07',0);
+
+/*Table structure for table `live_visitor` */
+
+DROP TABLE IF EXISTS `live_visitor`;
+
+CREATE TABLE `live_visitor` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `live_course_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '直播课程id',
+  `course_name` varchar(100) DEFAULT NULL,
+  `user_id` varchar(50) NOT NULL DEFAULT '0' COMMENT '来访者用户id',
+  `nick_name` varchar(100) DEFAULT NULL COMMENT '昵称',
+  `join_time` varchar(30) DEFAULT NULL COMMENT '进入时间',
+  `leave_time` varchar(30) DEFAULT NULL COMMENT '离开的时间',
+  `location` varchar(50) DEFAULT NULL COMMENT '用户地理位置',
+  `duration` bigint(20) DEFAULT NULL COMMENT '用户停留的时间(单位：秒)',
+  `duration_time` varchar(30) DEFAULT NULL COMMENT '用户停留时间(时分秒)',
+  `live_visitor_id` varchar(50) DEFAULT NULL COMMENT '平台来访者id，去重使用',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_deleted` tinyint(3) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `idx_live_visitor_id` (`live_visitor_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COMMENT='直播来访者记录表';
+
+/*Data for the table `live_visitor` */
+
+insert  into `live_visitor`(`id`,`live_course_id`,`course_name`,`user_id`,`nick_name`,`join_time`,`leave_time`,`location`,`duration`,`duration_time`,`live_visitor_id`,`create_time`,`update_time`,`is_deleted`) values (6,1,'Spring Cloud深入源码讲解','1','晴天','2021-11-08 14:41:43','2021-11-08 14:48:05','中国北京北京',382,'00:06:22','220172045','2021-11-11 08:01:42','2021-11-11 08:01:42',0),(7,1,'Spring Cloud深入源码讲解','zb_xid_508954845','钟老师','2021-11-08 14:41:44','2021-11-08 14:47:47','中国四川成都',363,'00:06:03','220172043','2021-11-11 08:01:42','2021-11-11 08:01:42',0),(8,1,'Spring Cloud深入源码讲解','4','晴天','2021-11-08 14:10:06','2021-11-08 14:25:23','中国四川成都',917,'00:15:17','220171079','2021-11-11 08:01:42','2021-11-11 08:01:42',0),(9,1,'Spring Cloud深入源码讲解','zb_xid_508954845','钟老师','2021-11-08 14:04:41','2021-11-08 14:35:09','中国四川成都',1828,'00:30:28','220171077','2021-11-11 08:01:42','2021-11-11 08:01:42',0);
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+```
+
+
+
+## 1 欢拓云直播
+
+- 欢拓云直播平台：欢拓是一家以直播技术为核心的网络平台，旨在帮助人们通过网络也能实现真实互动通讯。
+- 官网：`https://www.talk-fun.com/`
+- 接口文档地址：`http://open.talk-fun.com/docs/getstartV2/document.html`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1666951226796-b769beb1-15da-45d5-9552-ec5a0d5d2213.png)
+
+
+
+### 1.1 创建直播
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667054845082-eeaee744-86de-449e-a513-e7dbfe2a4350.png)
+
+此处为语雀加密文本卡片，点击链接查看：https://www.yuque.com/lingchen-bf1rc/hoahc6/uvmgv5#vC9Ny
+
+
+
+### 1.2 观看直播
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667055262482-b5de6e9c-3219-4da8-a090-ce134f483a1c.png)
+
+
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667055292313-4f853ef9-8c20-4a47-98e7-d12f447c1c53.png)
+
+
+
+### 1.3 获取 `open id` 和 `open taken`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667055692709-05a8a9a3-2700-4c8d-b6c1-1231368dbf84.png)
+
+
+
+### 1.4 下载 `SDK`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667056131306-71afa34c-772d-444d-9a2b-9ab27af3e9c7.png)
+
+
+
+## 2 新建模块 `service_live`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667057411533-d6b3c1bd-c55b-44c3-9800-95b9d7afe29d.png)
+
+### 2.1 依赖
+
+```xml
+  	<dependencies>
+			<!-- 直播  -->
+			<dependency>
+			    <groupId>commons-httpclient</groupId>
+			    <artifactId>commons-httpclient</artifactId>
+			    <version>3.0.1</version>
+			</dependency>
+			<dependency>
+			    <groupId>net.sf.json-lib</groupId>
+			    <artifactId>json-lib</artifactId>
+			    <version>2.4</version>
+			    <classifier>jdk15</classifier>
+			</dependency>
+		</dependencies>
+
+   <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.yml</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.yml</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+    </build>
+```
+
+
+
+### 2.2 复制 `SDK` 文件到项目中
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667056403465-449428bd-23f0-4e9b-8263-545f970c7f0f.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667057691049-76b5fae5-c69c-4ed1-a5f6-276960ea3cea.png)
+
+- 修改 `MTCloud` 中导入 `MD5Util` 的路径
+- 填写`id` 和 `token`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667060381200-1bedbf6e-3733-416e-a4c9-de7a679c859e.png)
+
+### 2.3 新建 `application.yml`
+
+```yaml
+# 服务端口
+server:
+  port: 8306
+
+spring:
+  application:
+    name: service-live
+  # 环境设置：dev、test、prod
+  profiles:
+    active:
+      dev
+  # mysql数据库连接
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/glkt_live?characterEncoding=utf-8&useSSL=false
+    username: root
+    password: 12345678
+  # 返回json的全局时间格式
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  # nacos 地址
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+# mybatis 日志
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:com/atguigu/ggkt/live/mapper/xml/*.xml
+```
+
+
+
+### 2.4 启动类
+
+```java
+package com.atguigu.ggkt.live;
+
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.ComponentScan;
+
+/**
+ * @author 陈江林
+ * @date 2022/10/29 23:41
+ */
+@SpringBootApplication
+@EnableDiscoveryClient
+@EnableFeignClients(basePackages = "com.atguigu")
+@ComponentScan(basePackages = "com.atguigu")
+@MapperScan("com.atguigu.ggkt.live.mapper")
+public class ServiceLiveApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ServiceLiveApplication.class, args);
+    }
+
+}
+```
+
+
+
+### 2.5 生成代码
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667264905443-82f19c84-dcd9-41d9-841a-2984df51c4f7.png)
+
+- 数据库: `glkt_live`
+- 表: `strategy.setInclude("live_course", "live_course_account", "live_course_config", "live_course_description", "live_course_goods", "live_visitor");`
+- 模块名: `pc.setModuleName("live");`
+
+#### 2.5.1 修改控制层
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667266487811-3315a0ae-d589-4444-aab4-38ea4a4f8f7b.png)
+
+- 留这两个
+
+
+
+#### 2.5.2 删除 `entity`, 修改所有生成文件中对应 `entity`的引用
+
+
+
+### 2.6 网关配置
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667267040089-1fb0d34d-47e5-4610-a95d-564619b4a0f7.png)
+
+```yaml
+{ id: service-live, uri: lb://service-live, predicates: Path=/**/live/** }
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667267090985-b0ba0f22-f934-4617-9cc6-906aad446f57.png)
+
+
+
+
+
+## 3 直播课程列表
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667266925816-4b15ad67-f86a-479e-b484-cd3e4e43f954.png)
+
+### 3.1 接口
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667270612254-7561d09d-8928-4d65-bacf-5e50a3398a66.png)
+
+#### 3.1.1 控制层
+
+```java
+package com.atguigu.ggkt.live.controller;
+
+import com.atguigu.ggkt.live.service.LiveCourseService;
+import com.atguigu.ggkt.model.live.LiveCourse;
+import com.atguigu.ggkt.result.Result;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * <p>
+ * 直播课程表 前端控制器
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-11-01
+ */
+@Api(tags = "直播课程表")
+@RestController
+@RequestMapping("/admin/live/liveCourse")
+public class LiveCourseController {
+
+    @Autowired
+    private LiveCourseService liveCourseService;
+
+    @ApiOperation("直播课程列表分页数据")
+    @GetMapping("/{page}/{limit}")
+    public Result<IPage<LiveCourse>> list(
+            @ApiParam(value = "当前页", required = true)
+            @PathVariable("page") Long page,
+            @ApiParam(value = "每页显示条数", required = true)
+            @PathVariable("limit") Long limit
+    ) {
+        Page<LiveCourse> pageParam = new Page<>(page, limit);
+        IPage<LiveCourse> pageModel = liveCourseService.selectPage(pageParam);
+        return Result.ok(pageModel);
+    }
+
+}
+```
+
+
+
+#### 3.1.2 服务接口
+
+```java
+package com.atguigu.ggkt.live.service;
+
+import com.atguigu.ggkt.model.live.LiveCourse;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.IService;
+
+/**
+ * <p>
+ * 直播课程表 服务类
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-11-01
+ */
+public interface LiveCourseService extends IService<LiveCourse> {
+
+    /**
+     * 直播课程列表分页数据
+     *
+     * @param pageParam
+     * @return
+     */
+    IPage<LiveCourse> selectPage(Page<LiveCourse> pageParam);
+
+}
+```
+
+
+
+#### 3.1.3 服务实现类
+
+```java
+package com.atguigu.ggkt.live.service.impl;
+
+import com.atguigu.ggkt.client.course.CourseFeignClient;
+import com.atguigu.ggkt.constant.GgktConstant;
+import com.atguigu.ggkt.exception.GgktException;
+import com.atguigu.ggkt.live.mapper.LiveCourseMapper;
+import com.atguigu.ggkt.live.service.LiveCourseService;
+import com.atguigu.ggkt.model.live.LiveCourse;
+import com.atguigu.ggkt.model.vod.Teacher;
+import com.atguigu.ggkt.result.Result;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+/**
+ * <p>
+ * 直播课程表 服务实现类
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-11-01
+ */
+@Service
+public class LiveCourseServiceImpl extends ServiceImpl<LiveCourseMapper, LiveCourse> implements LiveCourseService {
+
+    @Autowired
+    private CourseFeignClient courseFeignClient;
+
+    @Override
+    public IPage<LiveCourse> selectPage(Page<LiveCourse> pageParam) {
+        // 分页查询
+        Page<LiveCourse> liveCoursePage = baseMapper.selectPage(pageParam, Wrappers.emptyWrapper());
+        // 遍历数据, 修改引用类型数据
+        liveCoursePage.getRecords().forEach(liveCourse -> {
+            // - 获取课程讲师信息
+            //  - 获取讲师 id
+            Long teacherId = liveCourse.getTeacherId();
+            //  - 根据讲师 id 查询讲师信息（远程调用 vod 模块）
+            Result<Teacher> teacherResult = courseFeignClient.getTeacherId(teacherId);
+            if (!Result.SUCCESS_CODE.equals(teacherResult.getCode())) {
+                throw new GgktException(Result.FAILED_CODE, GgktConstant.MESSAGE_METHOD_CALL);
+            }
+
+            // 得到数据
+            Teacher teacher = teacherResult.getData();
+
+            // - 向引用类型 map 中添加数据
+            liveCourse.getParam().put("teacherName", teacher.getName());
+            liveCourse.getParam().put("teacherLevel", teacher.getLevel());
+        });
+
+        return liveCoursePage;
+    }
+
+}
+```
+
+
+
+### 3.2 远程接口
+
+#### 3.2.1 `service_live` 添加依赖
+
+```xml
+<!-- 远程接口 -->
+<dependency>
+    <groupId>com.atguigu</groupId>
+    <artifactId>service_course_client</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+</dependency>
+```
+
+
+
+#### 3.2.2 定义接口
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667268696965-63437e15-e0a6-48a8-8713-8ffc77a2f4cc.png)
+
+```java
+    /**
+     * 根据 id 查询讲师
+     *
+     * @param id
+     * @return {@link Result}<{@link Teacher}>
+     */
+    @GetMapping("/admin/vod/teacher/get/{id}")
+    Result<Teacher> get(@PathVariable Long id);
+```
+
+
+
+### 3.3 全局统一返回结果
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667269529749-f427e9aa-f3f6-4cbf-9802-0565ea85eb00.png)
+
+```java
+package com.atguigu.ggkt.result;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * 结果
+ * 统一返回结果类, 全局统一返回结果
+ *
+ * @author 陈江林
+ * @date 2022/10/2 09:36
+ */
+@ApiModel(value = "全局统一返回结果")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Result<T> {
+
+    public static final String SUCCESS = "成功";
+    public static final String FAILED = "失败";
+    public static final Integer SUCCESS_CODE = 20000;
+    public static final Integer FAILED_CODE = 20001;
+
+    /**
+     * 状态码
+     */
+    @ApiModelProperty(value = "返回码")
+    private Integer code;
+
+    /**
+     * 返回消息（成功、失败...）
+     */
+    @ApiModelProperty(value = "返回消息")
+    private String message;
+
+    /**
+     * 返回数据
+     */
+    @ApiModelProperty(value = "返回数据")
+    private T data;
+
+    /**
+     * 成功的方法, 没有 data 数据
+     *
+     * @return {@link Result}<{@link T}>
+     */
+    public static <T> Result<T> ok() {
+        return Result.ok(null);
+    }
+
+    /**
+     * 成功的方法, 有 data 数据
+     *
+     * @return {@link Result}<{@link T}>
+     */
+    public static <T> Result<T> ok(T data) {
+        return new Result<>(SUCCESS_CODE, SUCCESS, data);
+    }
+
+    /**
+     * 失败的方法, 没有 data 数据
+     *
+     * @return {@link Result}<{@link T}>
+     */
+    public static <T> Result<T> fail() {
+        return Result.fail(null);
+    }
+
+    /**
+     * 失败的方法, 有 data 数据
+     *
+     * @return {@link Result}<{@link T}>
+     */
+    public static <T> Result<T> fail(T data) {
+        return new Result<>(FAILED_CODE, FAILED, data);
+    }
+
+    /**
+     * 修改状态码
+     *
+     * @param code 状态码
+     * @return {@link Result}<{@link T}>
+     */
+    public Result<T> code(Integer code) {
+        this.setCode(code);
+        return this;
+    }
+
+    /**
+     * 修改消息
+     *
+     * @param message 消息
+     * @return {@link Result}<{@link T}>
+     */
+    public Result<T> message(String message) {
+        this.setMessage(message);
+        return this;
+    }
+
+}
+```
+
+
+
+### 3.4 常量类
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667270289505-88af1cec-5ff2-450e-9323-65f8984dd172.png)
+
+```java
+package com.atguigu.ggkt.constant;
+
+/**
+ * 硅谷课堂 常量类
+ *
+ * @author 陈江林
+ * @date 2022/11/1 10:30
+ */
+public class GgktConstant {
+
+    /**
+     * 远程接口调用异常消息
+     */
+    public static final String MESSAGE_METHOD_CALL = "内部方法调用失败!";
+
+}
+```
+
+
+
+## 4 直播课程添加
+
+### 4.1 接口
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667270612254-7561d09d-8928-4d65-bacf-5e50a3398a66.png)
+
+#### 4.1.1 控制类
+
+```java
+    @ApiOperation("直播课程添加")
+    @PostMapping("/save")
+    public Result save(
+            @ApiParam(value = "直播课程表单视图对象")
+            @RequestBody LiveCourseFormVo liveCourseFormVo
+    ) {
+        liveCourseService.saveLive(liveCourseFormVo);
+        return Result.ok();
+    }
+```
+
+
+
+#### 4.1.2 服务接口
+
+```java
+    /**
+     * 直播课程添加
+     *
+     * @param liveCourseFormVo 直播课程表单视图对象
+     */
+    void saveLive(LiveCourseFormVo liveCourseFormVo);
+```
+
+
+
+#### 4.1.3 服务实现类
+
+```java
+    @Override
+    public void saveLive(LiveCourseFormVo liveCourseFormVo) {
+        if (liveCourseFormVo == null) {
+            throw new GgktException(Result.FAILED_CODE, GgktConstant.MESSAGE_PARAM);
+        }
+
+        // liveCourseFormVo -> liveCourse
+        // 创建直播课程对象
+        LiveCourse liveCourse = new LiveCourse();
+        // 复制属性
+        BeanUtils.copyProperties(liveCourseFormVo, liveCourse);
+
+        // - 获取讲师信息
+        //  - 获取讲师 id
+        Long teacherId = liveCourseFormVo.getTeacherId();
+        //  - 根据讲师 id 查询讲师信息（远程调用 vod 模块）
+        Result<Teacher> teacherResult = courseFeignClient.getTeacherId(teacherId);
+        if (!Result.SUCCESS_CODE.equals(teacherResult.getCode())) {
+            throw new GgktException(Result.FAILED_CODE, GgktConstant.MESSAGE_METHOD_CALL);
+        }
+
+        // 得到数据
+        Teacher teacher = teacherResult.getData();
+
+        // - 添加直播课程（第三方接口）
+        //  - 创建 map 集合（其他参数）, 封装直播课程其他参数
+        HashMap<Object, Object> options = new HashMap<>();
+        // 直播类型。1: 教育直播，2: 生活直播。默认 1，说明：根据平台开通的直播类型填写
+        options.put("scenes", 2);
+        options.put("password", liveCourseFormVo.getPassword());
+
+        try {
+            String result = mtCloud.courseAdd(
+                    liveCourse.getCourseName(),
+                    teacher.getId().toString(),
+                    new DateTime(liveCourse.getStartTime()).toString("yyyy-MM-dd HH:mm:ss"),
+                    new DateTime(liveCourse.getEndTime()).toString("yyyy-MM-dd HH:mm:ss"),
+                    teacher.getName(),
+                    teacher.getIntro(),
+                    options
+            );
+
+            // - 返回结果
+            //  - 处理返回结果
+            CommonResult<JSONObject> commonResult = JSON.parseObject(result, CommonResult.class);
+            if (Integer.parseInt(commonResult.getCode()) != MTCloud.CODE_SUCCESS) {
+                //  - 直播课程添加失败
+                throw new GgktException(Result.FAILED_CODE, GgktConstant.MESSAGE_LIVE_COURSE);
+            }
+
+            //  - 直播课程添加成功
+            // 得到返回数据
+            JSONObject object = commonResult.getData();
+
+            // - 添加直播基本信息
+            //  - 获取直播课程 id
+            Long course_id = object.getLong("course_id");
+            liveCourse.setCourseId(course_id);
+            // 保存信息
+            baseMapper.insert(liveCourse);
+
+            // - 添加直播描述信息
+            // -- 创建直播课程描述对象
+            LiveCourseDescription liveCourseDescription = new LiveCourseDescription();
+            liveCourseDescription.setDescription(liveCourseFormVo.getDescription());
+            liveCourseDescription.setLiveCourseId(liveCourse.getId());
+            // 保存信息
+            liveCourseDescriptionService.save(liveCourseDescription);
+
+            // - 添加直播账号信息
+            // -- 创建直播课程账户对象
+            LiveCourseAccount liveCourseAccount = new LiveCourseAccount();
+            liveCourseAccount.setLiveCourseId(liveCourse.getId());
+            liveCourseAccount.setZhuboAccount(object.getString("bid"));
+            liveCourseAccount.setZhuboPassword(liveCourseFormVo.getPassword());
+            liveCourseAccount.setAdminKey(object.getString("admin_key"));
+            liveCourseAccount.setUserKey(object.getString("user_key"));
+            liveCourseAccount.setZhuboKey(object.getString("zhubo_key"));
+            // 保存信息
+            liveCourseAccountService.save(liveCourseAccount);
+        } catch (Exception e) {
+            throw new GgktException(Result.FAILED_CODE, GgktConstant.MESSAGE_LIVE_COURSE);
+        }
+    }
+```
+
+
+
+### 4.2 欢拓云属性配置类
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667271387225-82d2bc22-6d65-4e54-b05b-e08b21393d94.png)
+
+```java
+package com.atguigu.ggkt.live.config;
+
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+/**
+ * 欢拓云 属性配置类
+ *
+ * @author 陈江林
+ * @date 2022/11/1 10:51
+ */
+@Data
+@Component
+@ConfigurationProperties("mtcloud")
+public class MTCloudProperties {
+
+    /**
+     * 合作方ID： 合作方在欢拓平台的唯一ID
+     */
+    private String openId;
+
+    /**
+     * 合作方秘钥： 合作方ID对应的参数加密秘钥
+     */
+    private String openToken;
+
+}
+```
+
+
+
+#### 4.2.1 `application.yml` 配置
+
+```yaml
+# 欢拓云
+mtcloud
+  open-id: xxx
+  open-token: xxx
+```
+
+
+
+### 4.3 欢拓云 `SDK` 配置类
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667271626407-6e0ff9fa-d65a-4497-8d9d-14cf39287c66.png)
+
+```java
+package com.atguigu.ggkt.live.config;
+
+import com.atguigu.ggkt.live.mtcloud.MTCloud;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * 欢拓云配置类
+ * 
+ * @author 陈江林
+ * @date 2022/11/1 10:56
+ */
+@Configuration
+public class MTCloudConfig {
+
+    @Autowired
+    private MTCloudProperties mtCloudProperties;
+
+    @Bean
+    public MTCloud mtCloudClient() {
+        return new MTCloud(mtCloudProperties.getOpenId(),
+                mtCloudProperties.getOpenToken());
+    }
+
+}
+```
+
+
+
+### 4.4 常量
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667274938431-73ce7a8c-ead8-416d-b7c4-941a97673c0a.png)
+
+```java
+public static final String MESSAGE_PARAM = "参数不合法!";
+public static final String MESSAGE_LIVE_COURSE = "直播创建失败!";
+```
+
+
+
+## 5 直播课程删除
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667291523736-350574f4-6118-45ef-8ceb-d19b8d8a1153.png)
+
+### 5.1 接口
+
+#### 5.1.1 控制类
+
+```java
+@ApiOperation("直播课程删除")
+@DeleteMapping("/remove/{id}")
+public Result save(
+        @ApiParam(value = "直播课程 id")
+        @PathVariable Long id
+) {
+    liveCourseService.removeLiveById(id);
+    return Result.ok();
+}
+```
+
+
+
+#### 5.1.2 服务接口
+
+```java
+	/**
+     * 直播课程删除
+     *
+     * @param id id
+     */
+    void removeLiveById(Long id);
+```
+
+
+
+#### 5.1.3 服务实现类
+
+```java
+    @Override
+    public void removeLiveById(Long id) {
+        // 根据 id 查询直播课程信息
+        LiveCourse liveCourse = baseMapper.selectById(id);
+        if (liveCourse == null) {
+            throw new GgktException(Result.FAILED_CODE, GgktConstant.MESSAGE_PARAM);
+        }
+
+        // 获取直播课程 课程id
+        Long courseId = liveCourse.getCourseId();
+        try {
+            // 删除直播课程（欢拓云接口）
+            mtCloud.courseDelete(courseId.toString());
+            // 删除本地数据
+            // 删除直播基本信息
+            baseMapper.deleteById(id);
+            // - 删除直播描述信息
+            //  - 创建条件对象
+            LambdaQueryWrapper<LiveCourseDescription> wrapper = new LambdaQueryWrapper();
+            wrapper.eq(LiveCourseDescription::getLiveCourseId, id);
+            // 根据直播课程 id 删除
+            liveCourseDescriptionService.remove(wrapper);
+
+            // - 删除直播账号信息
+            // 根据直播课程 id 删除
+            liveCourseAccountService.remove(
+                    new LambdaQueryWrapper<LiveCourseAccount>()
+                            .eq(LiveCourseAccount::getLiveCourseId, id)
+            );
+        } catch (Exception e) {
+            throw new GgktException(Result.FAILED_CODE, GgktConstant.MESSAGE_LIVE_COURSE_REMOVE);
+        }
+    }
+```
+
+
+
+### 5.2 常量
+
+```java
+public static final String MESSAGE_LIVE_COURSE_REMOVE = "删除直播课程失败!";
+```
+
+
+
+### 6 直播课程修改
+
+### 6.1 接口
+
+#### 6.1.1 控制层
+
+```java
+    @ApiOperation("直播课程修改")
+    @PutMapping("/update")
+    public Result update(
+            @ApiParam(value = "直播课程表单视图对象")
+            @RequestBody LiveCourseFormVo liveCourseFormVo
+    ) {
+        liveCourseService.updateLiveById(liveCourseFormVo);
+        return Result.ok();
+    }
+
+    @ApiOperation("根据 id 查询直播课程信息")
+    @GetMapping("/get/{id}")
+    public Result<LiveCourse> get(
+            @ApiParam(value = "直播课程 id")
+            @PathVariable Long id
+    ) {
+        return Result.ok(liveCourseService.getById(id));
+    }
+
+    @ApiOperation("根据 id 查询直播课程信息和描述信息")
+    @GetMapping("/getInfo/{id}")
+    public Result<LiveCourseFormVo> getInfo(
+            @ApiParam(value = "直播课程 id")
+            @PathVariable Long id
+    ) {
+        return Result.ok(liveCourseService.getLiveCourseVo(id));
+    }
+```
+
+
+
+#### 6.1.2 服务接口
+
+```java
+    /**
+     * 根据 id 查询直播课程信息和描述信息
+     *
+     * @param id 课程 id
+     * @return {@link LiveCourseFormVo}
+     */
+    LiveCourseFormVo getLiveCourseVo(Long id);
+
+    /**
+     * 直播课程修改
+     *
+     * @param liveCourseFormVo 直播课程表单视图对象
+     */
+    void updateLiveById(LiveCourseFormVo liveCourseFormVo);
+```
+
+
+
+#### 6.1.3 服务实现
+
+```java
+    @Override
+    public LiveCourseFormVo getLiveCourseVo(Long id) {
+        // 获取直播课程的基本信息
+        LiveCourse liveCourse = baseMapper.selectById(id);
+
+        // 获取直播课程的描述信息
+        LiveCourseDescription liveCourseDescription = liveCourseDescriptionService.getOne(
+                new LambdaQueryWrapper<LiveCourseDescription>()
+                        .eq(LiveCourseDescription::getLiveCourseId, id)
+        );
+
+        // 创建视图对象
+        LiveCourseFormVo liveCourseFormVo = new LiveCourseFormVo();
+        BeanUtils.copyProperties(liveCourse, liveCourseFormVo);
+        liveCourseFormVo.setDescription(liveCourseDescription.getDescription());
+        return liveCourseFormVo;
+    }
+
+	@Override
+    public void updateLiveById(LiveCourseFormVo liveCourseFormVo) {
+        // LiveCourseFormVo -> LiveCourse
+        LiveCourse liveCourse = new LiveCourse();
+        BeanUtils.copyProperties(liveCourseFormVo, liveCourse);
+
+        // 根据 id 获取直播课程基本信息
+        //  - 根据讲师 id 查询讲师信息（远程调用 vod 模块）
+        Result<Teacher> teacherResult = courseFeignClient.getTeacherId(liveCourseFormVo.getTeacherId());
+        if (!Result.SUCCESS_CODE.equals(teacherResult.getCode())) {
+            throw new GgktException(Result.FAILED_CODE, GgktConstant.MESSAGE_METHOD_CALL);
+        }
+
+        // 得到数据
+        Teacher teacher = teacherResult.getData();
+
+        HashMap<Object, Object> options = new HashMap<>();
+        try {
+            // 修改直播课程（欢拓云接口）
+            String res = mtCloud.courseUpdate(liveCourse.getCourseId().toString(),
+                    teacher.getId().toString(),
+                    liveCourse.getCourseName(),
+                    new DateTime(liveCourse.getStartTime()).toString("yyyy-MM-dd HH:mm:ss"),
+                    new DateTime(liveCourse.getEndTime()).toString("yyyy-MM-dd HH:mm:ss"),
+                    teacher.getName(),
+                    teacher.getIntro(),
+                    options);
+            // 返回结果转换，判断是否成功
+            CommonResult<JSONObject> commonResult = JSON.parseObject(res, CommonResult.class);
+            if (Integer.parseInt(commonResult.getCode()) != MTCloud.CODE_SUCCESS) {
+                throw new GgktException(Result.FAILED_CODE, GgktConstant.MESSAGE_LIVE_COURSE_UPDATE);
+            }
+
+            // 获取欢拓云返回结果
+            JSONObject object = commonResult.getData();
+            // 更新直播课程基本信息
+            liveCourse.setCourseId(object.getLong("course_id"));
+            baseMapper.updateById(liveCourse);
+            // - 直播课程描述信息更新
+            //  - 根据直播课程 id 获取直播课程描述信息
+            LiveCourseDescription liveCourseDescription = liveCourseDescriptionService.getOne(
+                    new LambdaQueryWrapper<LiveCourseDescription>()
+                            .eq(LiveCourseDescription::getLiveCourseId, liveCourse.getId())
+            );
+            liveCourseDescription.setDescription(liveCourseFormVo.getDescription());
+            //  - 修改操作
+            liveCourseDescriptionService.updateById(liveCourseDescription);
+        } catch (Exception e) {
+            throw new GgktException(Result.FAILED_CODE, GgktConstant.MESSAGE_LIVE_COURSE_UPDATE);
+        }
+    }
+```
+
+
+
+### 6.2 常量
+
+```java
+public static final String MESSAGE_LIVE_COURSE_UPDATE = "修改直播课程失败!";
+```
+
+
+
+## 7 查看账号
+
+### 7.1 接口
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667354048596-4b71dce7-a8cf-4979-bc65-8ccefb550b19.png)
+
+#### 7.1.1 控制层
+
+```java
+    @Autowired
+    private LiveCourseAccountService liveCourseAccountService;
+
+    @ApiOperation("查询直播课程账号信息")
+    @GetMapping("/getLiveCourseAccount/{id}")
+    public Result<LiveCourseAccount> getLiveCourseAccount(
+            @ApiParam(value = "直播课程 id")
+            @PathVariable Long id
+    ) {
+        return Result.ok(liveCourseAccountService.getLiveCourseAccountByLiveCourseId(id));
+    }
+```
+
+
+
+#### 7.1.2 服务接口
+
+```java
+    /**
+     * 查询直播课程账号信息
+     *
+     * @param id 直播课程 id
+     * @return {@link Object}
+     */
+    LiveCourseAccount getLiveCourseAccountByLiveCourseId(Long id);
+```
+
+
+
+#### 7.1.3 服务实现
+
+```java
+    @Override
+    public LiveCourseAccount getLiveCourseAccountByLiveCourseId(Long id) {
+        // 查询一条记录
+        return baseMapper.selectOne(
+                // 创建条件对象
+                new LambdaQueryWrapper<LiveCourseAccount>()
+                        // 直播课程 id
+                        .eq(LiveCourseAccount::getLiveCourseId, id)
+        );
+    }
+```
+
+
+
+## 8 配置信息
+
+### 8.1 查询配置信息
+
+#### 8.1.1 控制层
+
+```java
+    @ApiOperation("获取直播配置信息")
+    @GetMapping("/getCourseConfig/{id}")
+    public Result<LiveCourseConfigVo> getCourseConfig(
+            @ApiParam(value = "直播课程 id")
+            @PathVariable Long id
+    ) {
+        return Result.ok(liveCourseService.getCourseConfigByLiveCourseId(id));
+    }
+```
+
+
+
+#### 8.1.2 服务接口
+
+```java
+    /**
+     * 根据直播课程 id 获取直播配置信息
+     *
+     * @param id 直播课程 id
+     * @return {@link LiveCourseConfigVo} 直播课程配置视图对象
+     */
+    LiveCourseConfigVo getCourseConfigByLiveCourseId(Long id);
+```
+
+
+
+#### 8.1.3 服务实现
+
+```java
+    @Override
+    public LiveCourseConfigVo getCourseConfigByLiveCourseId(Long id) {
+        // 创建 LiveCourseConfigVo 直播课程配置视图对象
+        LiveCourseConfigVo liveCourseConfigVo = new LiveCourseConfigVo();
+
+        // 根据直播课程 id 查询配置信息
+        LiveCourseConfig liveCourseConfig = liveCourseConfigService.getCourseConfigByLiveCourseId(id);
+        if (liveCourseConfig == null) {
+            // 返回空对象
+            return liveCourseConfigVo;
+        }
+
+        // 将查询到的配置信息复制到视图对象中
+        BeanUtils.copyProperties(liveCourseConfig, liveCourseConfigVo);
+        // 根据直播课程 id 查询直播课程商品列表
+        List<LiveCourseGoods> liveCourseGoodsList = liveCourseGoodsService.getLiveCourseGoodsListByLiveCourseId(id);
+        // 将查询到的商品数据添加到视图对象中
+        liveCourseConfigVo.setLiveCourseGoodsList(liveCourseGoodsList);
+
+        return liveCourseConfigVo;
+    }
+```
+
+
+
+#### 8.1.4 根据直播课程 id 查询配置信息
+
+- 服务接口
+
+```java
+package com.atguigu.ggkt.live.service;
+
+import com.atguigu.ggkt.model.live.LiveCourseConfig;
+import com.baomidou.mybatisplus.extension.service.IService;
+
+/**
+ * <p>
+ * 直播课程配置表 服务类
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-11-01
+ */
+public interface LiveCourseConfigService extends IService<LiveCourseConfig> {
+
+    /**
+     * 根据直播课程 id 查询配置信息
+     *
+     * @param id 直播课程 id
+     * @return {@link LiveCourseConfig}
+     */
+    LiveCourseConfig getCourseConfigByLiveCourseId(Long id);
+}
+```
+
+- 服务实现
+
+```java
+package com.atguigu.ggkt.live.service.impl;
+
+import com.atguigu.ggkt.live.mapper.LiveCourseConfigMapper;
+import com.atguigu.ggkt.live.service.LiveCourseConfigService;
+import com.atguigu.ggkt.model.live.LiveCourseConfig;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.stereotype.Service;
+
+/**
+ * <p>
+ * 直播课程配置表 服务实现类
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-11-01
+ */
+@Service
+public class LiveCourseConfigServiceImpl extends ServiceImpl<LiveCourseConfigMapper, LiveCourseConfig> implements LiveCourseConfigService {
+
+    @Override
+    public LiveCourseConfig getCourseConfigByLiveCourseId(Long id) {
+        return baseMapper.selectOne(
+                new LambdaQueryWrapper<LiveCourseConfig>()
+                        .eq(LiveCourseConfig::getLiveCourseId, id)
+        );
+    }
+
+}
+```
+
+
+
+#### 8.1.5 根据直播课程 id 查询直播课程商品列表
+
+- 服务接口
+
+```java
+package com.atguigu.ggkt.live.service;
+
+import com.atguigu.ggkt.model.live.LiveCourseGoods;
+import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
+
+/**
+ * <p>
+ * 直播课程关联推荐表 服务类
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-11-01
+ */
+public interface LiveCourseGoodsService extends IService<LiveCourseGoods> {
+
+    /**
+     * 根据直播课程 id 查询直播课程商品列表
+     *
+     * @param id 直播课程 id
+     * @return {@link List}<{@link LiveCourseGoods}>
+     */
+    List<LiveCourseGoods> getLiveCourseGoodsListByLiveCourseId(Long id) ;
+
+}
+```
+
+- 服务实现
+
+```java
+package com.atguigu.ggkt.live.service.impl;
+
+import com.atguigu.ggkt.live.mapper.LiveCourseGoodsMapper;
+import com.atguigu.ggkt.live.service.LiveCourseGoodsService;
+import com.atguigu.ggkt.model.live.LiveCourseGoods;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * <p>
+ * 直播课程关联推荐表 服务实现类
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-11-01
+ */
+@Service
+public class LiveCourseGoodsServiceImpl extends ServiceImpl<LiveCourseGoodsMapper, LiveCourseGoods> implements LiveCourseGoodsService {
+
+    @Override
+    public List<LiveCourseGoods> getLiveCourseGoodsListByLiveCourseId(Long id) {
+        // 查询所有记录
+        return baseMapper.selectList(
+                // 创建条件对象
+                new LambdaQueryWrapper<LiveCourseGoods>()
+                        // 直播课程 id
+                        .eq(LiveCourseGoods::getLiveCourseId, id)
+        );
+    }
+
+}
+```
+
+
+
+### 8.2 修改直播配置信息
+
+#### 8.2.1 控制层
+
+```java
+    @ApiOperation("修改直播配置信息")
+    @PutMapping("/updateConfig/{id}")
+    public Result<LiveCourseConfigVo> updateConfig(
+            @ApiParam(value = "直播课程配置视图对象")
+            @PathVariable LiveCourseConfigVo liveCourseConfigVo
+    ) {
+        liveCourseService.updateConfig(liveCourseConfigVo);
+        return Result.ok();
+    }
+```
+
+
+
+#### 8.2.2 服务接口
+
+```java
+    /**
+     * 修改直播配置信息
+     *
+     * @param liveCourseConfigVo 直播课程配置视图对象
+     */
+    void updateConfig(LiveCourseConfigVo liveCourseConfigVo);
+```
+
+
+
+#### 8.2.3 服务实现
+
+```java
+    @Override
+    public void updateConfig(LiveCourseConfigVo liveCourseConfigVo) {
+        // - 修改直播配置表
+        //  - 创建直播课程配置对象
+        LiveCourseConfig liveCourseConfig = new LiveCourseConfig();
+        //  - 复制属性 LiveCourseConfigVo -> liveCourseConfig
+        BeanUtils.copyProperties(liveCourseConfigVo, liveCourseConfig);
+        //  - 判断是否有 id [{有id: 修改操作}, {无id: 添加操作}]
+        /// if (liveCourseConfig.getId() != null) {
+        ///     // 修改操作
+        ///     liveCourseConfigService.updateById(liveCourseConfig);
+        /// } else {
+        ///     // 添加操作
+        ///     liveCourseConfigService.save(liveCourseConfig);
+        /// }
+        // 简化
+        liveCourseConfigService.saveOrUpdate(liveCourseConfig);
+
+        // - 修改直播商品表
+        //  - 根据直播课程 id 清空相关商品
+        liveCourseGoodsService.remove(
+                new LambdaQueryWrapper<LiveCourseGoods>()
+                        .eq(LiveCourseGoods::getLiveCourseId, liveCourseConfigVo.getLiveCourseId())
+        );
+
+        //  - 批量添加商品
+        List<LiveCourseGoods> liveCourseGoodsList = liveCourseConfigVo.getLiveCourseGoodsList();
+        if (!CollectionUtils.isEmpty(liveCourseGoodsList)) {
+            liveCourseGoodsService.saveBatch(liveCourseGoodsList);
+        }
+
+        // 调用欢拓云接口上传配置信息
+        this.updateLifeConfig(liveCourseConfigVo);
+    }
+
+    /**
+     * 上传直播配置
+     *
+     * @param liveCourseConfigVo
+     */
+    @SneakyThrows
+    private void updateLifeConfig(LiveCourseConfigVo liveCourseConfigVo) {
+        LiveCourse liveCourse = baseMapper.selectById(liveCourseConfigVo.getLiveCourseId());
+
+        // 参数设置
+        HashMap<Object, Object> options = new HashMap<>();
+        // 界面模式
+        options.put("pageViewMode", liveCourseConfigVo.getPageViewMode());
+        // 观看人数开关
+        JSONObject number = new JSONObject();
+        number.put("enable", liveCourseConfigVo.getNumberEnable());
+        options.put("number", number.toJSONString());
+        // 观看人数开关
+        JSONObject store = new JSONObject();
+        number.put("enable", liveCourseConfigVo.getStoreEnable());
+        number.put("type", liveCourseConfigVo.getStoreType());
+        options.put("store", number.toJSONString());
+        // 商城列表
+        List<LiveCourseGoods> liveCourseGoodsList = liveCourseConfigVo.getLiveCourseGoodsList();
+        if (!CollectionUtils.isEmpty(liveCourseGoodsList)) {
+            List<LiveCourseGoodsView> liveCourseGoodsViewList = new ArrayList<>();
+            liveCourseGoodsList.forEach(liveCourseGoods -> {
+                LiveCourseGoodsView liveCourseGoodsView = new LiveCourseGoodsView();
+                BeanUtils.copyProperties(liveCourseGoods, liveCourseGoodsView);
+                liveCourseGoodsViewList.add(liveCourseGoodsView);
+            });
+
+            JSONObject goodsListEdit = new JSONObject();
+            goodsListEdit.put("status", "0");
+            options.put("goodsListEdit ", goodsListEdit.toJSONString());
+            options.put("goodsList", JSON.toJSONString(liveCourseGoodsViewList));
+        }
+
+        String res = mtCloud.courseUpdateConfig(liveCourse.getCourseId().toString(), options);
+
+        CommonResult<JSONObject> commonResult = JSON.parseObject(res, CommonResult.class);
+        if (Integer.parseInt(commonResult.getCode()) != MTCloud.CODE_SUCCESS) {
+            throw new GgktException(Result.FAILED_CODE, GgktConstant.MESSAGE_LIVE_Config_UPDATE);
+        }
+    }
+```
+
+
+
+## 9 获取最近直播课程
+
+### 9.1 控制层
+
+```java
+    @ApiOperation("获取最近的直播")
+    @GetMapping("/findLatelyList")
+    public Result<List<LiveCourseVo>> getLatelyList() {
+        return Result.ok(liveCourseService.getLatelyList());
+    }
+```
+
+
+
+### 9.2 服务接口
+
+```java
+    /**
+     * 获取最近的直播
+     *
+     * @return {@link List}<{@link LiveCourseVo}>
+     */
+    List<LiveCourseVo> getLatelyList();
+```
+
+
+
+### 9.3 服务实现
+
+```java
+    @Override
+    public List<LiveCourseVo> getLatelyList() {
+        return baseMapper.getLatelyList()
+                .stream()
+                .peek(liveCourseVo -> {
+                    // 封装开始和结束时间
+                    liveCourseVo.setStartTimeString(new DateTime(liveCourseVo.getStartTime()).toString("yyyy年MM月dd HH:mm"));
+                    liveCourseVo.setEndTimeString(new DateTime(liveCourseVo.getEndTime()).toString("HH:mm"));
+
+                    // 根据讲师 id 获取讲师对象
+                    Long teacherId = liveCourseVo.getTeacherId();
+                    Result<Teacher> teacherResult = courseFeignClient.getTeacherId(teacherId);
+                    if (!Result.SUCCESS_CODE.equals(teacherResult.getCode())) {
+                        throw new GgktException(Result.FAILED_CODE, GgktConstant.MESSAGE_METHOD_CALL);
+                    }
+
+                    // 得到数据
+                    Teacher teacher = teacherResult.getData();
+                    liveCourseVo.setTeacher(teacher);
+                    // 封装直播状态 0：未开始 1：直播中 2：直播结束
+                    liveCourseVo.setLiveStatus(this.getLiveStatus(liveCourseVo));
+                }).collect(Collectors.toList());
+    }
+
+    /**
+     * 直播状态 0：未开始 1：直播中 2：直播结束
+     *
+     * @param liveCourse
+     * @return
+     */
+    private int getLiveStatus(LiveCourse liveCourse) {
+        // 直播状态 0：未开始 1：直播中 2：直播结束
+        int liveStatus = 0;
+        Date curTime = new Date();
+        if (DateUtil.dateCompare(curTime, liveCourse.getStartTime())) {
+            liveStatus = 0;
+        } else if (DateUtil.dateCompare(curTime, liveCourse.getEndTime())) {
+            liveStatus = 1;
+        } else {
+            liveStatus = 2;
+        }
+
+        return liveStatus;
+    }
+```
+
+
+
+### 9.4 `mapper` 接口
+
+```java
+package com.atguigu.ggkt.live.mapper;
+
+import com.atguigu.ggkt.model.live.LiveCourse;
+import com.atguigu.ggkt.vo.live.LiveCourseVo;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import java.util.List;
+
+/**
+ * <p>
+ * 直播课程表 Mapper 接口
+ * </p>
+ *
+ * @author 陈江林
+ * @since 2022-11-01
+ */
+public interface LiveCourseMapper extends BaseMapper<LiveCourse> {
+
+    /**
+     * 获取最近的直播
+     *
+     * @return {@link List}<{@link LiveCourseVo}>
+     */
+    List<LiveCourseVo> getLatelyList();
+
+}
+```
+
+
+
+### 9.5 `mapper.xml`
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.ggkt.live.mapper.LiveCourseMapper">
+
+    <select id="getLatelyList" resultType="com.atguigu.ggkt.vo.live.LiveCourseVo">
+        select id,
+               course_id,
+               course_name,
+               start_time,
+               end_time,
+               teacher_id,
+               cover,
+               create_time,
+               update_time,
+               is_deleted
+        from live_course
+        where date(start_time) >= curdate() and is_deleted = 0
+        order by id
+        limit 5
+    </select>
+
+</mapper>
+```
+
+
+
+### 9.6 `DateUtil`
+
+```java
+package com.atguigu.ggkt.util;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+/**
+ * 日期操作工具类
+ */
+public class DateUtil {
+
+    private static final String dateFormat = "yyyy-MM-dd";
+    private static final String timeFormat = "HH:mm:ss";
+
+    /**
+     * 格式化日期
+     *
+     * @param date
+     * @return
+     */
+    public static String formatDate(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+        return sdf.format(date);
+
+    }
+
+    /**
+     * 格式化日期
+     *
+     * @param date
+     * @return
+     */
+    public static String formatTime(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat(timeFormat);
+        return sdf.format(date);
+
+    }
+
+    public static Date parseTime(String date) {
+        SimpleDateFormat sdf = new SimpleDateFormat(timeFormat);
+        try {
+            return sdf.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 截取比较断两个日期对象的field处的值 。
+     * 如果第一个日期小于、等于、大于第二个，则对应返回负整数、0、正整数
+     *
+     * @param date1 第一个日期对象，非null
+     * @param date2 第二个日期对象，非null
+     * @param field Calendar中的阈值
+     *              <p>
+     *              date1 > date2  返回：1
+     *              date1 = date2  返回：0
+     *              date1 < date2  返回：-1
+     */
+//    public static int truncatedCompareTo(final Date date1, final Date date2, final int field) {
+//        return DateUtils.truncatedCompareTo(date1, date2, field);
+//    }
+
+    /**
+     * 比对日期与时间大小
+     *
+     * @param beginDate
+     * @param endDate
+     * @return
+     */
+    public static boolean dateCompare(Date beginDate, Date endDate) {
+        if (null == beginDate || null == endDate) return false;
+        // endDate > beginDate
+        if (endDate.getTime() > beginDate.getTime()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 比对日期与时间大小
+     *
+     * @param beginDate
+     * @param endDate
+     * @return
+     */
+    public static boolean timeCompare(Date beginDate, Date endDate) {
+        Calendar instance1 = Calendar.getInstance();
+        //设置时间为当前时间
+        instance1.setTime(beginDate);
+        instance1.set(Calendar.YEAR, 0);
+        instance1.set(Calendar.MONTH, 0);
+        instance1.set(Calendar.DAY_OF_MONTH, 0);
+
+        Calendar instance2 = Calendar.getInstance();
+        //设置时间为当前时间
+        instance2.setTime(endDate);
+        instance2.set(Calendar.YEAR, 0);
+        instance2.set(Calendar.MONTH, 0);
+        instance2.set(Calendar.DAY_OF_MONTH, 0);
+        // endDate > beginDate
+//        if (DateUtil.truncatedCompareTo(instance1.getTime(), instance2.getTime(), Calendar.SECOND) == 1) {
+//            return false;
+//        }
+        return true;
+    }
+
+}
+```
+
+
+
+## 10 获取所有课程
+
+### 10.1 控制层
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667433353944-9d95d8a7-fd9a-4288-9d2a-0038adf91b4b.png)
+
+```java
+    @ApiOperation("查询所有课程")
+    @GetMapping("/findAll")
+    public Result<List<Course>> findAll() { 
+        return Result.ok(courseService.findList());
+    }
+```
+
+
+
+### 10.2 服务接口
+
+```java
+    /**
+     * 查询所有课程
+     *
+     * @return {@link List}<{@link Course}>
+     */
+    List<Course> findList();
+```
+
+
+
+### 10.3 服务实现
+
+```java
+    @Override
+    public List<Course> findList() {
+        return baseMapper.selectList(null).stream().peek(course -> {
+            // 封装数据
+            // 根据讲师 id 获取讲师名称
+            Teacher teacher = teacherService.getById(course.getTeacherId());
+            if (teacher != null) {
+                String name = teacher.getName();
+                course.getParam().put("teacherName", name);
+            }
+
+            // 根据课程分类 id 获取课程分类名称
+            Subject subjectOne = subjectService.getById(course.getSubjectParentId());
+            if (subjectOne != null) {
+                course.getParam().put("subjectParentTitle", subjectOne.getTitle());
+            }
+
+            Subject subjectTwo = subjectService.getById(course.getSubjectId());
+            if (subjectTwo != null) {
+                course.getParam().put("subjectTitle", subjectTwo.getTitle());
+            }
+        }).collect(Collectors.toList());
+    }
+```
+
+
+
+### 10.4 后台管理系统-菜单管理-菜单列表
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667568967516-1f13effc-86c2-45b1-a359-94b41cc10d83.png)
+
+```vue
+<template>
+  <div class="app-container">
+
+    <!-- 工具条 -->
+    <el-card class="operate-container" shadow="never">
+      <i class="el-icon-tickets" style="margin-top: 5px"></i>
+      <span style="margin-top: 5px">数据列表</span>
+      <el-button class="btn-add" size="mini" @click="removeMenu" style="margin-left: 10px;">删除菜单</el-button>
+      <el-button class="btn-add" size="mini" @click="syncMenu">同步菜单</el-button>
+      <el-button class="btn-add" size="mini" @click="add">添 加</el-button>
+    </el-card>
+
+    <el-table
+      :data="list"
+      style="width: 100%;margin-bottom: 20px;"
+      row-key="id"
+      border
+      default-expand-all
+      :tree-props="{children: 'children'}">
+
+      <el-table-column label="名称" prop="name" width="350"></el-table-column>
+      <el-table-column label="类型" width="100">
+        <template slot-scope="scope">
+          {{ scope.row.type == 'view' ? '链接' : scope.row.type == 'click' ? '事件' : '' }}
+        </template>
+      </el-table-column>
+      <el-table-column label="菜单URL" prop="url"></el-table-column>
+      <el-table-column label="菜单KEY" prop="meunKey" width="130"></el-table-column>
+      <el-table-column label="排序号" prop="sort" width="70"></el-table-column>
+      <el-table-column label="操作" width="170" align="center">
+        <template slot-scope="scope">
+          <el-button v-if="scope.row.parentId > 0" type="text" size="mini" @click="edit(scope.row.id)">修改</el-button>
+          <el-button v-if="scope.row.parentId > 0" type="text" size="mini" @click="removeDataById(scope.row.id)">删除
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <el-dialog title="添加/修改" :visible.sync="dialogVisible" width="40%">
+      <el-form ref="flashPromotionForm" label-width="150px" size="small" style="padding-right: 40px;">
+
+        <el-form-item label="选择一级菜单">
+          <el-select
+            v-model="menu.parentId"
+            placeholder="请选择">
+            <el-option
+              v-for="item in list"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="menu.parentId == 1" label="菜单名称">
+          <el-select
+            v-model="menu.name"
+            placeholder="请选择"
+            @change="liveCourseChanged"
+          >
+            <el-option
+              v-for="item in liveCourseList"
+              :key="item.id"
+              :label="item.courseName"
+              :value="item"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="menu.parentId == 2" label="菜单名称">
+          <el-select
+            v-model="menu.name"
+            placeholder="请选择"
+            @change="subjectChanged">
+            <el-option
+              v-for="item in subjectList"
+              :key="item.id"
+              :label="item.title"
+              :value="item"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="menu.parentId == 3" label="菜单名称">
+          <el-input v-model="menu.name"/>
+        </el-form-item>
+        <el-form-item label="菜单类型">
+          <el-radio-group v-model="menu.type">
+            <el-radio label="view">链接</el-radio>
+            <el-radio label="click">事件</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item v-if="menu.type == 'view'" label="链接">
+          <el-input v-model="menu.url"/>
+        </el-form-item>
+        <el-form-item v-if="menu.type == 'click'" label="菜单KEY">
+          <el-input v-model="menu.meunKey"/>
+        </el-form-item>
+        <el-form-item label="排序">
+          <el-input v-model="menu.sort"/>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="saveOrUpdate()" size="small">确 定</el-button>
+      </span>
+    </el-dialog>
+  </div>
+</template>
+<script>
+import menuApi from '@/api/wechat/menu'
+import liveCourseApi from '@/api/live/course'
+import subjectApi from '@/api/vod/subject'
+
+const defaultForm = {
+  id: null,
+  parentId: 1,
+  name: '',
+  nameId: null,
+  sort: 1,
+  type: 'view',
+  meunKey: '',
+  url: ''
+}
+
+export default {
+  // 定义数据
+  data() {
+    return {
+      list: [],
+      liveCourseList: [],
+      subjectList: [],
+      dialogVisible: false,
+      menu: defaultForm,
+      saveBtnDisabled: false
+    }
+  },
+
+  // 当页面加载时获取数据
+  created() {
+    this.fetchData()
+    this.fetchLiveCourse()
+    this.fetchSubject()
+  },
+
+  methods: {
+    // 调用api层获取数据库中的数据
+    fetchData() {
+      console.log('加载列表')
+      menuApi.findMenuInfo().then(response => {
+        this.list = response.data
+        console.log(this.list)
+      })
+    },
+
+    fetchLiveCourse() {
+      liveCourseApi.findLatelyList().then(response => {
+        this.liveCourseList = response.data
+        this.liveCourseList.push({'id': 0, 'courseName': '全部列表'})
+      })
+    },
+
+    fetchSubject() {
+      console.log('加载列表')
+      subjectApi.getList(0).then(response => {
+        this.subjectList = response.data
+      })
+    },
+
+    removeMenu() {
+      this.$confirm('你确定删除菜单吗, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return menuApi.removeMenu();
+      }).then((response) => {
+        this.$message.success(response.message)
+      }).catch(error => {
+        console.log('error', error)
+        // 当取消时会进入catch语句:error = 'cancel'
+        // 当后端服务抛出异常时：error = 'error'
+        if (error === 'cancel') {
+          this.$message.info('取消')
+        }
+      })
+    },
+
+    syncMenu() {
+      this.$confirm('你确定上传菜单吗, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return menuApi.syncMenu();
+      }).then((response) => {
+        this.$message.success(response.message)
+      }).catch(error => {
+        console.log('error', error)
+        // 当取消时会进入catch语句:error = 'cancel'
+        // 当后端服务抛出异常时：error = 'error'
+        if (error === 'cancel') {
+          this.$message.info('取消上传')
+        }
+      })
+    },
+
+    // 根据id删除数据
+    removeDataById(id) {
+      // debugger
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => { // promise
+        // 点击确定，远程调用ajax
+        return menuApi.removeById(id)
+      }).then((response) => {
+        this.fetchData(this.page)
+        if (response.code) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+
+    // -------------
+    add() {
+      this.dialogVisible = true
+      this.menu = Object.assign({}, defaultForm)
+    },
+
+    edit(id) {
+      this.dialogVisible = true
+      this.fetchDataById(id)
+    },
+
+    saveOrUpdate() {
+      this.saveBtnDisabled = true // 防止表单重复提交
+
+      if (!this.menu.id) {
+        this.saveData()
+      } else {
+        this.updateData()
+      }
+    },
+
+    // 新增
+    saveData() {
+      menuApi.save(this.menu).then(response => {
+        if (response.code) {
+          this.$message({
+            type: 'success',
+            message: response.message
+          })
+
+          this.dialogVisible = false;
+          this.fetchData(this.page)
+        }
+      })
+    },
+
+    // 根据id更新记录
+    updateData() {
+      menuApi.updateById(this.menu).then(response => {
+        if (response.code) {
+          this.$message({
+            type: 'success',
+            message: response.message
+          })
+          this.dialogVisible = false;
+          this.fetchData(this.page)
+        }
+      })
+    },
+
+    // 根据id查询记录
+    fetchDataById(id) {
+      menuApi.getById(id).then(response => {
+        this.menu = response.data
+      })
+    },
+
+    subjectChanged(item) {
+      console.info(item)
+      this.menu.name = item.title
+      this.menu.url = '/course/' + item.id
+    },
+
+    liveCourseChanged(item) {
+      console.info(item)
+      this.menu.name = item.courseName
+      if (item.id == 0) {
+        this.menu.url = '/live'
+      } else {
+        this.menu.url = '/liveInfo/' + item.id
+      }
+
+    }
+  }
+}
+</script>
+```
+
+
+
+## 11 后台管理系统-直播管理模块前端
+
+### 11.1 配置路由
+
+```javascript
+  {
+    path: '/live',
+    component: Layout,
+    redirect: '/live/course/list',
+    name: 'Live',
+    meta: {
+      title: '直播管理',
+      icon: 'el-icon-bangzhu'
+    },
+    alwaysShow: true,
+    children: [
+      {
+        path: 'course/list',
+        name: 'liveCourseList',
+        component: () => import('@/views/live/course/List'),
+        meta: { title: '直播列表' }
+      },
+      {
+        path: 'course/config/:id',
+        name: 'liveCourseConfig',
+        component: () => import('@/views/live/course/Config'),
+        meta: { title: '直播配置' },
+        hidden: true
+      },
+      {
+        path: 'visitor/list/:id',
+        name: 'liveVisitor',
+        component: () => import('@/views/live/visitor/List'),
+        meta: { title: '观看记录' },
+        hidden: true
+      }
+    ]
+  },
+```
+
+
+
+### 11.2 新建页面
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667436433992-dc80ed7c-052d-4c7e-80d7-363de314e032.png)
+
+#### 11.2.1 `course/List.vue`
+
+```vue
+<template>
+  <div class="app-container">
+
+    <!-- 工具条 -->
+    <el-card class="operate-container" shadow="never">
+      <i class="el-icon-tickets" style="margin-top: 5px"></i>
+      <span style="margin-top: 5px">数据列表</span>
+      <el-button class="btn-add" size="mini" @click="add">添 加</el-button>
+    </el-card>
+
+    <!-- banner列表 -->
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      stripe
+      border
+      style="width: 100%;margin-top: 10px;">
+
+      <el-table-column
+        label="序号"
+        width="50"
+        align="center">
+        <template slot-scope="scope">
+          {{ (page - 1) * limit + scope.$index + 1 }}
+        </template>
+      </el-table-column>
+      <el-table-column label="封面" width="200" align="center">
+        <template slot-scope="scope">
+          <img :src="scope.row.cover" width="100%">
+        </template>
+      </el-table-column>
+      <el-table-column prop="courseName" label="直播名称"/>
+      <el-table-column prop="startTime" label="直播时间">
+        <template slot-scope="scope">
+          {{ scope.row.param.startTimeString }}至{{ scope.row.param.endTimeString }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="endTime" label="直播结束时间"/>
+      <el-table-column prop="param.teacherName" label="直播老师"/>
+      <el-table-column label="头衔" width="90">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.param.teacherLevel === 1" type="success" size="mini">高级讲师</el-tag>
+          <el-tag v-if="scope.row.param.teacherLevel === 0" size="mini">首席讲师</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="createTime" label="创建时间"/>
+
+      <el-table-column label="操作" width="200" align="center">
+        <template slot-scope="scope">
+          <el-button type="text" size="mini" @click="edit(scope.row.id)">修改</el-button>
+          <el-button type="text" size="mini" @click="removeDataById(scope.row.id)">删除</el-button>
+          <el-button type="text" size="mini" @click="showAccount(scope.row)">查看账号</el-button>
+          <router-link :to="'/live/course/config/' + scope.row.id">
+            <el-button type="text" size="mini">配置</el-button>
+          </router-link>
+          <router-link :to="'/live/visitor/list/' + scope.row.id">
+            <el-button type="text" size="mini">观看记录</el-button>
+          </router-link>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <!-- 分页组件 -->
+    <el-pagination
+      :current-page="page"
+      :total="total"
+      :page-size="limit"
+      :page-sizes="[5, 10, 20, 30, 40, 50, 100]"
+      style="padding: 30px 0; text-align: center;"
+      layout="sizes, prev, pager, next, jumper, ->, total, slot"
+      @current-change="fetchData"
+      @size-change="changeSize"
+    />
+
+    <el-dialog title="添加/修改" :visible.sync="dialogVisible" width="60%">
+      <el-form ref="flashPromotionForm" label-width="150px" size="small" style="padding-right: 40px;">
+        <!-- 课程讲师 -->
+        <el-form-item label="直播讲师">
+          <el-select
+            v-model="liveCourse.teacherId"
+            placeholder="请选择">
+            <el-option
+              v-for="teacher in teacherList"
+              :key="teacher.id"
+              :label="teacher.name"
+              :value="teacher.id"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="直播讲师登录密码" v-if="liveCourse.id === ''">
+          <el-input v-model="liveCourse.password"/>
+        </el-form-item>
+        <el-form-item label="直播名称">
+          <el-input v-model="liveCourse.courseName"/>
+        </el-form-item>
+        <el-form-item label="直播开始时间">
+          <el-date-picker
+            v-model="liveCourse.startTime"
+            type="datetime"
+            placeholder="选择开始日期"
+            value-format="yyyy-MM-dd HH:mm:ss"/>
+        </el-form-item>
+        <el-form-item label="直播结束时间">
+          <el-date-picker
+            v-model="liveCourse.endTime"
+            type="datetime"
+            placeholder="选择结束日期"
+            value-format="yyyy-MM-dd HH:mm:ss"/>
+        </el-form-item>
+        <el-form-item label="直播封面">
+          <el-upload
+            :show-file-list="false"
+            :on-success="handleCoverSuccess"
+            :before-upload="beforeCoverUpload"
+            :on-error="handleCoverError"
+            :action="BASE_API+'/admin/vod/file/upload?module=cover'"
+            class="cover-uploader">
+            <img v-if="liveCourse.cover" :src="liveCourse.cover" width="60%">
+            <i v-else class="el-icon-plus avatar-uploader-icon"/>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="直播详情">
+          <el-input v-model="liveCourse.description" type="textarea" rows="5"/>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="saveOrUpdate()" size="small">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog title="查看账号" :visible.sync="accountDialogVisible" width="60%">
+      <el-form ref="accountForm" label-width="150px" size="small" style="padding-right: 40px;">
+        <div style="margin-left: 40px;">
+          <h4>主播帮助信息</h4>
+          <el-row style="height:35px;">
+            <el-co>
+              <span class="spd-info">主播登录链接：</span>
+              <span class="spd-info">https://live.zhibodun.com/live/courseLogin.php?course_id={{
+                  liveCourseAccount.courseId
+                }}&role=admin</span>
+            </el-co>
+          </el-row>
+          <el-row style="height:35px;">
+            <el-col>
+              <span class="spd-info">主播登录密码：{{ liveCourseAccount.zhuboKey }}</span>
+            </el-col>
+          </el-row>
+        </div>
+        <div style="margin-left: 40px;">
+          <h4>主播客户端账号信息</h4>
+          <el-row style="height:35px;">
+            <el-col>
+              <span class="spd-info">主播登录账户：{{ liveCourseAccount.zhuboAccount }}</span>
+            </el-col>
+          </el-row>
+          <el-row style="height:35px;">
+            <el-col>
+              <span class="spd-info">主播登录密码：{{ liveCourseAccount.zhuboPassword }}</span>
+            </el-col>
+          </el-row>
+        </div>
+
+        <div style="margin-left: 40px;">
+          <h4>助教信息</h4>
+          <el-row style="height:35px;">
+            <el-co>
+              <span class="spd-info">助教登录连接：</span>
+              <span class="spd-info">https://live.zhibodun.com/live/courseLogin.php?course_id={{
+                  liveCourseAccount.courseId
+                }}&role=admin</span>
+            </el-co>
+          </el-row>
+          <el-row style="height:35px;">
+            <el-col>
+              <span class="spd-info">主播登录密码：{{ liveCourseAccount.adminKey }}</span>
+            </el-col>
+          </el-row>
+        </div>
+        <div style="margin-left: 40px;">
+          <h4>学生观看信息</h4>
+          <el-row style="height:35px;">
+            <el-co>
+              <span class="spd-info">观看连接：</span>
+              <span class="spd-info">http://glkt-api.atguigu.cn/#/liveInfo/{{ liveCourseAccount.courseId }}</span>
+            </el-co>
+          </el-row>
+          <el-row style="height:35px;">
+            <el-col>
+              <span class="spd-info">观看二维码：
+                <!--                <img src="@/styles/qrcode.png" width="80px"/>-->
+              </span>
+            </el-col>
+          </el-row>
+        </div>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="accountDialogVisible = false" size="small">关 闭</el-button>
+      </span>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import api from '@/api/live/course'
+import teacherApi from '@/api/vod/teacher'
+
+const defaultForm = {
+  id: '',
+  courseName: '',
+  startTime: '',
+  endTime: '',
+  teacherId: '',
+  password: '',
+  description: '',
+  cover: 'https://cdn.uviewui.com/uview/swiper/1.jpg'
+}
+export default {
+  data() {
+    return {
+      BASE_API: process.env.VUE_APP_BASE_API,
+      listLoading: true, // 数据是否正在加载
+      list: null, // banner列表
+      total: 0, // 数据库中的总记录数
+      page: 1, // 默认页码
+      limit: 10, // 每页记录数
+      searchObj: {}, // 查询表单对象
+
+      teacherList: [], // 讲师列表
+
+      dialogVisible: false,
+      liveCourse: defaultForm,
+      saveBtnDisabled: false,
+
+      accountDialogVisible: false,
+      liveCourseAccount: {
+        courseId: ''
+      }
+    }
+  },
+
+  // 生命周期函数：内存准备完毕，页面尚未渲染
+  created() {
+    console.log('list created......')
+    this.fetchData()
+
+    // 获取讲师列表
+    this.initTeacherList()
+  },
+
+  // 生命周期函数：内存准备完毕，页面渲染成功
+  mounted() {
+    console.log('list mounted......')
+  },
+
+  methods: {
+
+    // 当页码发生改变的时候
+    changeSize(size) {
+      console.log(size)
+      this.limit = size
+      this.fetchData(1)
+    },
+
+    // 加载banner列表数据
+    fetchData(page = 1) {
+      console.log('翻页。。。' + page)
+      // 异步获取远程数据（ajax）
+      this.page = page
+
+      api.getPageList(this.page, this.limit).then(
+        response => {
+          this.list = response.data.records
+          this.total = response.data.total
+
+          // 数据加载并绑定成功
+          this.listLoading = false
+        }
+      )
+    },
+
+    // 获取讲师列表
+    initTeacherList() {
+      teacherApi.getAllTeacher().then(response => {
+        this.teacherList = response.data
+      })
+    },
+
+    // 重置查询表单
+    resetData() {
+      console.log('重置查询表单')
+      this.searchObj = {}
+      this.fetchData()
+    },
+
+    // 根据id删除数据
+    removeDataById(id) {
+      // debugger
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => { // promise
+        // 点击确定，远程调用ajax
+        return api.removeById(id)
+      }).then((response) => {
+        this.fetchData(this.page)
+        if (response.code) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+
+    // -------------
+    add() {
+      this.dialogVisible = true
+      this.liveCourse = Object.assign({}, defaultForm)
+    },
+
+    edit(id) {
+      this.dialogVisible = true
+      this.fetchDataById(id)
+    },
+    //
+    // fetchDataById(id) {
+    //   api.getById(id).then(response => {
+    //     this.liveCourse = response.data
+    //   })
+    // },
+
+    saveOrUpdate() {
+      this.saveBtnDisabled = true // 防止表单重复提交
+      if (!this.liveCourse.id) {
+        this.saveData()
+      } else {
+        this.updateData()
+      }
+    },
+
+    // 新增
+    saveData() {
+      api.save(this.liveCourse).then(response => {
+        if (response.code) {
+          this.$message({
+            type: 'success',
+            message: response.message
+          })
+          this.dialogVisible = false
+          this.fetchData(this.page)
+        }
+      })
+    },
+
+    // 根据id更新记录
+    updateData() {
+      api.updateById(this.liveCourse).then(response => {
+        if (response.code) {
+          this.$message({
+            type: 'success',
+            message: response.message
+          })
+          this.dialogVisible = false
+          this.fetchData(this.page)
+        }
+      })
+    },
+
+    // 根据id查询记录
+    fetchDataById(id) {
+      api.getById(id).then(response => {
+        this.liveCourse = response.data
+      })
+    },
+
+    showAccount(row) {
+      this.accountDialogVisible = true
+      api.getLiveCourseAccount(row.id).then(response => {
+        this.liveCourseAccount = response.data
+        this.liveCourseAccount.courseId = row.courseId
+      })
+    },
+
+    // ------------upload------------
+    // 上传成功回调
+    handleCoverSuccess(res, file) {
+      this.liveCourse.cover = res.data
+    },
+
+    // 上传校验
+    beforeCoverUpload(file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
+
+    // 错误处理
+    handleCoverError() {
+      console.log('error')
+      this.$message.error('上传失败2')
+    },
+  }
+}
+</script>
+
+<style scoped>
+.cover-uploader .avatar-uploader-icon {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+
+  font-size: 28px;
+  color: #8c939d;
+  width: 450px;
+  height: 200px;
+  line-height: 200px;
+  text-align: center;
+}
+
+.cover-uploader .avatar-uploader-icon:hover {
+  border-color: #409EFF;
+}
+
+.cover-uploader img {
+  width: 450px;
+  height: 200px;
+  display: block;
+}
+</style>
+```
+
+
+
+#### 11.2.2 `Config.vue`
+
+```vue
+<template>
+  <div class="app-container">
+    <el-form label-width="120px" size="small">
+
+      <div style="background-color:#E0E0E0;width: 100%;padding: 1px 10px;margin: 10px 0;"><h3>
+        功能设置&nbsp;&nbsp;&nbsp;
+      </h3></div>
+      <el-form-item label="界面模式">
+        <el-radio-group v-model="liveCourseConfigVo.pageViewMode">
+          <el-radio :label="1">全屏模式</el-radio>
+          <el-radio :label="0">二分屏</el-radio>
+          <el-radio :label="2">课件模式</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="观看人数开关">
+        <el-radio-group v-model="liveCourseConfigVo.numberEnable">
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="0">否</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="商城开关:">
+        <el-radio-group v-model="liveCourseConfigVo.storeEnable">
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="0">否</el-radio>
+        </el-radio-group>
+      </el-form-item>
+
+      <div style="background-color:#E0E0E0;width: 100%;padding: 1px 10px;margin: 10px 0;"><h3>
+        商品列表&nbsp;&nbsp;&nbsp;
+        <el-button type="" size="mini" @click="addCourse()">添加</el-button>
+      </h3></div>
+      <el-table
+        v-loading="listLoading"
+        :data="liveCourseConfigVo.liveCourseGoodsList"
+        stripe
+        border
+        style="width: 100%;margin-top: 10px;">
+        <el-table-column
+          label="序号"
+          width="70"
+          align="center">
+          <template slot-scope="scope">
+            {{ scope.$index + 1 }}
+          </template>
+        </el-table-column>
+        <el-table-column label="商品图片" width="120" align="center">
+          <template slot-scope="scope">
+            <img :src="scope.row.img" width="80px">
+          </template>
+        </el-table-column>
+        <el-table-column prop="name" label="名称" width="100"/>
+        <el-table-column prop="price" label="价格" width="100"/>
+        <el-table-column prop="originalPrice" label="原价"/>
+        <el-table-column label="操作" width="100" align="center">
+          <template slot-scope="scope">
+            <el-button type="text" size="mini" @click="removeCourseById(scope.$index)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <el-dialog title="添加课程" :visible.sync="dialogVisible" width="50%">
+        <el-form :inline="true" label-width="150px" size="small" style="padding-right: 40px;">
+          <el-table
+            v-loading="listLoading"
+            :data="courseList"
+            stripe
+            border
+            style="width: 100%;margin-top: 10px;"
+            @selection-change="handleSelectionChange">
+            <el-table-column
+              type="selection"
+              width="55" />
+            <el-table-column
+              label="序号"
+              width="70"
+              align="center">
+              <template slot-scope="scope">
+                {{ scope.$index + 1 }}
+              </template>
+            </el-table-column>
+            <el-table-column label="分类">
+              <template slot-scope="scope">
+                {{ scope.row.param.subjectParentTitle }} > {{ scope.row.param.subjectTitle }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="title" label="课程名称" width="150"/>
+            <el-table-column prop="lessonNum" label="课时" width="100"/>
+            <el-table-column prop="param.teacherName" label="讲师"/>
+          </el-table>
+          <el-form-item style="margin-top: 10px;">
+            <el-button type="" @click="dialogVisible = false">取消</el-button>
+            <el-button type="" @click="selectCourse()">保存</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
+
+      <br/><br/>
+      <el-form-item>
+        <el-button type="primary" @click="saveOrUpdate">保存</el-button>
+        <el-button @click="back">返回</el-button>
+      </el-form-item>
+    </el-form>
+
+  </div>
+</template>
+
+<script>
+import api from '@/api/live/course'
+import courseApi from '@/api/vod/course'
+
+const defaultForm = {
+  id: '',
+  liveCourseId: '',
+  pageViewMode: 1,
+  numberEnable: 1,
+  storeEnable: 1,
+  storeType: 1,
+  liveCourseGoodsList: []
+}
+
+export default {
+  data() {
+    return {
+      listLoading: true, // 数据是否正在加载
+
+      liveCourseConfigVo: defaultForm,
+      saveBtnDisabled: false,
+
+      dialogVisible: false,
+      courseList: [],
+      multipleSelection: [] // 批量选择中选择的记录列表
+    }
+  },
+
+  // 监听器
+  watch: {
+    $route(to, from) {
+      console.log('路由变化......')
+      console.log(to)
+      console.log(from)
+      this.init()
+    }
+  },
+
+  // 生命周期方法（在路由切换，组件不变的情况下不会被调用）
+  created() {
+    console.log('form created ......')
+    this.init()
+  },
+
+  methods: {
+
+    // 表单初始化
+    init() {
+      this.liveCourseConfigVo.liveCourseId = this.$route.params.id
+      this.fetchDataById(this.liveCourseConfigVo.liveCourseId)
+
+      this.fetchCourseList()
+    },
+
+    back() {
+      this.$router.push({ path: '/live/course/list' })
+    },
+
+    // 根据id查询记录
+    fetchDataById(id) {
+      api.getCourseConfig(id).then(response => {
+        if(null !== response.data.id) {
+          this.liveCourseConfigVo = response.data
+        }
+        this.listLoading = false
+      })
+    },
+
+    fetchCourseList() {
+      courseApi.findAll().then(response => {
+        //debugger
+        this.courseList = response.data
+      })
+    },
+
+    handleSelectionChange(selection) {
+      console.log(selection)
+      this.multipleSelection = selection
+    },
+
+    addCourse() {
+      this.dialogVisible = true
+    },
+
+    selectCourse() {
+      if (this.multipleSelection.length === 0) {
+        this.$message({
+          type: 'warning',
+          message: '请选择对应课程!'
+        })
+        return
+      }
+      var list = []
+      this.multipleSelection.forEach(item => {
+        var obj = {
+          liveCourseId: this.liveCourseConfigVo.liveCourseId,
+          goodsId: item.id,
+          name: item.title,
+          img: item.cover,
+          price: item.price,
+          originalPrice: item.price,
+          tab: '1',
+          url: 'http://glkt-api.atguigu.cn/#/courseInfo/' + item.id,
+          putaway: '1',
+          pay: '1',
+          qrcode: ''
+        }
+        list.push(obj)
+      })
+      this.liveCourseConfigVo.liveCourseGoodsList = list
+      this.dialogVisible = false
+    },
+
+    removeCourseById(index) {
+      this.liveCourseConfigVo.liveCourseGoodsList.splice(index, 1)
+    },
+
+    saveOrUpdate() {
+      api.updateConfig(this.liveCourseConfigVo).then(response => {
+        this.$message({
+          type: 'success',
+          message: response.message
+        })
+
+        this.$router.push({ path: '/live/course/list' })
+      })
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+.littleMarginTop {
+  margin-top: 10px;
+}
+
+.paramInput {
+  width: 250px;
+}
+
+.paramInputLabel {
+  display: inline-block;
+  width: 100px;
+  text-align: right;
+  padding-right: 10px
+}
+
+.cardBg {
+  background: #F8F9FC;
+}
+</style>
+```
+
+
+
+### 11.3 `API`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667437129036-3d76341e-6ed2-42e1-a0af-2dafbaaf7fce.png)
+
+```javascript
+import request from '@/utils/request'
+
+const api_name = '/admin/vod/course'
+
+export default {
+  //课程列表
+  getPageList(page, limit, params) {
+    return request({
+      url: `${api_name}/${page}/${limit}`,
+      method: 'get',
+      params
+    })
+  },
+  //添加课程基本信息
+  saveCourseInfo(data) {
+    return request({
+      url: `${api_name}/save`,
+      method: 'post',
+      data
+    })
+  },
+  // 根据 id 获取课程信息
+  getCourseInfoById(id) {
+    return request({
+      url: `${api_name}/get/${id}`,
+      method: 'get'
+    })
+  },
+  // 根据 id 修改课程信息
+  updateCourseInfoById(data) {
+    return request({
+      url: `${api_name}/update`,
+      method: 'put',
+      data
+    })
+  },
+  //获取发布课程信息
+  getCoursePublishById(id) {
+    return request({
+      url: `${api_name}/getCoursePublishVo/${id}`,
+      method: 'get'
+    })
+  },
+  //发布课程
+  publishCourseById(id) {
+    return request({
+      url: `${api_name}/publishCourse/${id}`,
+      method: 'put'
+    })
+  },
+  // 根据 id 删除数据
+  removeById(id) {
+    return request({
+      url: `${api_name}/remove/${id}`,
+      method: 'delete'
+    })
+  },
+  findAll() {
+    return request({
+      url: `${api_name}/findAll`,
+      method: 'get'
+    })
+  }
+}
+```
+
+
+
+#### 11.3.1 追加代码 `api`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667437156807-93d906a7-9131-4faf-802c-13b7c19dd747.png)
+
+```javascript
+  findAll() {
+    return request({
+      url: `${api_name}/findAll`,
+      method: 'get'
+    })
+  }
+```
+
+
+
+## 12 测试直播管理模块
+
+- 上传`gateway`网关模块
+- 上传`live`模块
+- 上传`vod`模块
+- 上传前端
+
+### 12.1 列表显示
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667439239404-ed69f968-0052-4b6b-b4b6-5bfd61dd3bdb.png)
+
+
+
+### 12.2 `Bug`分页显示异常
+
+- 点击分页`5`, 查询并且显示错误
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667439626327-dff1bf92-cecc-4b8a-983d-27f99f61d643.png)
+
+#### 12.2.1 `Bug`修复 - `MybatisPlus` 分页插件
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667439715750-71fc30da-3b21-4a5d-85eb-4aa0c6ac6d49.png)
+
+```java
+package com.atguigu.ggkt.live.config;
+
+import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * MybatisPlus 配置类
+ * 
+ * @author 陈江林
+ * @date 2022/11/3 09:37
+ */
+@Configuration
+public class MybatisPlusConfig {
+
+    /**
+     * 版本要求：3.4.0 版本以上
+     * 新的分页插件,一缓和二缓遵循 mybatis 的规则, 需要设置 MybatisConfiguration#useDeprecatedExecutor = false 避免缓存出现问题(该属性会在旧插件移除后一同移除)
+     */
+    @Bean
+    public MybatisPlusInterceptor mybatisPlusInterceptor() {
+        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.H2));
+        return interceptor;
+    }
+
+    @Bean
+    public ConfigurationCustomizer configurationCustomizer() {
+        return configuration -> configuration.setUseDeprecatedExecutor(false);
+    }
+
+}
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667440527693-314e2b8d-3c8c-4306-b620-f8fd912e175b.png)
+
+
+
+### 12.3 测试添加直播
+
+- 添加成功
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667441150540-28d45798-736c-4541-beaa-f3a4572a13a0.png)
+
+- 欢拓云后台显示
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667441536278-da6a3876-ac47-43aa-a63b-0915eeec465b.png)
+
+- 时间错误
+
+#### 12.3.1 `Bug`时间显示错误
+
+- 注释 `@EnableWebMvc`, 它会使 `springboot`退出 `MVC`默认配置
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667476798252-d07f0671-c71f-447e-b9b3-9f159ce8f607.png)
+
+```java
+package com.atguigu.ggkt.util;
+
+import com.atguigu.ggkt.interceptor.UserLoginInterceptor;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+/**JAVA
+* Spring Mvc 配置类
+*
+* @author 陈江林
+* @date 2022/10/21 19:12
+*/
+@Configuration
+    // @EnableWebMvc
+    public class LoginWebMvcConfigurerImpl implements WebMvcConfigurer {
+
+        @Override
+        public void addInterceptors(InterceptorRegistry registry) {
+        // 添加自定义拦截器, 设置拦截路径
+        registry.addInterceptor(new UserLoginInterceptor())
+        .addPathPatterns("/api/**");
+        }
+
+        }
+```
+
+
+
+### 12.4 修改直播
+
+- 修改失败
+
+#### 12.4.1 修复`Bug`
+
+- 报空指针异常, 缺少参数`courseId`
+
+```java
+	@ApiModelProperty(value = "课程id")
+	private Long courseId;
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667521665667-7fbc6165-a95c-4430-93ae-9aa7c79b19d4.png)
+
+
+
+#### 12.4.2 修改成功
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667521754307-b220b5fc-2dd8-4406-8db2-297abdb66505.png)
+
+- 欢拓云后台
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667521735400-07a97d47-1b55-4108-a529-f67c7d451b22.png)
+
+
+
+
+
+## 13 微信公众号直播观看
+
+### 13.1 欢拓云观看端集成`WebSDK`
+
+接口文档：`https://open.talk-fun.com/docs/js/index.html`
+
+
+
+#### 13.1.1 获取用户`access_token`
+
+- 用户要观看直播，必须获取对应的用户`access_token`，通过`access_token` 获取观看的直播课程；
+- 接口参数：直播`id`，用户`id`
+
+
+
+- 新建 `LiveCourseApiController`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667529137717-4b235fd1-7c3d-4e6b-b7fd-79971595988d.png)
+
+```java
+package com.atguigu.ggkt.live.api;
+
+import com.alibaba.fastjson.JSONObject;
+import com.atguigu.ggkt.live.service.LiveCourseService;
+import com.atguigu.ggkt.result.Result;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * 微信公众号直播观看
+ *
+ * @author 陈江林
+ * @date 2022/11/4 10:31
+ */
+@Api(tags = "微信公众号直播观看")
+@RestController
+@RequestMapping("/api/live/liveCourse")
+public class LiveCourseApiController {
+
+    @Autowired
+    private LiveCourseService liveCourseService;
+
+    @ApiOperation(value = "获取用户 access_token")
+    @GetMapping("/getPlayAuth/{id}")
+    public Result<JSONObject> getPlayAuth(@PathVariable Long id) {
+        return Result.ok(liveCourseService.getPlayAuth(id));
+    }
+
+}
+```
+
+- 服务接口
+
+```java
+    /**
+     * 获取用户 access_token
+     *
+     * @param id id
+     * @return {@link JSONObject}
+     */
+    JSONObject getPlayAuth(Long id);
+```
+
+- 服务实现
+
+```java
+    @Override
+    public JSONObject getPlayAuth(Long id) {
+        // 根据课程 id 获取直播课程信息
+        LiveCourse liveCourse = baseMapper.selectById(id);
+        // 根据用户 id 获取用户信息（远程调用）
+        Result<UserInfo> userInfoResult = userInfoFeignClient.getById(AuthContextHolder.getUserId());
+        if (!Result.SUCCESS_CODE.equals(userInfoResult.getCode())) {
+            throw new GgktException(Result.FAILED_CODE, GgktConstant.MESSAGE_METHOD_CALL);
+        }
+
+        // 得到数据
+        UserInfo userInfo = userInfoResult.getData();
+        if(userInfo == null) {
+            throw new GgktException(Result.FAILED_CODE, GgktConstant.MESSAGE_PARAM);
+        }
+
+        // 封装需要的参数
+        HashMap<Object, Object> options = new HashMap<>();
+        try {
+            String res = mtCloud.courseAccess(
+                    liveCourse.getCourseId().toString(),
+                    AuthContextHolder.getUserId().toString(),
+                    userInfo.getNickName(),
+                    MTCloud.ROLE_USER,
+                    3600,
+                    options
+            );
+            // 欢拓云返回的参数
+            CommonResult<JSONObject> commonResult = JSON.parseObject(res, CommonResult.class);
+            log.info("欢拓云Token-code: "+commonResult.getCode());
+            log.info("欢拓云Token-data" + commonResult.getData().toString());
+            if (MTCloud.CODE_SUCCESS != Integer.parseInt(commonResult.getCode())) {
+                throw new GgktException(Result.FAILED_CODE, GgktConstant.MESSAGE_LIVE_ACCESS_TOKEN);
+            }
+
+            return commonResult.getData();
+        } catch (Exception e) {
+            throw new GgktException(Result.FAILED_CODE, GgktConstant.MESSAGE_LIVE_ACCESS_TOKEN);
+        }
+    }
+```
+
+
+
+- 添加依赖
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667529650081-d0b72bb9-f5b5-471f-bfa6-75c174a0f627.png)
+
+```xml
+<dependency>
+    <groupId>com.atguigu</groupId>
+    <artifactId>service_user_client</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+</dependency>
+```
+
+#### 13.1.2 下载前端SDK
+
+- 下载地址：`https://open.talk-fun.com/docs/js/download.html`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667528591931-cf0ecbe6-15c5-467c-8339-f7a0a18d4566.png)
+
+
+
+
+
+#### 12.1.3 使用快捷模板
+
+- 下载模板，修改`token`获取方式
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667528688174-6fefb4ae-8e54-40b3-bd02-f65ed25eaad7.png)
+
+
+
+### 13.2 前端整合
+
+#### 13.2.1 新建直播播放页面 `live.html`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667531130289-54539094-c3b1-4f7c-a597-46abedde8e90.png)
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+  <title>TalkFun Live QuickStart v2.2</title>
+  <style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+      list-style-type: none;
+      font-family: "Microsoft YaHei", "STHeiti";
+    }
+
+    .flash-wran {
+      display: none;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      padding: 5px 0;
+      text-align: center;
+      background: #fff6a2;
+      border: 1px solid #ffd913;
+    }
+
+    .flash-wran a {
+      color: red;
+    }
+
+    .wrapper {
+      /*display: flex;*/
+      padding: 10px;
+    }
+
+    #cameraPlayer,
+    #pptPlayer {
+      height: auto;
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      overflow: hidden;
+    }
+
+    #pptPlayer {
+      height: 300px;
+      width: 100%;
+    }
+
+    #modPptPlayer,
+    #modCameraPlayer {
+      margin-top: 10px;
+      border: 1px solid #c7c7c7;
+    }
+
+    .chat-wrap {
+      padding: 5px;
+      margin: 10px;
+      border: 2px solid #cccccc;
+      background: #f1f1f1
+    }
+
+    .mod-chat-list {
+      margin: 20px 0;
+      border: 1px solid #CCCCCC;
+      min-height: 100px;
+      font-size: 12px;
+      background: #dedede;
+      padding: 5px;
+      max-height: 200px;
+      overflow-y: scroll;
+    }
+
+    .mod-chat-list li {
+      padding: 2px 0;
+      margin-bottom: 5px;
+      border-bottom: 1px dotted #CCCCCC;
+    }
+
+    input {
+      display: inline-block;
+      width: 200px;
+      padding: 5px;
+    }
+
+    button {
+      display: inline-block;
+      padding: 5px;
+      margin-left: 5px;
+    }
+
+    #toast {
+      padding: 20px;
+      position: fixed;
+      z-index: 100;
+      display: none;
+      background: rgba(212, 28, 28, 0.8);
+      left: 50%;
+      top: 30%;
+      border-radius: 50em;
+      font-size: 14px;
+      color: #FFFFFF;
+      box-shadow: 0 0 6px 0px #bb2d2d;
+    }
+
+    #talkfun-video-wrap, #talkfun-camera-wrap {
+      position: relative;
+      background: #000;
+    }
+  </style>
+  <!-- #SDK版本 -->
+  <!-- #获取最新版本 ==> http://open.talk-fun.com/docs/js/changelog/live.html -->
+  <script type="text/javascript"
+          src="https://static-1.talk-fun.com/open/TalkFun_SDK_Pack/v6.0/TalkFunWebSDK-6.2-2.min.js"></script>
+</head>
+<body>
+<!-- #toast -->
+<div id="toast"></div>
+<!-- #wrap -->
+<div class="wrapper">
+  <!-- #画板播放器 -->
+  <div id="pptPlayer">
+    <p id="loaddoc">播放器 Loading...</p>
+  </div>
+  <!-- #摄像头模式 -->
+  <div id="cameraPlayer">
+    <p id="loadcam">摄像头 Loading...</p>
+  </div>
+  <!-- #桌面分享｜视频插播模式 -->
+  <div id="videoPlayer">
+    <p id="loadplayer">视频播放器 Loading...</p>
+  </div>
+</div>
+<!-- #chat -->
+<div class="chat-wrap">
+  <h4>聊天模块</h4>
+  <ul id="chat-list" class="mod-chat-list"></ul>
+  <label>
+    <input id="chatVal" type="text"/>
+    <button id="chatSubmit">发送聊天</button>
+  </label>
+</div>
+<script>
+  // [第一步] 如何获取 access_token => http://open.talk-fun.com/docs/getstartV2/access_token.html
+  // [第二步] 根据Api文档方法 监听 / 调用方法 JS Api => http://open.talk-fun.com/docs/js/sdk.js.getstart.html
+  var url = window.location.search
+  var token = url.split("=")[1]
+  // 更多配置项 => https://open.talk-fun.com/docs/js/sdk.js.getstart.html?h=%E9%85%8D%E7%BD%AE%E9%A1%B9
+  var HT = new MT.SDK.main(token, {
+    config: {
+      techOrder: 'FLV' // Safari 浏览器建议设置为 HLS
+    }
+  }, function (data) {
+    console.warn('sdk加载完成', data)
+  })
+  // 连接状态
+  HT.on('connect', function () {
+    console.log('TalkFun通信 => 连接成功...')
+  })
+  // 课件播放器
+  HT.whiteboardPlayer('pptPlayer', 'docPlayer', function (player) {
+    console.log('课件播放器 => 初始化成功')
+    document.querySelector('#loadplayer').innerHTML = '画板模块加载完成'
+  })
+  // 视频插播 | 桌面分享
+  HT.videoPlayer('videoPlayer', 'modVideoplayer', function (player) {
+    console.log('视频播放器 => 初始化成功')
+    document.querySelector('#loadplayer').innerHTML = '视频插播加载完成'
+  })
+  // 摄像头播放器
+  HT.camera('cameraPlayer', 'modCameraPlayer', function () {
+    console.log('摄像头播放器 => 初始化成功')
+    document.querySelector('#loadcam').innerHTML = '摄像头模块加载完成'
+  })
+  // 接收聊天
+  var receivedChat = function (chat) {
+    var tpl = chat.nickname + ': ' + chat.msg
+    var chatItem = document.createElement('li')
+    chatItem.innerHTML = tpl
+    chatItem.className = 'chat-' + chat.xid
+    document.querySelector('#chat-list').appendChild(chatItem)
+  }
+  // 接收聊天信息
+  HT.on('chat:send', function (chat) {
+    receivedChat(chat)
+  })
+  // 发送聊天信息
+  document.querySelector('#chatSubmit').addEventListener('click', function () {
+    var chatIpt = document.querySelector('#chatVal')
+    var chatValue = chatIpt.value
+    HT.emit('chat:send', {msg: chatValue}, function (res) {
+      // 发送成功
+      if (Number(res.code) === 0) {
+        receivedChat(res.data)
+        chatIpt.value = ''
+      }
+      // 发送失败
+      else {
+        console.warn(res.msg)
+      }
+    })
+  }, false)
+  // Flash插件异常
+  HT.on('flash:load:error', function (obj) {
+    if (!obj.flash) {
+      document.querySelector('#flashTip').style.display = 'block'
+    }
+  })
+  // 课程错误信息
+  HT.on('live:course:access:error', function (res) {
+    console.error('错误信息 ==>', res)
+  })
+  // 课程错误信息
+  HT.on('system:room:error', function (res) {
+    var toast = document.querySelector('#toast')
+    if (typeof res === 'string') {
+      toast.innerHTML = res.msg
+    } else if (res.msg) {
+      toast.innerHTML = res.msg
+    }
+    toast.style.display = 'block'
+    var _left = toast.clientWidth / 2
+    toast.style.marginLeft = -_left + 'px'
+  })
+</script>
+</body>
+</html>
+```
+
+- 观众在直播详情页面点击观看，获取通过接口获取`access_token`，然后带上`access_token`参数跳转到直播观看页面即可，关键代码：
+
+```
+LiveInfo.vue
+play() {
+  api.getPlayAuth(this.liveCourseId).then(response => {
+    console.log(response.data);
+    window.location = './live.html?token='+response.data.access_token;
+    this.finished = true;
+  });
+},
+```
+
+
+
+#### 13.2.2 新建直播播放 `LiveInfo.vue`
+
+```vue
+<template>
+  <div>
+    <van-image width="100%" height="200" src="https://cdn.uviewui.com/uview/swiper/1.jpg"/>
+
+    <h1 class="van-ellipsis course_title">{{ liveCourse.courseName }}</h1>
+
+    <div class="course_teacher_price_box">
+      <div class="course_teacher_price">
+        <div class="course_price">直播时间：</div>
+        <div class="course_price_number">
+          {{ liveCourse.param.startTimeString }}至
+          {{liveCourse.param.endTimeString }}
+        </div>
+
+      </div>
+    </div>
+    <div class="course_teacher_price_box">
+      <div class="course_teacher_box">
+        <div class="course_teacher">主讲： {{ teacher.name }}</div>
+        <van-image :src="teacher.avatar" round width="50px" height="50px"/>
+      </div>
+    </div>
+
+    <div class="course_contents">
+      <div class="course_title_font">课程详情</div>
+      <van-divider :style="{ margin: '5px 0 ' }"/>
+      <div class="course_content" v-html="description"></div>
+    </div>
+
+    <van-goods-action>
+      <van-goods-action-button type="danger" text="直播中" @click="play"/>
+    </van-goods-action>
+
+    <van-loading vertical="true" v-show="loading">加载中...</van-loading>
+  </div>
+</template>
+
+<script>
+import api from '@/api/live'
+import shareApi from '@/api/share'
+import wxShare from '@/utils/wxShare'
+
+export default {
+  data() {
+    return {
+      loading: false,
+      liveCourseId: null,
+      liveCourse: {param: {}},
+      description: '',
+      teacher: {},
+      liveStatus: 0,
+      activeNames: ["1"]
+    };
+  },
+
+  created() {
+    this.liveCourseId = this.$route.params.liveCourseId;
+    this.fetchData();
+  },
+
+  methods: {
+    fetchData() {
+      this.loading = true;
+      api.getInfo(this.liveCourseId).then(response => {
+        console.log(response.data);
+
+        this.liveCourse = response.data.liveCourse;
+        this.description = response.data.description;
+        this.teacher = response.data.teacher;
+        this.liveStatus = response.data.liveStatus;
+
+        this.loading = false;
+
+        //分享注册
+        //this.wxRegister();
+      });
+    },
+
+    play() {
+      api.getPlayAuth(this.liveCourseId).then(response => {
+        console.log(response.data);
+
+        //this.$router.push({ path: '/liveOnline?token='+response.data.access_token })
+        window.location = './live.html?token=' + response.data.access_token;
+        this.finished = true;
+      });
+    },
+
+    wxRegister() {
+      //说明：后台加密url必须与当前页面url一致
+      let url = window.location.href.replace('#', 'guiguketan');
+      shareApi.getSignature(url).then(response => {
+        console.log(response.data);
+
+        //记录分享用户
+        let link = '';
+        if (window.location.href.indexOf('?') !== -1) {
+          link = window.location.href + '&recommend=' + response.data.userEedId;
+        } else {
+          link = window.location.href + '?recommend=' + response.data.userEedId;
+        }
+
+        let option = {
+          'title': this.liveCourse.courseName,
+          'desc': this.description,
+          'link': link,
+          'imgUrl': this.liveCourse.cover
+        }
+        wxShare.wxRegister(response.data, option);
+      });
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.gap {
+  height: 10px;
+}
+
+::v-deep.van-image {
+  display: block;
+}
+
+.course_count {
+  background-color: #82848a;
+  color: white;
+  padding: 5px;
+  text-align: center;
+  border-right: 1px solid #939393;
+
+  h1 {
+    font-size: 14px;
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+}
+
+.course_title {
+  font-size: 20px;
+  margin: 10px;
+}
+
+.course_teacher_price_box {
+  margin: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .course_teacher_price {
+    display: flex;
+    font-size: 14px;
+    align-items: center;
+
+    .course_price_number {
+      color: red;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .course_teacher {
+      margin-left: 20px;
+    }
+  }
+
+  .course_teacher_box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .course_teacher {
+      margin-right: 20px;
+    }
+  }
+}
+
+.course_contents {
+  margin: 10px;
+
+  .course_title_font {
+    color: #68cb9b;
+    font-weight: bold;
+  }
+
+  .course_content {
+    margin-bottom: 20px;
+  }
+}
+
+.course_chapter_list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    font-size: 14px;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+</style>
+```
+
+- 对应路由
+
+```javascript
+  {
+    // 直播观看
+    path: '/liveInfo/:liveCourseId',
+    name: 'LiveInfo',
+    component: () => import('../views/LiveInfo')
+  }
+```
+
+
+
+#### 13.2.3 新建 `API`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667533062720-3b5c4dfb-9310-4614-8ec6-8cf83491ea07.png)
+
+```javascript
+import {request} from '@/utils/request'
+
+const api_name = '/api/live/liveCourse'
+
+export default {
+  // 获取 access_token
+  getPlayAuth(liveCourseId) {
+    return request({
+      url: `${api_name}/getPlayAuth/${liveCourseId}`,
+      method: 'get'
+    })
+  },
+
+  // 直播详情
+  getInfo(liveCourseId) {
+    return request({
+      url: `${api_name}/getInfo/${liveCourseId}`,
+      method: 'get'
+    })
+  }
+}
+```
+
+
+
+#### 13.2.4 新建工具 `wxShare.js`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667532005787-165c38d5-acbb-44c8-916c-c145a6864c59.png)
+
+```javascript
+/**
+ * 微信js-sdk
+ * 参考文档：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115
+ */
+const wxShare = {
+  /**
+   * [wxRegister 微信Api初始化]
+   * @param  {Function} callback [ready回调函数]
+   */
+  wxRegister(data, option) { //data是微信配置信息，option是分享的配置内容
+    wx.config({
+      debug: false, // 开启调试模式
+      appId: data.appId, // 必填，公众号的唯一标识
+      timestamp: data.timestamp, // 必填，生成签名的时间戳
+      nonceStr: data.nonceStr, // 必填，生成签名的随机串
+      signature: data.signature,// 必填，签名，见附录1
+      jsApiList: [
+        'onMenuShareAppMessage'
+      ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+    });
+    
+    wx.ready(function () {
+      wx.onMenuShareAppMessage({
+        title: option.title, // 分享标题
+        desc: option.desc, // 分享描述
+        link: option.link, // 分享链接
+        imgUrl: option.imgUrl, // 分享图标
+        success() {
+          // 用户成功分享后执行的回调函数
+          //  option.success()
+          console.log('ok');
+        },
+        cancel() {
+          // 用户取消分享后执行的回调函数
+          // option.error()
+          console.log('cancel');
+        }
+      });
+    });
+
+    wx.error(function (res) {
+      // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+      //alert('error:'+JSON.stringify(res));
+    });
+  }
+}
+
+export default wxShare
+```
+
+
+
+### 13.3 对应接口
+
+#### 13.3.1 控制层
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667532610707-74257ed2-ba73-4c0d-81f7-aa9b292c7c50.png)
+
+```java
+    @ApiOperation("根据ID查询课程")
+    @GetMapping("/getInfo/{courseId}")
+    public Result<Map<String, Object>> getInfo(
+            @ApiParam(value = "课程ID", required = true)
+            @PathVariable Long courseId){
+        return Result.ok(liveCourseService.getInfoById(courseId));
+    }
+```
+
+
+
+#### 13.3.2 服务接口
+
+```java
+    /**
+     * 根据ID查询课程
+     *
+     * @param courseId 课程ID
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    Map<String, Object> getInfoById(Long courseId);
+```
+
+
+
+#### 13.3.3 服务实现
+
+```java
+    @Override
+    public Map<String, Object> getInfoById(Long id) {
+        LiveCourse liveCourse = this.getById(id);
+        liveCourse.getParam().put("startTimeString", new DateTime(liveCourse.getStartTime()).toString("yyyy年MM月dd HH:mm"));
+        liveCourse.getParam().put("endTimeString", new DateTime(liveCourse.getEndTime()).toString("yyyy年MM月dd HH:mm"));
+        // 根据讲师 id 获取讲师对象
+        Long teacherId = liveCourse.getTeacherId();
+        Result<Teacher> teacherResult = courseFeignClient.getTeacherId(teacherId);
+        if (!Result.SUCCESS_CODE.equals(teacherResult.getCode())) {
+            throw new GgktException(Result.FAILED_CODE, GgktConstant.MESSAGE_METHOD_CALL);
+        }
+
+        // 得到数据
+        Teacher teacher = teacherResult.getData();
+        LiveCourseDescription liveCourseDescription = liveCourseDescriptionService.getOne(
+                new LambdaQueryWrapper<LiveCourseDescription>()
+                        .eq(LiveCourseDescription::getLiveCourseId, id)
+        );
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("liveCourse", liveCourse);
+        map.put("liveStatus", this.getLiveStatus(liveCourse));
+        map.put("teacher", teacher);
+        if (null != liveCourseDescription) {
+            map.put("description", liveCourseDescription.getDescription());
+        } else {
+            map.put("description", "");
+        }
+
+        return map;
+    }
+```
+
+
+
+### 13.4 测试公众号直播观看
+
+#### 13.4.1 管理后台添加直播
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667567143826-0ef75496-2729-4c28-9309-944a687f4d12.png)
+
+- 欢拓云后台】
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667567485888-cd72f987-ee95-4a34-9a90-39020052b1ad.png)
+
+- 数据库
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667567558698-56a5ed33-9d14-4b90-b2af-bd608544b82f.png)
+
+
+
+#### 13.4.2 公众号设置路径
+
+1. 添加直播
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667569793889-e536d0b3-79a1-4948-b80f-e64f306f77c2.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667569809134-c9233cb8-1f61-4938-a85e-7048110361fc.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667569831459-5dad3607-cc6d-4b15-becc-42a695df8dd2.png)
+
+1. 同步公众号菜单
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667569843976-0970edca-c561-43b2-85b3-dbf2a4092ab8.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667569949789-7882d8be-93f4-4640-98b7-835ab354c0e9.png)
+
+
+
+#### 13.4.3 登录开播并打开公众号点击测试直播菜单
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667570919673-5e32fc69-678b-47bd-ab7b-fa54611d8b25.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667570861186-d928f0e2-6876-446c-8b0f-dbd87e3504fa.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667574505209-0b322f48-7cb5-4b58-ab24-a22ed950723b.png)
+
+- 公众号
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667571453466-4260b0d6-b3d1-45c0-9361-743a92f4035c.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667574468022-f8f5e030-446e-461e-b39c-6e984d33084d.png)
+
+
+
+## 14 微信网页开发-使用微信分享功能
+
+参考文档：`https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667575184701-b1643ef8-3a5f-41db-a432-2d374b81a8c6.png)
+
+### 14.1 使用微信 `JS-SDK`
+
+微信 JS-SDK 是[微信公众平台](https://mp.weixin.qq.com/cgi-bin/loginpage?t=wxm2-login&lang=zh_CN) 面向网页开发者提供的基于微信内的网页开发工具包。
+
+通过使用微信JS-SDK，网页开发者可借助微信高效地使用拍照、选图、语音、位置等手机系统的能力，同时可以直接使用微信分享、扫一扫、卡券、支付等微信特有的能力，为微信用户提供更优质的网页体验。
+
+
+
+#### 14.1.1 绑定域名
+
+- 正式号配置
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667575218967-8832f15c-cea2-40b3-b3e1-7dbc065804d7.png)
+
+- 测试号配置
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667575306612-b436e73c-edde-4b08-9c89-7e1370522e09.png)
+
+
+
+#### 14.1.2 引入`JS`文件
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667575379735-e2dc1e55-c578-4da5-95bc-f1da87c0e7f9.png)
+
+```html
+<!-- 微信 -->
+<script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js" type="text/javascript"></script>
+```
+
+
+
+### 14.2 新建微信配置文件 `wxShare.js`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667576384989-cadcd6e2-2ab4-41f9-8070-b32f5a7df13b.png)
+
+```javascript
+/**
+ * 微信js-sdk
+ * 参考文档：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115
+ */
+const wxShare = {
+    /**
+     * [wxRegister 微信Api初始化]
+     * @param  {Function} callback [ready回调函数]
+     */
+    wxRegister(data,option) { //data是微信配置信息，option是分享的配置内容
+        
+        wx.config({
+            debug: true, // 开启调试模式
+            appId: data.appId, // 必填，公众号的唯一标识
+            timestamp: data.timestamp, // 必填，生成签名的时间戳
+            nonceStr: data.nonceStr, // 必填，生成签名的随机串
+            signature: data.signature,// 必填，签名，见附录1
+            jsApiList: [
+                'onMenuShareAppMessage'
+            ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+        });
+        wx.ready(function(){
+
+            wx.onMenuShareAppMessage({
+                title: option.title, // 分享标题
+                desc: option.desc, // 分享描述
+                link: option.link, // 分享链接
+                imgUrl: option.imgUrl, // 分享图标
+                success() {
+                    // 用户成功分享后执行的回调函数
+                    //  option.success()
+                    console.log('ok');
+                },
+                cancel() {
+                    // 用户取消分享后执行的回调函数
+                    // option.error()
+                    console.log('cancel');
+                }
+            });
+        });
+
+        wx.error(function(res){
+          // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+          //alert('error:'+JSON.stringify(res));
+        });
+    }
+}
+export default wxShare
+```
+
+
+
+### 14.3 点播课程详情分享
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667576547336-1071757b-7541-4003-97a9-40d3a6aba996.png)
+
+```vue
+<template>
+  <div>
+    <van-image width="100%" height="200" :src="courseVo.cover"/>
+    <van-row>
+      <van-col span="8">
+        <div class="course_count">
+          <h1>购买数</h1>
+          <p>{{ courseVo.buyCount }}</p>
+        </div>
+      </van-col>
+      <van-col span="8">
+        <div class="course_count">
+          <h1>课时数</h1>
+          <p>{{ courseVo.lessonNum }}</p>
+        </div>
+      </van-col>
+      <van-col span="8">
+        <div class="course_count">
+          <h1>浏览数</h1>
+          <p>{{ courseVo.viewCount }}</p>
+        </div>
+      </van-col>
+    </van-row>
+    <h1 class="van-ellipsis course_title">{{ courseVo.title }}</h1>
+    <div class="course_teacher_price_box">
+      <div class="course_teacher_price">
+        <div class="course_price">价格：</div>
+        <div class="course_price_number">￥{{ courseVo.price }}</div>
+      </div>
+      <div>
+        <van-button @click="see()" v-if="isBuy || courseVo.price == '0.00'" plain type="warning" size="mini">立即观看
+        </van-button>
+        <van-button @click="buy" v-else plain type="warning" size="mini">立即购买</van-button>
+      </div>
+    </div>
+    <div class="course_teacher_price_box">
+      <div class="course_teacher_box">
+        <div class="course_teacher">主讲： {{ teacher.name }}</div>
+        <van-image :src="teacher.avatar" round width="50px" height="50px"/>
+      </div>
+    </div>
+    <div class="course_contents">
+      <div class="course_title_font">课程详情</div>
+      <van-divider :style="{ margin: '5px 0 ' }"/>
+      <div class="course_content" v-html="description">
+      </div>
+      <div class="course_title_font">课程大纲</div>
+      <div class="gap"></div>
+      <van-collapse v-model="activeNames">
+        <van-collapse-item :title="item.title" :name="item.id" v-for="item in chapterVoList" :key="item.id">
+          <ul class="course_chapter_list" v-for="child in item.children" :key="child.id">
+            <h2>{{ child.title }}</h2>
+            <p v-if="child.isFree == 1">
+              <van-button @click="play(child)" type="warning" size="mini" plain>免费观看</van-button>
+            </p>
+            <p v-else>
+              <van-button @click="play(child)" type="warning" size="mini" plain>观看</van-button>
+            </p>
+          </ul>
+        </van-collapse-item>
+      </van-collapse>
+    </div>
+    <van-loading vertical="true" v-show="loading">加载中...</van-loading>
+  </div>
+</template>
+
+<script>
+import {getInfo} from '@/api/course'
+import shareApi from '@/api/share'
+import wxShare from '@/utils/wxShare'
+
+export default {
+  data() {
+    return {
+      loading: false,
+      courseId: null,
+      courseVo: {},
+      description: '',
+      teacher: {},
+      chapterVoList: [],
+      isBuy: false,
+      activeNames: ["1"]
+    };
+  },
+  created() {
+    this.courseId = this.$route.params.courseId;
+    this.fetchData();
+  },
+  methods: {
+    wxRegister() {
+      // 说明：后台加密url必须与当前页面url一致
+      let url = window.location.href.replace('#', 'guiguketan')
+      shareApi.getSignature(url).then(response => {
+        console.log(response.data);
+        // 记录分享用户
+        let link = '';
+        if(window.location.href.indexOf('?') !== -1) {
+          link = window.location.href + '&recommend=' + response.data.userEedId;
+        } else {
+          link = window.location.href + '?recommend=' + response.data.userEedId;
+        }
+
+        let option = {
+          'title': this.courseVo.title,
+          'desc': this.description,
+          'link': link,
+          'imgUrl': this.courseVo.cover
+        }
+
+        wxShare.wxRegister(response.data, option);
+      });
+    },
+    fetchData() {
+      this.loading = true;
+      getInfo(this.courseId).then(response => {
+        console.log(response.data);
+
+        this.courseVo = response.data.courseVo;
+        this.description = response.data.description;
+        this.isBuy = response.data.isBuy;
+        this.chapterVoList = response.data.chapterVoList;
+        this.teacher = response.data.teacher;
+
+        this.loading = false;
+
+        // 微信分享注册
+        this.wxRegister();
+      });
+    },
+    buy() {
+      this.$router.push({path: '/trade/' + this.courseId})
+    },
+    // 视频播放
+    play(video) {
+      const videoId = video.id;
+      this.$router.push({path: '/course/play/' + this.courseId + "/" + videoId})
+    },
+    see() {
+      this.$router.push({path: '/play/' + this.courseId + '/0'})
+    }
+  }
+};
+</script>
+<style lang="scss" scoped>
+.gap {
+  height: 10px;
+}
+
+::v-deep.van-image {
+  display: block;
+}
+
+.course_count {
+  background-color: #82848a;
+  color: white;
+  padding: 5px;
+  text-align: center;
+  border-right: 1px solid #939393;
+
+  h1 {
+    font-size: 14px;
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+}
+
+.course_title {
+  font-size: 20px;
+  margin: 10px;
+}
+
+.course_teacher_price_box {
+  margin: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .course_teacher_price {
+    display: flex;
+    font-size: 14px;
+    align-items: center;
+
+    .course_price_number {
+      color: red;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .course_teacher {
+      margin-left: 20px;
+    }
+  }
+
+  .course_teacher_box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .course_teacher {
+      margin-right: 20px;
+    }
+  }
+}
+
+.course_contents {
+  margin: 10px;
+
+  .course_title_font {
+    color: #68cb9b;
+    font-weight: bold;
+  }
+
+  .course_content {
+    margin-bottom: 20px;
+  }
+}
+
+.course_chapter_list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    font-size: 14px;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+</style>
+```
+
+#### 14.3.1 引入 `wxShare.js`
+
+```vue
+import wxShare from '@/utils/wxShare'
+```
+
+
+
+#### 14.3.2 `methods`
+
+```javascript
+    wxRegister() {
+      // 说明：后台加密url必须与当前页面url一致
+      let url = window.location.href.replace('#', 'guiguketan')
+      shareApi.getSignature(url).then(response => {
+        console.log(response.data);
+        // 记录分享用户
+        let link = '';
+        if(window.location.href.indexOf('?') !== -1) {
+          link = window.location.href + '&recommend=' + response.data.userEedId;
+        } else {
+          link = window.location.href + '?recommend=' + response.data.userEedId;
+        }
+
+        let option = {
+          'title': this.courseVo.title,
+          'desc': this.description,
+          'link': link,
+          'imgUrl': this.courseVo.cover
+        }
+
+        wxShare.wxRegister(response.data, option);
+      });
+    },
+```
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667579474473-357419a6-7bda-4059-9408-468ac8fef978.png)
+
+### 14.4 新建`API`, `share.js`
+
+```java
+/**
+ * 微信js-sdk
+ * 参考文档：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115
+ */
+const wxShare = {
+  /**
+   * [wxRegister 微信Api初始化]
+   * @param  {Function} callback [ready回调函数]
+   */
+  wxRegister(data, option) { //data是微信配置信息，option是分享的配置内容
+    wx.config({
+      debug: false, // 开启调试模式
+      appId: data.appId, // 必填，公众号的唯一标识
+      timestamp: data.timestamp, // 必填，生成签名的时间戳
+      nonceStr: data.nonceStr, // 必填，生成签名的随机串
+      signature: data.signature,// 必填，签名，见附录1
+      jsApiList: [
+        'onMenuShareAppMessage'
+      ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+    });
+
+    wx.ready(function () {
+      wx.onMenuShareAppMessage({
+        title: option.title, // 分享标题
+        desc: option.desc, // 分享描述
+        link: option.link, // 分享链接
+        imgUrl: option.imgUrl, // 分享图标
+        success() {
+          // 用户成功分享后执行的回调函数
+          //  option.success()
+          console.log('ok');
+        },
+        cancel() {
+          // 用户取消分享后执行的回调函数
+          // option.error()
+          console.log('cancel');
+        }
+      });
+    });
+
+    wx.error(function (res) {
+      // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+      //alert('error:'+JSON.stringify(res));
+    });
+  }
+}
+
+export default wxShare
+```
+
+
+
+### 14.5 获取签名
+
+#### 14.5.1 控制层 - 新建 `ShareController`类
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667577212689-c103d972-8187-43c2-8f9d-172e22d52e62.png)
+
+```java
+package com.atguigu.ggkt.wechat.api;
+
+import com.atguigu.ggkt.result.Result;
+import com.atguigu.ggkt.util.AuthContextHolder;
+import com.atguigu.ggkt.util.Base64Util;
+import com.atguigu.ggkt.vo.wechat.WxJsapiSignatureVo;
+import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.bean.WxJsapiSignature;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.mp.api.WxMpService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * 微信 jsapi
+ *
+ *
+ * @author 陈江林
+ * @date 2022/11/4 23:52
+ */
+@RestController
+@RequestMapping("/api/wechat/share")
+@Slf4j
+public class ShareController {
+
+    @Autowired
+    private WxMpService wxMpService;
+
+    @GetMapping("/getSignature")
+    public Result getSignature(@RequestParam("url") String url) throws WxErrorException {
+        // 微信分享要对当前url加密处理，由于我们的url路由都是带“#”符号，服务器端接收不到，因此通过“guiguketan”单词代替了“#”
+        String currentUrl = url.replace("guiguketan", "#");
+        // 创建调用 jsapi 时所需要的签名
+        WxJsapiSignature jsapiSignature = wxMpService.createJsapiSignature(currentUrl);
+
+        WxJsapiSignatureVo wxJsapiSignatureVo = new WxJsapiSignatureVo();
+        BeanUtils.copyProperties(jsapiSignature, wxJsapiSignatureVo);
+        wxJsapiSignatureVo.setUserEedId(Base64Util.base64Encode(AuthContextHolder.getUserId() + ""));
+        return Result.ok(wxJsapiSignatureVo);
+    }
+
+}
+```
+
+
+
+
+
+#### 14.5.2 新建工具类 `Base64Util`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667592653296-811e79bd-7d6d-4178-8bc5-609aadc72391.png)
+
+```java
+package com.atguigu.ggkt.util;
+
+import lombok.SneakyThrows;
+
+import java.util.Base64;
+import java.util.regex.Pattern;
+
+/**
+ * @author 陈江林
+ * @date 2022/11/5 00:05
+ */
+public class Base64Util {
+
+    /**
+     * 使用Base64进行加密
+     *
+     * @param content 密文
+     * @return
+     */
+    @SneakyThrows
+    public static String base64Encode(String content) {
+        return Base64.getEncoder().encodeToString(content.getBytes("UTF-8"));
+    }
+
+    /**
+     * 使用Base64进行解密
+     *
+     * @param content
+     * @return
+     */
+    @SneakyThrows
+    public static String base64Decode(String content) {
+        return new String(Base64.getDecoder().decode(content), "UTF-8");
+    }
+
+    public static boolean isNumeric(String str) {
+        String regex = "^[1-9][0-9]*$";
+        Pattern pattern = Pattern.compile(regex);
+        return pattern.matcher(str).matches();
+    }
+
+}
+```
+
+
+
+### 14.6 测试
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667592774385-141a2f3d-b816-4a4d-9c4e-58ad24401c22.png)
+
+- 分享
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667592740568-a29c3343-7fb7-4ba0-93db-2baf428c0065.png)
