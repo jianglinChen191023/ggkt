@@ -38,4 +38,10 @@ public class OrderInfoApiController {
         return Result.ok(orderInfoService.submitOrder(orderFormVo));
     }
 
+    @ApiOperation(value = "获取订单支付状态")
+    @GetMapping("/getOrderStatus/{courseId}}")
+    public Result<String> getOrderStatus(@PathVariable("courseId") Long courseId) {
+        return Result.ok(orderInfoService.getOrderStatusByCourseId(courseId));
+    }
+
 }

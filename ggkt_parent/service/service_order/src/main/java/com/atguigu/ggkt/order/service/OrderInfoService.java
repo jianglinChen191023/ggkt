@@ -50,4 +50,13 @@ public interface OrderInfoService extends IService<OrderInfo> {
      * @param out_trade_no 商户订单号
      */
     void updateOrderStatus(String out_trade_no);
+
+    /**
+     * 获取订单支付状态
+     *
+     * @param courseId 课程 id
+     * @return {@link String}
+     */
+    String getOrderStatusByCourseId(Long courseId);
+
 }

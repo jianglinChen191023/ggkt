@@ -241,4 +241,27 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         baseMapper.updateById(orderInfo);
     }
 
+    @Override
+    public String getOrderStatusByCourseId(Long courseId) {
+        // 根据课程 id 和 当前用户 id 获取订单详情
+        OrderDetail orderDetail = orderDetailService.getOne(
+                new LambdaQueryWrapper<OrderDetail>()
+                        .eq(OrderDetail::getCourseId, courseId)
+                        .eq(OrderDetail::getUserId, AuthContextHolder.getUserId())
+        );
+
+        if (orderDetail == null) {
+            return "0";
+        }
+
+        // 根据订单 id 查询订单支付状态
+        OrderInfo orderInfo = baseMapper.selectById(orderDetail.getOrderId());
+        if (orderInfo == null) {
+            return "0";
+        }
+
+        // 返回订单状态 0 为支付, 1支付成功
+        return orderInfo.getOrderStatus();
+    }
+
 }

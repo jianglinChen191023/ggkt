@@ -1,6 +1,7 @@
 <template>
   <div>
-    <video id="player-container-id" preload="auto" width="600" height="400" playsinline webkit-playsinline x5-playsinline></video>
+    <video id="player-container-id" preload="auto" width="600" height="400" playsinline webkit-playsinline
+           x5-playsinline></video>
     <h1 class="van-ellipsis course_title">{{ courseVo.title }}</h1>
 
     <div class="course_teacher_price_box">
@@ -10,7 +11,9 @@
         <div class="course_teacher">主讲： {{ courseVo.teacherName }}</div>
       </div>
       <div>
-        <van-button @click="getPlayAuth('0')" v-if="isBuy || courseVo.price == '0.00'" plain type="warning" size="mini">立即观看</van-button>
+        <van-button @click="getPlayAuth('0')" v-if="isBuy || courseVo.price == '0.00'" plain type="warning" size="mini">
+          立即观看
+        </van-button>
         <van-button @click="buy" v-else plain type="warning" size="mini">立即购买</van-button>
       </div>
     </div>
@@ -21,7 +24,8 @@
       <van-collapse v-model="activeNames">
         <van-collapse-item :title="item.title" :name="item.id" v-for="item in chapterVoList" :key="item.id">
           <ul class="course_chapter_list" v-for="child in item.children" :key="child.id">
-            <h2 :style="activeVideoId == child.id ? 'color:blue' : ''">{{child.title}}</h2>
+            <h2 :style="activeVideoId == child.id ? 'color:blue' : ''">{{ child.title }}</h2>
+            <!-- 是否可以试听 -->
             <p v-if="child.isFree == 1">
               <van-button @click="see(child)" type="warning" size="mini" plain>免费观看</van-button>
             </p>
@@ -93,17 +97,17 @@ export default {
     see(video) {
       let videoId = video.id;
       let isFree = video.isFree;
-      //if(isFree === 1 || this.isBuy || this.courseVo.price == '0.00') {
-      this.getPlayAuth(videoId);
-      // } else {
-      //     if (window.confirm("购买了才可以观看, 是否继续？")) {
-      //         this.buy()
-      //     }
-      // }
+      if (isFree === 1 || this.isBuy || this.courseVo.price == '0.00') {
+        this.getPlayAuth(videoId);
+      } else {
+        if (window.confirm("购买了才可以观看, 是否继续？")) {
+          this.buy()
+        }
+      }
     },
 
     buy() {
-      this.$router.push({ path: '/trade/'+this.courseId })
+      this.$router.push({path: '/trade/' + this.courseId})
     },
 
     getPlayAuth(videoId) {
@@ -124,7 +128,8 @@ export default {
     },
     //视频播放
     play(data) {
-      var player = TCPlayer("player-container-id", { /**player-container-id 为播放器容器ID，必须与html中一致*/
+      var player = TCPlayer("player-container-id", {
+        /**player-container-id 为播放器容器ID，必须与html中一致*/
         fileID: data.videoSourceId, /**请传入需要播放的视频fileID 必须 */
         appID: data.appid, /**请传入点播账号的子应用appID 必须 */
         psign: ""

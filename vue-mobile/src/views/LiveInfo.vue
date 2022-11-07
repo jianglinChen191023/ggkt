@@ -82,7 +82,10 @@ export default {
         console.log(response.data);
 
         //this.$router.push({ path: '/liveOnline?token='+response.data.access_token })
-        window.location = './live.html?token=' + response.data.access_token;
+        // window.location = './live.html?token=' + response.data.access_token;
+        // this.finished = true;
+
+        window.location = 'http://175.178.174.83:8334/index.html?token=' + response.data.access_token;
         this.finished = true;
       });
     },

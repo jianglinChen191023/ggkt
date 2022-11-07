@@ -56,6 +56,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- 远程接口 -->
+        <dependency>
+            <groupId>com.atguigu</groupId>
+            <artifactId>service_order_client</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

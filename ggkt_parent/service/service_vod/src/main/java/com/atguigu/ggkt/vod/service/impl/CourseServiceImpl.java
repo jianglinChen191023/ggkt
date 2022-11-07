@@ -1,9 +1,13 @@
 package com.atguigu.ggkt.vod.service.impl;
 
+import com.atguigu.ggkt.client.order.OrderInfoFeignClient;
+import com.atguigu.ggkt.constant.GgktConstant;
+import com.atguigu.ggkt.exception.GgktException;
 import com.atguigu.ggkt.model.vod.Course;
 import com.atguigu.ggkt.model.vod.CourseDescription;
 import com.atguigu.ggkt.model.vod.Subject;
 import com.atguigu.ggkt.model.vod.Teacher;
+import com.atguigu.ggkt.result.Result;
 import com.atguigu.ggkt.vo.vod.*;
 import com.atguigu.ggkt.vod.mapper.CourseMapper;
 import com.atguigu.ggkt.vod.service.*;
@@ -47,6 +51,9 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
     @Autowired
     private ChapterService chapterService;
+
+    @Autowired
+    private OrderInfoFeignClient orderInfoFeignClient;
 
     @Override
     public Map<String, Object> findPageCourse(Long page, Long limit, CourseQueryVo courseQueryVo) {
@@ -259,13 +266,26 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         // 查询所属讲师信息
         Teacher teacher = teacherService.getById(course.getTeacherId());
 
+        // 查询用户是否购买该课程<远程调用>
+        Boolean idBuy = false;
+        Result<String> result = orderInfoFeignClient.getOrderStatus(course.getId());
+        if (!Result.SUCCESS_CODE.equals(result.getCode())) {
+            throw new GgktException(Result.FAILED_CODE, GgktConstant.MESSAGE_METHOD_CALL);
+        }
+
+        String orderStatus = result.getData();
+        if ("1".equals(orderStatus)) {
+            idBuy = true;
+        }
+
         // 创建 map 集合, 封装并返回数据
         Map<String, Object> map = new HashMap<>(2);
         map.put("courseVo", courseVo);
         map.put("chapterVoList", chapterVoList);
         map.put("description", null != courseDescription ? courseDescription.getDescription() : "");
         map.put("teacher", teacher);
-        map.put("isBuy", false);
+        // 是否购买
+        map.put("isBuy", idBuy);
         return map;
     }
 
