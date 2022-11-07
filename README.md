@@ -806,6 +806,23 @@
       - [14.5.2 新建工具类 `Base64Util`](#1452-新建工具类-base64util)
     - [14.6 测试](#146-测试)
 
+- [十七 支付和完整整合欢拓云直播](#十七-支付和完整整合欢拓云直播)
+  - [1 课程是否购买](#1-课程是否购买)
+    - [1.1 修改 `CourseServiceImpl`](#11-修改-courseserviceimpl)
+    - [1.2 添加依赖](#12-添加依赖)
+      - [1.2.1 扫描](#121-扫描)
+    - [1.3 新建远程接口模块](#13-新建远程接口模块)
+      - [1.3.1 对应接口](#131-对应接口)
+    - [测试](#测试)
+  - [2 订单支付, 添加记录 `payment_info`用于微信对账](#2-订单支付-添加记录-payment_info用于微信对账)
+    - [2.1 生成代码](#21-生成代码)
+  - [3 欢拓云直播观看整合完整](#3-欢拓云直播观看整合完整)
+    - [3.1 修改观看直播跳转路径](#31-修改观看直播跳转路径)
+    - [3.2 直播项目部署](#32-直播项目部署)
+      - [3.2.1 修改`index.html`](#321-修改indexhtml)
+      - [3.2.2 将`public`文件夹中的文件上传 及 `index.html`](#322-将public文件夹中的文件上传-及-indexhtml)
+    - [3.3 效果](#33-效果)
+
 # 一 硅谷课堂
 
 ## 项目概述
@@ -25605,3 +25622,370 @@ public class Base64Util {
 - 分享
 
 ![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667592740568-a29c3343-7fb7-4ba0-93db-2baf428c0065.png)
+
+
+# 十七 支付和完整整合欢拓云直播
+
+```
+git checkout -b 17.0.0_pay
+```
+
+
+
+## 1 课程是否购买
+
+1. 判断课程是否免费
+
+1. 1. 判断课程表的字段 `price`, 如果课程价格是`0`, 课程免费<`glkt_vod.course`>
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667694310062-11fefdae-35b4-434f-908a-de117933a8dc.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667694600881-ac8b8b87-b765-4d88-9f51-ea48d279ede0.png)
+
+1. 判断当前用户是否已经购买这个课程, 是否完成支付
+2. 查询订单基本信息表和订单详情表`order_info`，`order_detail`<`glkt_order`>
+
+1. 1. 支付成功
+
+```plsql
+SELECT *
+FROM order_info o1
+         LEFT JOIN order_detail o2 ON o1.id = o2.order_id
+WHERE
+  # 用户 id
+    o1.user_id = 34
+  # 课程 id
+  AND o2.course_id = 2
+  # 已支付
+  AND o1.order_status = 1
+  # 正常数据
+  AND o1.is_deleted = 0
+  AND o1.is_deleted = 0
+```
+
+
+
+### 1.1 修改 `CourseServiceImpl`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667693555245-f6235c2d-afe1-4cc5-9a15-273c524db044.png)
+
+```java
+    @Override
+    public Map<String, Object> getInfoById(Long courseId) {
+        Course course = baseMapper.selectById(courseId);
+        if (course == null) {
+            return null;
+        }
+
+        course.setViewCount(course.getViewCount() + 1);
+        baseMapper.updateById(course);
+
+        // 根据课程 id 查询课程详情
+        CourseVo courseVo = baseMapper.selectCourseVoById(courseId);
+        // 课程章节小节数据
+        List<ChapterVo> chapterVoList = chapterService.getTreeList(courseId);
+        // 课程描述信息
+        CourseDescription courseDescription = courseDescriptionService.getById(courseId);
+        // 查询所属讲师信息
+        Teacher teacher = teacherService.getById(course.getTeacherId());
+
+        // 查询用户是否购买该课程<远程调用>
+        Boolean idBuy = false;
+        Result<String> result = orderInfoFeignClient.getOrderStatus(course.getId());
+        if (!Result.SUCCESS_CODE.equals(result.getCode())) {
+            throw new GgktException(Result.FAILED_CODE, GgktConstant.MESSAGE_METHOD_CALL);
+        }
+
+        String orderStatus = result.getData();
+        if ("1".equals(orderStatus)) {
+            idBuy = true;
+        }
+
+        // 创建 map 集合, 封装并返回数据
+        Map<String, Object> map = new HashMap<>(2);
+        map.put("courseVo", courseVo);
+        map.put("chapterVoList", chapterVoList);
+        map.put("description", null != courseDescription ? courseDescription.getDescription() : "");
+        map.put("teacher", teacher);
+        // 是否购买
+        map.put("isBuy", idBuy);
+        return map;
+    }
+```
+
+
+
+### 1.2 添加依赖
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667696222647-f10f6309-9c51-4025-86f3-171c8f1ec56a.png)
+
+```xml
+        <!-- 远程接口 -->
+        <dependency>
+            <groupId>com.atguigu</groupId>
+            <artifactId>service_order_client</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+```
+
+
+
+#### 1.2.1 扫描
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667697864617-a5f3f8af-3e05-4385-9e87-1bf13ca93e80.png)
+
+```java
+@EnableFeignClients(basePackages = "com.atguigu")
+```
+
+
+
+### 1.3 新建远程接口模块
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667695723184-ece82761-9378-4e1c-997d-2169293b2364.png)
+
+- 依赖
+
+```xml
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!-- 取消查找本项目下的Main方法：为了解决Unable to find main class的问题 -->
+                    <mainClass>none</mainClass>
+                    <!-- 为了解决依赖模块找不到此模块中的类或属性 -->
+                    <classifier>execute</classifier>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+```
+
+
+
+- 新建接口`OrderInfoFeignClient`
+
+```java
+package com.atguigu.ggkt.client.order;
+
+import com.atguigu.ggkt.result.Result;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+/**
+ * 远程调用接口
+ *
+ * @author 陈江林
+ * @date 2022/11/6 08:51
+ */
+@FeignClient(value = "service-order")
+public interface OrderInfoFeignClient {
+
+    @GetMapping("/api/order/orderInfo/getOrderStatus/{courseId}}")
+    Result<String> getOrderStatus(@PathVariable("courseId") Long courseId);
+    
+}
+```
+
+
+
+#### 1.3.1 对应接口
+
+- 控制层
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667696012366-62304e22-e700-4d98-a2c0-107c3567b2ca.png)
+
+```java
+    @ApiOperation(value = "获取订单支付状态")
+    @GetMapping("/getOrderStatus/{courseId}}")
+    public Result<String> getOrderStatus(@PathVariable("courseId") Long courseId) {
+        return Result.ok(orderInfoService.getOrderStatusByCourseId(courseId));
+    }
+```
+
+
+
+- 服务接口
+
+```java
+    /**
+     * 获取订单支付状态
+     *
+     * @param courseId 课程 id
+     * @return {@link String}
+     */
+    String getOrderStatusByCourseId(Long courseId);
+```
+
+
+
+- 服务实现
+
+```java
+    @Override
+    public String getOrderStatusByCourseId(Long courseId) {
+        // 根据课程 id 和 当前用户 id 获取订单详情
+        OrderDetail orderDetail = orderDetailService.getOne(
+                new LambdaQueryWrapper<OrderDetail>()
+                        .eq(OrderDetail::getCourseId, courseId)
+                        .eq(OrderDetail::getUserId, AuthContextHolder.getUserId())
+        );
+
+        if (orderDetail == null) {
+            return "0";
+        }
+
+        // 根据订单 id 查询订单支付状态
+        OrderInfo orderInfo = baseMapper.selectById(orderDetail.getOrderId());
+        if (orderInfo == null) {
+            return "0";
+        }
+
+        // 返回订单状态 0 为支付, 1支付成功
+        return orderInfo.getOrderStatus();
+    }
+```
+
+
+
+### 测试
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667698587785-f3198de5-27f6-46ca-a951-d010919b1f10.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667698915997-c073b2da-f35f-4afe-b52e-e6a58fdef63c.png)
+
+
+
+## 2 订单支付, 添加记录 `payment_info`用于微信对账
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667699207284-e3fce346-77c4-4657-bab2-87298082e099.png)
+
+- 修改
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667704188850-7b96cafd-ab3b-48df-b28d-d0c9eae38fab.png)
+
+```java
+    /**
+     * 查询支付状态
+     *
+     * @param orderNo 商户订单号（对应 order_indo 表字段 out_trade_no）
+     * @return {@link Result}
+     */
+    @SneakyThrows
+    @ApiOperation(value = "查询支付状态")
+    @GetMapping("/queryPayStatus/{orderNo}")
+    public Result queryPayStatus(
+            @ApiParam(name = "orderNo", value = "订单No（）", required = true)
+            @PathVariable("orderNo") String orderNo) {
+        // 根据订单号调用微信接口查询支付状态
+        Map<String, String> resultMap = wxPayService.queryPayStatus(orderNo);
+
+        if (resultMap == null) {
+            return Result.fail(null).message("支付出错");
+        }
+
+        log.info("支付信息: " + resultMap);
+        if ("SUCCESS".equals(resultMap.get("trade_state"))) {
+            // 更改订单状态，处理支付结果
+            String out_trade_no = resultMap.get("out_trade_no");
+            orderInfoService.updateOrderStatus(out_trade_no);
+
+            // - 添加 payment_info, 记录支付, 微信对账
+            // - - 查询订单信息
+            OrderInfo orderInfo = orderInfoService.getOne(
+                    new LambdaQueryWrapper<OrderInfo>()
+                            .eq(OrderInfo::getOutTradeNo, orderNo)
+            );
+            // - - 添加记录
+            PaymentInfo paymentInfo = new PaymentInfo();
+            paymentInfo.setOrderId(orderInfo.getId());
+            paymentInfo.setOutTradeNo(out_trade_no);
+            paymentInfo.setUserId(AuthContextHolder.getUserId());
+            paymentInfo.setTotalAmount(orderInfo.getFinalAmount());
+            paymentInfo.setTradeBody(orderInfo.getTradeBody());
+            paymentInfo.setPaymentType(PaymentType.WEIXIN);
+            paymentInfo.setPaymentStatus(PaymentStatus.PAID);
+            paymentInfo.setCallbackContent(resultMap.toString());
+            String callbackTime = resultMap.get("callbackTime");
+            paymentInfo.setCallbackTime(new SimpleDateFormat("yyyyMMddHHmmss").parse(callbackTime));
+            Date date = new Date();
+            paymentInfo.setCreateTime(date);
+            paymentInfo.setUpdateTime(date);
+            paymentInfoService.save(paymentInfo);
+
+            return Result.ok(null).message("支付成功");
+        }
+
+        return Result.ok().message("支付中");
+    }
+```
+
+
+
+
+
+### 2.1 生成代码
+
+- 表`payment_info`
+
+1. 删除控制层 `PaymentInfoController`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667700088587-9fd115c5-00a9-4586-8a4f-82300debac85.png)
+
+1. 删除生成的实体类
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667700139659-e9079b42-c295-4b27-ac84-2110d25b7243.png)
+
+1. 修改实体导入路径
+
+
+
+## 3 欢拓云直播观看整合完整
+
+- 文档地址: `https://open.talk-fun.com/docs/js/download.html`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667763295971-15526e24-a5fb-4678-a37e-bc74bbc22511.png)
+
+
+
+### 3.1 修改观看直播跳转路径
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667797179377-292348f3-0709-4252-8134-732518a308ea.png)
+
+- 修改
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667817497948-a51380b4-58c7-4caf-81bb-17e60ca393f7.png)
+
+
+
+### 3.2 直播项目部署
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667797599540-381362b3-74f0-44cb-b281-753126454a69.png)
+
+#### 3.2.1 修改`index.html`
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667797586365-32d40a4e-9680-4576-972b-367288ca493f.png)
+
+
+
+#### 3.2.2 将`public`文件夹中的文件上传 及 `index.html`
+
+- 最终
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667817587446-8a0255f2-e1a6-4fa0-a4d7-7db5f6621639.png)
+
+
+
+### 3.3 效果
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/12811585/1667817447401-fb3878a5-b54a-4f07-a1af-0d30e010b6fa.png)
