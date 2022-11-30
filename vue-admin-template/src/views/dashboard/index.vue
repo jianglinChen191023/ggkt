@@ -23,6 +23,10 @@ export default {
       {
         name: '电商后台管理系统',
         path: `${this.basePath}:81/#/login`
+      },
+      {
+        name: '通用权限系统',
+        path: `${this.basePath}:1127/#/login`
       }
     ]
   },
